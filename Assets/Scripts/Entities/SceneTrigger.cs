@@ -6,7 +6,9 @@ public class SceneTrigger : MonoBehaviour
 
     private void Awake()
     {
+        gameObject.name = "GameController";
         InitializeScene(_currentScene);
+        Destroy(this);
     }
 
     private void InitializeScene(SceneType type)
