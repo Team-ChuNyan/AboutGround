@@ -25,6 +25,6 @@ public class SceneTrigger : MonoBehaviour
 
     private void LoadMainScene()
     {
-
+        var inputController = gameObject.AddComponent<PlayerInputController>();
     }
 }
