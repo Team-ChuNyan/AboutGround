@@ -7,7 +7,8 @@ public enum SceneType
 
 public enum GroundType
 {
+    Water,
+    Grass,
     Ground,
     RockField,
-    Rock
 }

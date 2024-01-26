@@ -5,6 +5,8 @@ using UnityEngine.Tilemaps;
 public class TilePainter : MonoBehaviour
 {
     [SerializeField] private Tilemap _tileMap;
+    [SerializeField] private TileBase _water;
+    [SerializeField] private TileBase _grass;
     [SerializeField] private TileBase _ground;
     [SerializeField] private TileBase _rockField;
 
@@ -34,12 +36,16 @@ public class TilePainter : MonoBehaviour
     {
         switch (type)
         {
+            case GroundType.Water:
+                return _water;
+            case GroundType.Grass:
+                return _grass;
             case GroundType.Ground:
                 return _ground;
             case GroundType.RockField:
                 return _rockField;
-            case GroundType.Rock:
             default:
+                Debug.LogError("TileMatching Failed");
                 return _rockField;
         }
     }
