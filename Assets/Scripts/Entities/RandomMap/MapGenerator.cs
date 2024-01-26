@@ -12,14 +12,10 @@ public class MapGenerator : MonoBehaviour
 
     [Header("생성 방식")]
     [SerializeField] private SeedMapData _seedMap;
-    [SerializeField] private bool _isColorMap;
-    [SerializeField] private float _noiseScale;
-    [SerializeField] private int _octave;
-    [SerializeField][Range(0f, 1f)] private float _persistance;
-    [SerializeField] private float _lacunarity;
-    [SerializeField] private Vector2 _offset;
-    [SerializeField] private bool _autoUpdate;
+    [SerializeField] private NoiseData _noiseData;
     [SerializeField] private GeneratorGroundType[] _groundType;
+    [SerializeField] private bool _isColorMap;
+    [SerializeField] private bool _autoUpdate;
 
     public SeedMapData SeedMapInfo { get { return _seedMap; } set { _seedMap = value; } }
     public bool AutoUpdate { get { return _autoUpdate; } }
@@ -38,7 +34,7 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateDisplayMap()
     {
-        _noiseMap = _noise.GenerateNoiseMap(_seedMap, _noiseScale, _octave, _persistance, _lacunarity, _offset);
+        _noiseMap = _noise.GenerateNoiseMap(_seedMap, _noiseData);
         Texture2D texture = _textureGenerator.TextureFromNoiseMap(_noiseMap, _seedMap, _isColorMap);
         _mapDisplay.DrawTexture(texture);
     }
@@ -60,14 +56,14 @@ public class MapGenerator : MonoBehaviour
 #if (UNITY_EDITOR)
     private void OnValidate()
     {
-        if (_lacunarity < 1)
-            _lacunarity = 1;
+        if (_noiseData.Lacunarity < 1)
+            _noiseData.Lacunarity = 1;
 
-        if (_octave < 0)
-            _octave = 0;
+        if (_noiseData.Octave < 0)
+            _noiseData.Octave = 0;
 
-        if (_noiseScale <= 0)
-            _noiseScale = 0.0001f;
+        if (_noiseData.NoiseScale <= 0)
+            _noiseData.NoiseScale = 0.0001f;
 
         if (_seedMap.Seed <= 0)
             _seedMap.Seed = 1;
@@ -80,4 +76,6 @@ public class MapGenerator : MonoBehaviour
     }
 #endif
     #endregion
+
+
 }

@@ -17,7 +17,7 @@ public class MapNoiseHandler
         _noiseMap.Clear();
     }
 
-    public List<float> GenerateNoiseMap(SeedMapData seedData, float scale, int octave, float persistance, float lacunarity, Vector2 offset)
+    public List<float> GenerateNoiseMap(SeedMapData seedData, NoiseData noiseData)
     {
         ResetNoiseMap(seedData);
 
@@ -27,11 +27,11 @@ public class MapNoiseHandler
         var rand = new Unity.Mathematics.Random();
         rand.InitState(seed);
 
-        Vector2[] octaveOffsets = new Vector2[octave];
-        for (int i = 0; i < octave; i++)
+        Vector2[] octaveOffsets = new Vector2[noiseData.Octave];
+        for (int i = 0; i < noiseData.Octave; i++)
         {
-            float offsetX = rand.NextInt(-100000, 100000) + offset.x;
-            float offsetY = rand.NextInt(-100000, 100000) + offset.y;
+            float offsetX = rand.NextInt(-100000, 100000) + noiseData.Offset.x;
+            float offsetY = rand.NextInt(-100000, 100000) + noiseData.Offset.y;
 
             octaveOffsets[i] = new Vector2(offsetX, offsetY);
         }
@@ -41,6 +41,7 @@ public class MapNoiseHandler
         float halfWidth = width / 2f;
         float halfHeight = height / 2f;
 
+
         for (int y = 0; y < height; y++)
         {
             for (int x = 0; x < width; x++)
@@ -49,16 +50,16 @@ public class MapNoiseHandler
                 float frequency = 1;
                 float noiseHeight = 0;
 
-                for (int i = 0; i < octave; i++)
+                for (int i = 0; i < noiseData.Octave; i++)
                 {
-                    float tempX = (x - halfWidth) / scale * frequency + octaveOffsets[i].x;
-                    float tempY = (y - halfHeight) / scale * frequency + octaveOffsets[i].y;
+                    float tempX = (x - halfWidth) / noiseData.NoiseScale * frequency + octaveOffsets[i].x;
+                    float tempY = (y - halfHeight) / noiseData.NoiseScale * frequency + octaveOffsets[i].y;
 
                     float perlinValue = Mathf.PerlinNoise(tempX, tempY) * 2 - 1;
                     noiseHeight += perlinValue * amplitude;
 
-                    amplitude *= persistance;
-                    frequency *= lacunarity;
+                    amplitude *= noiseData.Persistance;
+                    frequency *= noiseData.Lacunarity;
                 }
 
                 if (noiseHeight > maxNoiseHeight)
@@ -81,4 +82,6 @@ public class MapNoiseHandler
 
         return _noiseMap;
     }
+
+
 }
