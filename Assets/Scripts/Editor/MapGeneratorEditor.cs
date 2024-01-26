@@ -14,13 +14,20 @@ public class MapGeneratorEditor : Editor
                 return;
 
             mapGen.Awake();
-            mapGen.GenerateMap();
+            mapGen.GenerateDisplayMap();
         }
 
         if (GUILayout.Button("Generate"))
         {
             mapGen.Awake();
-            mapGen.GenerateMap();
+            mapGen.GenerateDisplayMap();
+        }
+
+        if (GUILayout.Button("Generate&PaintTile"))
+        {
+            mapGen.Awake();
+            mapGen.GenerateDisplayMap();
+            mapGen.PaintTileMap();
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
@@ -6,6 +7,8 @@ public class MapGenerator : MonoBehaviour
     private MapTextureGenerator _textureGenerator;
     private MapNoiseHandler _noise;
     [SerializeField] private MapTextureDisplay _mapDisplay;
+    [SerializeField] private TilePainter _tilePainter;
+    private List<float> _noiseMap;
 
     [Header("생성 방식")]
     [SerializeField] private SeedMapData _seedMap;
@@ -33,12 +36,25 @@ public class MapGenerator : MonoBehaviour
         return this;
     }
 
-    public void GenerateMap()
+    public void GenerateDisplayMap()
     {
-        var noiseMap = _noise.GenerateNoiseMap(_seedMap, _noiseScale, _octave, _persistance, _lacunarity, _offset);
-        Texture2D texture = _textureGenerator.TextureFromNoiseMap(noiseMap, SeedMapInfo,_isColorMap);
+        _noiseMap = _noise.GenerateNoiseMap(_seedMap, _noiseScale, _octave, _persistance, _lacunarity, _offset);
+        Texture2D texture = _textureGenerator.TextureFromNoiseMap(_noiseMap, _seedMap, _isColorMap);
         _mapDisplay.DrawTexture(texture);
     }
+
+    public void PaintTileMap()
+    {
+        if (SeedMapInfo.Equals(null)
+            || _noiseMap.Equals(null))
+        {
+            Debug.LogError("null");
+            return;
+        }
+
+        _tilePainter.PaintGroundGrid(_seedMap, _noiseMap, _groundType);
+    }
+
 
     #region EditorMethod
 #if (UNITY_EDITOR)
