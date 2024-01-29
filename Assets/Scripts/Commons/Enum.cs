@@ -4,3 +4,11 @@ public enum SceneType
     Main,
     Loading,
 }
+
+public enum GroundType
+{
+    Water,
+    Grass,
+    Ground,
+    RockField,
+}
