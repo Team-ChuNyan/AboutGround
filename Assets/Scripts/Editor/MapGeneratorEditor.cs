@@ -27,6 +27,7 @@ public class MapGeneratorEditor : Editor
         {
             mapGen.Awake();
             mapGen.GenerateDisplayMap();
+            mapGen.GeneratePathNodeMap();
             mapGen.PaintTileMap();
         }
     }

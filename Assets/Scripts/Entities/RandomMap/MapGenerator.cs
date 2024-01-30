@@ -5,10 +5,12 @@ public class MapGenerator : MonoBehaviour
 {
     [Header("일반")]
     private MapTextureGenerator _textureGenerator;
+    private PathNodeMapGenerator _nodeMapGenerator;
     private MapNoiseHandler _noise;
     [SerializeField] private MapTextureDisplay _mapDisplay;
     [SerializeField] private TilePainter _tilePainter;
     private List<float> _noiseMap;
+    private PathNode[,] _pathNodeMap;
 
     [Header("생성 방식")]
     [SerializeField] private SeedMapData _seedMap;
@@ -18,11 +20,13 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private bool _autoUpdate;
 
     public SeedMapData SeedMapInfo { get { return _seedMap; } set { _seedMap = value; } }
+    public PathNode[,] PathNodeMap { get { return _pathNodeMap; } }
     public bool AutoUpdate { get { return _autoUpdate; } }
 
     public void Awake()
     {
         _noise = new MapNoiseHandler();
+        _nodeMapGenerator = new PathNodeMapGenerator();
         _textureGenerator = new MapTextureGenerator(_groundType);
     }
 
@@ -37,6 +41,11 @@ public class MapGenerator : MonoBehaviour
         _noiseMap = _noise.GenerateNoiseMap(_seedMap, _noiseData);
         Texture2D texture = _textureGenerator.TextureFromNoiseMap(_noiseMap, _seedMap, _isColorMap);
         _mapDisplay.DrawTexture(texture);
+    }
+
+    public void GeneratePathNodeMap()
+    {
+        _pathNodeMap = _nodeMapGenerator.GenerateNodePaths(_seedMap,_noiseMap,_groundType);
     }
 
     public void PaintTileMap()
