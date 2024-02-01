@@ -7,7 +7,7 @@ public class Pathfinding : MonoBehaviour
     private const int Move_DIAGONAL_COST = 14;
 
     private PathNode[,] _nodes;
-    private List<PathNode> _openList;
+    private NodePriorityQueue _openList;
     private HashSet<PathNode> _closeList;
     private Stack<PathNode> _stack;
     private PathNode _current;
@@ -30,31 +30,27 @@ public class Pathfinding : MonoBehaviour
         }
         _stack = new();
         DebugList = new();
-        _openList = new List<PathNode>();
+        _openList = new NodePriorityQueue(1500);
         _closeList = new HashSet<PathNode>();
     }
 
     public void FindPath(Vector2Int start, Vector2Int goal)
     {
-        if (start == goal) return;
-
-        Goal = goal;
         ResetPathNodeData();
-        _current = _nodes[start.x, start.y];
-        _current.IsClosed = true;
-        AddAroundPathNode(_current);
+        Goal = goal;
+        _openList.Enqueue(_nodes[start.x, start.y]);
 
         while (_openList.Count > 0)
         {
-            _current = GetBestPathNode();
-            AddAroundPathNode(_current);
-
+            _current = _openList.Dequeue();
             if (_current.Pos == goal)
             {
                 LinkPath(_current);
                 GizmoTest();
                 break;
             }
+            AddAroundPathNode(_current);
+            _closeList.Add(_current);
         }
     }
 
@@ -108,7 +104,7 @@ public class Pathfinding : MonoBehaviour
             node.G = Move_STARIGHT_COST + _current.G;
             node.H = GetHeuristic(node.Pos, Goal);
             node.F = node.G + node.H;
-            _openList.Add(node);
+            _openList.Enqueue(node);
         }
         else if (Move_STARIGHT_COST + _current.G + node.H < node.F)
         {
@@ -134,7 +130,7 @@ public class Pathfinding : MonoBehaviour
             node.G = Move_DIAGONAL_COST + _current.G;
             node.H = GetHeuristic(node.Pos, Goal);
             node.F = node.G + node.H;
-            _openList.Add(node);
+            _openList.Enqueue(node);
         }
         else if (Move_DIAGONAL_COST + _current.G + node.H <= node.F)
         {
@@ -143,24 +139,6 @@ public class Pathfinding : MonoBehaviour
             node.H = GetHeuristic(node.Pos, Goal);
             node.F = node.G + node.H;
         }
-    }
-
-    private PathNode GetBestPathNode()
-    {
-        PathNode node = null;
-        int minF = int.MaxValue;
-        for (int i = 0; i < _openList.Count; i++)
-        {
-            if (_openList[i].F < minF)
-            {
-                node = _openList[i];
-                minF = node.F;
-            }
-        }
-        node.IsClosed = true;
-        _openList.Remove(node);
-        _closeList.Add(node);
-        return node;
     }
 
     private int GetHeuristic(Vector2Int start, Vector2Int end)

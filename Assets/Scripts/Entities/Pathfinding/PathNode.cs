@@ -11,6 +11,7 @@ public class PathNode
     public int F;
 
     public PathNode BeforeNode;
+    public int QueueIndex;
 
     public PathNode(Vector2Int pos)
     {
@@ -25,5 +26,6 @@ public class PathNode
         F = 0;
         IsClosed = false;
         BeforeNode = null;
+        QueueIndex = 0;
     }
 }
