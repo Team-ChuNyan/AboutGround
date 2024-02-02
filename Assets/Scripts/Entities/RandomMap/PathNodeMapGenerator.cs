@@ -19,7 +19,7 @@ public class PathNodeMapGenerator
             {
                 float currentHeight = noiseMap[mapSize - (height * seedMap.Width + width)];
 
-                if (currentHeight < _blockMinValue || _blockMaxValue < currentHeight)
+                if (currentHeight <= _blockMinValue || _blockMaxValue < currentHeight)
                     continue;
 
                 _pathNodes[width, height].IsBlocked = true;
@@ -50,11 +50,16 @@ public class PathNodeMapGenerator
             if (type[i].Type != GroundType.RockField)
                 continue;
 
-            _blockMinValue = type[i].height;
-            if (i == type.Length - 1)
-                _blockMaxValue = int.MaxValue;
+            if (i == 0)
+            {
+                _blockMinValue = 0;
+                _blockMaxValue = type[i].height;
+            }
             else
-                _blockMaxValue = type[i + 1].height;
+            {
+                _blockMinValue = type[i-1].height;
+                _blockMaxValue = type[i].height;
+            }
 
             break;
         }
