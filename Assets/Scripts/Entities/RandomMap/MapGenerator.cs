@@ -5,10 +5,12 @@ public class MapGenerator : MonoBehaviour
 {
     [Header("일반")]
     private MapTextureGenerator _textureGenerator;
+    private PathNodeMapGenerator _nodeMapGenerator;
     private MapNoiseHandler _noise;
     [SerializeField] private MapTextureDisplay _mapDisplay;
-    [SerializeField] private TilePainter _tilePainter;
+    private TilePainter _tilePainter;
     private List<float> _noiseMap;
+    private PathNode[,] _pathNodeMap;
 
     [Header("생성 방식")]
     [SerializeField] private SeedMapData _seedMap;
@@ -18,37 +20,53 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private bool _autoUpdate;
 
     public SeedMapData SeedMapInfo { get { return _seedMap; } set { _seedMap = value; } }
+    public PathNode[,] PathNodeMap { get { return _pathNodeMap; } }
     public bool AutoUpdate { get { return _autoUpdate; } }
 
     public void Awake()
     {
         _noise = new MapNoiseHandler();
+        _nodeMapGenerator = new PathNodeMapGenerator();
         _textureGenerator = new MapTextureGenerator(_groundType);
     }
 
-    public MapGenerator SetSeedMapInfo(SeedMapData seedmap)
+    public MapGenerator Initialize(TilePainter tilePainter)
     {
-        _seedMap = seedmap;
+        _tilePainter = tilePainter;
         return this;
     }
 
-    public void GenerateDisplayMap()
+    public MapGenerator GenerateNoiseMap(SeedMapData seedmap)
     {
+        _seedMap = seedmap;
         _noiseMap = _noise.GenerateNoiseMap(_seedMap, _noiseData);
-        Texture2D texture = _textureGenerator.TextureFromNoiseMap(_noiseMap, _seedMap, _isColorMap);
-        _mapDisplay.DrawTexture(texture);
+        return this;
     }
 
-    public void PaintTileMap()
+    public MapGenerator GenerateDisplayMap()
+    {
+        Texture2D texture = _textureGenerator.TextureFromNoiseMap(_noiseMap, _seedMap, _isColorMap);
+        _mapDisplay.DrawTexture(texture);
+        return this;
+    }
+
+    public MapGenerator GeneratePathNodeMap()
+    {
+        _pathNodeMap = _nodeMapGenerator.GenerateNodePaths(_seedMap, _noiseMap, _groundType);
+        return this;
+    }
+
+    public MapGenerator PaintTileMap()
     {
         if (SeedMapInfo.Equals(null)
             || _noiseMap.Equals(null))
         {
             Debug.LogError("null");
-            return;
+            return this;
         }
 
         _tilePainter.PaintGroundGrid(_seedMap, _noiseMap, _groundType);
+        return this;
     }
 
 
@@ -76,6 +94,4 @@ public class MapGenerator : MonoBehaviour
     }
 #endif
     #endregion
-
-
 }
