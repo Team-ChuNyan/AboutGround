@@ -293,7 +293,11 @@ MonoBehaviour:
   StartPos: {x: 0, y: 0}
   EndPos: {x: 0, y: 0}
   MapGenerator: {fileID: 0}
-  Pathfinding: {fileID: 0}
+  UnitController: {fileID: 0}
+  Name: 
+  Race: 0
+  Unit: {fileID: 0}
+  Goal: {x: 0, y: 0}
 --- !u!4 &608228023
 Transform:
   m_ObjectHideFlags: 0

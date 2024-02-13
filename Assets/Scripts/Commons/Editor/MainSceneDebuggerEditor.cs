@@ -16,6 +16,10 @@ public class MainSceneDebuggerEditor : Editor
         DrawMapGenerator();
         GUILayout.Space(10);
         DrawPathfinding();
+        GUILayout.Space(10);
+        DrawCreatePlayerUnit();
+        GUILayout.Space(10);
+        DrawMoveUnit();
     }
 
     private void DrawMapGenerator()
@@ -47,5 +51,31 @@ public class MainSceneDebuggerEditor : Editor
         }
 
         EditorGUI.indentLevel--;
+    }
+
+    private void DrawCreatePlayerUnit()
+    {
+        GUILayout.Label("CreatePlayerUnit", EditorStyles.boldLabel);
+        _debugger.Name= EditorGUILayout.TextField("Name", _debugger.Name);
+        _debugger.Race = (RaceType)EditorGUILayout.EnumPopup("RaceType", _debugger.Race);
+        if (GUILayout.Button("Create"))
+        {
+            _debugger.CreatePlayerUnit();
+        }
+    }
+
+    private void DrawMoveUnit()
+    {
+        GUILayout.Label("UnitMove", EditorStyles.boldLabel);
+        _debugger.Unit = (Unit)EditorGUILayout.ObjectField("Unit", _debugger.Unit,typeof(Unit),true);
+        _debugger.Goal = EditorGUILayout.Vector2IntField("EndPos", _debugger.Goal);
+        if (GUILayout.Button("Move"))
+        {
+            _debugger.MoveUnit();
+        }
+        if (GUILayout.Button("Stop"))
+        {
+            _debugger.StopMovementUnit();
+        }
     }
 }

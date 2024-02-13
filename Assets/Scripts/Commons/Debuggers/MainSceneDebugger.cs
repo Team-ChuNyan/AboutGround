@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 
@@ -8,7 +9,14 @@ public class MainSceneDebugger : MonoBehaviour
     public Vector2Int EndPos;
 
     public MapGenerator MapGenerator;
+    public UnitController UnitController;
     public Pathfinding Pathfinding;
+
+    public string Name;
+    public RaceType Race;
+
+    public Unit Unit;
+    public Vector2Int Goal;
 
     private Stopwatch _sw;
 
@@ -20,6 +28,11 @@ public class MainSceneDebugger : MonoBehaviour
         _sw = new();
     }
 
+    private void Start()
+    {
+        Pathfinding = UnitController.Pathfinding;
+    }
+
     public void GenerateNewMap()
     {
         MapGenerator.GenerateNoiseMap(SeedData)
@@ -28,10 +41,25 @@ public class MainSceneDebugger : MonoBehaviour
             .PaintTileMap();
     }
 
+    public void CreatePlayerUnit()
+    {
+        UnitController.CreateNewPlayerUnit(RaceType.Human);
+    }
+
+    public void MoveUnit()
+    {
+        UnitController.MoveUnit(Unit, Goal);
+    }
+
+    public void StopMovementUnit()
+    {
+        UnitController.StopMovementUnit(Unit);
+    }
+
     public void FindPath()
     {
         _sw.Start();
-        Pathfinding.FindPath(StartPos, EndPos);
+        Pathfinding.ReceiveMovementPath(new List<PathNode>(),StartPos, EndPos);
         PrintStopWatch();
     }
 

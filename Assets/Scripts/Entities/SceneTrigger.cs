@@ -31,7 +31,7 @@ public class SceneTrigger : MonoBehaviour
         SeedMapData seed = new(100, 100, 9123);
 
         var inputController = gameObject.AddComponent<PlayerInputController>();
-        var pathfinding = gameObject.AddComponent<Pathfinding>();
+        var unitController = gameObject.AddComponent<UnitController>();
 
         var mapGenerator = Instantiate(Resources.Load<MapGenerator>("Prefabs/MapGenerator"));
         var GroundGiud = Instantiate(Resources.Load<TilePainter>("Prefabs/GroundGrid"));
@@ -44,12 +44,12 @@ public class SceneTrigger : MonoBehaviour
             .GeneratePathNodeMap()
             .PaintTileMap();
 
-        pathfinding.SetNodeMap(mapGenerator.PathNodeMap);
+        unitController.Pathfinding.SetNodeMap(mapGenerator.PathNodeMap);
 
         if (_debugger.TryGetComponent(out MainSceneDebugger debugger))
         {
             debugger.MapGenerator = mapGenerator;
-            debugger.Pathfinding = pathfinding;
+            debugger.UnitController = unitController;
         }
     }
 }
