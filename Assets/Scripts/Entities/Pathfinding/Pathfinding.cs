@@ -5,23 +5,20 @@ public class Pathfinding
 {
     private const int Move_STARIGHT_COST = 10;
     private const int Move_DIAGONAL_COST = 14;
-    [SerializeField] private int _weight;
+    private const int _weight = 1;
 
     private PathNode[,] _nodes;
-    private NodePriorityQueue _openList;
-    private HashSet<PathNode> _closeList;
+    private readonly NodePriorityQueue _openList;
+    private readonly HashSet<PathNode> _closeList;
     private PathNode _current;
 
     private Vector2Int _nodeMapSize;
     private Vector2Int _goal;
 
-    public List<Vector2Int> DebugList;
-
     public Pathfinding()
     {
-        DebugList = new(256);
         _openList = new NodePriorityQueue(1024);
-        _closeList = new HashSet<PathNode>(1024);
+        _closeList = new HashSet<PathNode>(16384);
     }
 
     public void SetNodeMap(PathNode[,] nodes)
@@ -30,7 +27,7 @@ public class Pathfinding
         _nodeMapSize = new(_nodes.GetLength(0), _nodes.GetLength(1));
     }
 
-    public void ReceiveMovementPath(List<PathNode> path,Vector2Int start, Vector2Int goal)
+    public void ReceiveMovementPath(List<PathNode> path, Vector2Int start, Vector2Int goal)
     {
         if (_nodes[goal.x, goal.y].IsBlocked
          || _nodes[start.x, start.y].IsBlocked)
@@ -38,21 +35,21 @@ public class Pathfinding
 
         FindPath(start, goal);
         ConnectMovementPath(_current, path);
+        ResetPathNodeData();
     }
 
     private void FindPath(Vector2Int start, Vector2Int goal)
     {
-        ResetPathNodeData();
         _goal = goal;
         _openList.Enqueue(_nodes[start.x, start.y]);
 
         while (_openList.Count > 0)
         {
             _current = _openList.Dequeue();
+            _closeList.Add(_current);
             if (_current.Pos != goal)
             {
                 AddAroundPathNode(_current);
-                _closeList.Add(_current);
             }
             else
             {
@@ -68,7 +65,7 @@ public class Pathfinding
             node.ResetPathfindingData();
         }
         _closeList.Clear();
-        DebugList.Clear();
+        _openList.Clear();
     }
 
     private void AddAroundPathNode(PathNode target)
@@ -150,7 +147,7 @@ public class Pathfinding
             node = node.BeforeNode;
             path.Add(node);
         }
-
+        path.RemoveAt(path.Count - 1);
         path.Reverse();
     }
 }

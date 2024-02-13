@@ -37,6 +37,10 @@ public class NodePriorityQueue // 최소값 이진 트리
 
     public void Clear()
     {
+        for (int i = 1; i < _count; i++)
+        {
+            _nodes[i].ResetPathfindingData();
+        }
         Array.Clear(_nodes, 1, _count);
         _count = 0;
     }
