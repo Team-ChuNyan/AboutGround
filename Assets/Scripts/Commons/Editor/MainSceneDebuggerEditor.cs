@@ -73,5 +73,9 @@ public class MainSceneDebuggerEditor : Editor
         {
             _debugger.MoveUnit();
         }
+        if (GUILayout.Button("Stop"))
+        {
+            _debugger.StopMovementUnit();
+        }
     }
 }

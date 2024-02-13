@@ -41,6 +41,11 @@ public class UnitController : MonoBehaviour
         move.Move();
     }
 
+    public void StopMovementUnit(Unit unit)
+    {
+        unit.StopMovement();
+    }
+
     private void AddPlayerUnitList(Unit unit)
     {
         PlayerUnit.Add(unit);

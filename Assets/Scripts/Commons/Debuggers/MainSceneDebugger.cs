@@ -51,6 +51,11 @@ public class MainSceneDebugger : MonoBehaviour
         UnitController.MoveUnit(Unit, Goal);
     }
 
+    public void StopMovementUnit()
+    {
+        UnitController.StopMovementUnit(Unit);
+    }
+
     public void FindPath()
     {
         _sw.Start();
