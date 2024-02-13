@@ -12,3 +12,19 @@ public enum GroundType
     Ground,
     RockField,
 }
+
+public enum BodyPartType
+{
+
+}
+
+public enum RaceType
+{
+    Human,
+    Animal
+}
+
+public enum WorkType
+{
+    Construction,
+}

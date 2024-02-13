@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pathfinding : MonoBehaviour
+public class Pathfinding
 {
     private const int Move_STARIGHT_COST = 10;
     private const int Move_DIAGONAL_COST = 14;
@@ -10,7 +10,6 @@ public class Pathfinding : MonoBehaviour
     private PathNode[,] _nodes;
     private NodePriorityQueue _openList;
     private HashSet<PathNode> _closeList;
-    private Stack<PathNode> _stack;
     private PathNode _current;
 
     private Vector2Int _nodeMapSize;
@@ -18,9 +17,8 @@ public class Pathfinding : MonoBehaviour
 
     public List<Vector2Int> DebugList;
 
-    public void Awake()
+    public Pathfinding()
     {
-        _stack = new(256);
         DebugList = new(256);
         _openList = new NodePriorityQueue(1024);
         _closeList = new HashSet<PathNode>(1024);
@@ -32,12 +30,18 @@ public class Pathfinding : MonoBehaviour
         _nodeMapSize = new(_nodes.GetLength(0), _nodes.GetLength(1));
     }
 
-    public Stack<PathNode> FindPath(Vector2Int start, Vector2Int goal)
+    public void ReceiveMovementPath(List<PathNode> path,Vector2Int start, Vector2Int goal)
     {
         if (_nodes[goal.x, goal.y].IsBlocked
          || _nodes[start.x, start.y].IsBlocked)
-            return _stack;
+            return;
 
+        FindPath(start, goal);
+        ConnectMovementPath(_current, path);
+    }
+
+    private void FindPath(Vector2Int start, Vector2Int goal)
+    {
         ResetPathNodeData();
         _goal = goal;
         _openList.Enqueue(_nodes[start.x, start.y]);
@@ -45,17 +49,16 @@ public class Pathfinding : MonoBehaviour
         while (_openList.Count > 0)
         {
             _current = _openList.Dequeue();
-            if (_current.Pos == goal)
+            if (_current.Pos != goal)
             {
-                ConnectPathNode(_current);
-                GizmoTest();
+                AddAroundPathNode(_current);
+                _closeList.Add(_current);
+            }
+            else
+            {
                 break;
             }
-            AddAroundPathNode(_current);
-            _closeList.Add(_current);
         }
-
-        return _stack;
     }
 
     private void ResetPathNodeData()
@@ -65,7 +68,6 @@ public class Pathfinding : MonoBehaviour
             node.ResetPathfindingData();
         }
         _closeList.Clear();
-        _stack.Clear();
         DebugList.Clear();
     }
 
@@ -139,36 +141,16 @@ public class Pathfinding : MonoBehaviour
         return (disX + disY) << _weight;
     }
 
-    private void ConnectPathNode(PathNode node)
+    private void ConnectMovementPath(PathNode node, List<PathNode> path)
     {
-        _stack.Push(node);
+        path.Clear();
+        path.Add(node);
         while (node.BeforeNode != null)
         {
             node = node.BeforeNode;
-            _stack.Push(node);
+            path.Add(node);
         }
-    }
 
-    private void GizmoTest()
-    {
-        while (_stack.Count > 0)
-        {
-            var asdf = _stack.Pop();
-            DebugList.Add(asdf.Pos);
-        }
-    }
-
-    private void OnDrawGizmos()
-    {
-        if (DebugList.Count == 0)
-        {
-            return;
-        }
-        for (int i = 0; i < DebugList.Count - 1; i++)
-        {
-            Vector3 from = new Vector3(DebugList[i].x + 0.5f, DebugList[i].y + 0.5f);
-            Vector3 to = new Vector3(DebugList[i + 1].x + 0.5f, DebugList[i + 1].y + 0.5f);
-            Gizmos.DrawLine(from, to);
-        }
+        path.Reverse();
     }
 }
