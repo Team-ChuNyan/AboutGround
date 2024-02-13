@@ -41,6 +41,7 @@ public class UnitController : MonoBehaviour
         move.Move();
     }
 
+    private void AddPlayerUnitList(Unit unit)
     {
         PlayerUnit.Add(unit);
         if (unit is IWorkable workable)

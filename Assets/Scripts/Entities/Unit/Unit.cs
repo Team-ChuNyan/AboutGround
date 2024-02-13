@@ -33,7 +33,7 @@ public abstract class Unit : MonoBehaviour, IMovable
             Vector3 targetPos = new(_movementPath[i].Pos.x, _movementPath[i].Pos.y, 0);
             while (transform.position != targetPos)
             {
-                var movePos = Time.deltaTime * UnitData.MoveSpeed * 5;
+                var movePos = Time.deltaTime * UnitData.MoveSpeed * 10;
                 transform.position = Vector3.MoveTowards(transform.position, targetPos, movePos);
                 yield return null;
             }
