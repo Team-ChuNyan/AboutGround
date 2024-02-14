@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class MapTextureGenerator
 {
-    private GeneratorGroundType[] _regions;
+    private GeneratorGroundData[] _regions;
     private Color32[] _colorMap;
     private Texture2D _texture;
 
-    public MapTextureGenerator(GeneratorGroundType[] regions)
+    public MapTextureGenerator(GeneratorGroundData[] regions)
     {
         _regions = regions;
 
