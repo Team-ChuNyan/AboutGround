@@ -17,11 +17,9 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private NoiseData _noiseData;
     [SerializeField] private GeneratorGroundType[] _groundType;
     [SerializeField] private bool _isColorMap;
-    [SerializeField] private bool _autoUpdate;
 
     public SeedMapData SeedMapInfo { get { return _seedMap; } set { _seedMap = value; } }
     public PathNode[,] PathNodeMap { get { return _pathNodeMap; } }
-    public bool AutoUpdate { get { return _autoUpdate; } }
 
     public void Awake()
     {
