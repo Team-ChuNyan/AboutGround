@@ -2,12 +2,12 @@ using System.Collections.Generic;
 
 public static class StringManager
 {
-    private static Dictionary<StringType, string> _string = new()
+    private static Dictionary<TextType, string> _string = new()
     {
-        { StringType.Example, "굿이다"}
+        { TextType.Example, "굿이다"}
     };
 
-    public static string GetString(StringType type)
+    public static string GetString(TextType type)
     {
         return _string[type];
     }

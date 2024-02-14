@@ -6,7 +6,7 @@ public class PathNodeMapGenerator
     private float _blockMinValue;
     private float _blockMaxValue;
 
-    public PathNode[,] GenerateNodePaths(SeedMapData seedMap, List<float> noiseMap, GeneratorGroundType[] type)
+    public PathNode[,] GenerateNodePaths(SeedMapData seedMap, List<float> noiseMap, GeneratorGroundData[] type)
     {
         PathNode[,] _pathNodes = InitializePathNodes(seedMap.Width, seedMap.Height);
         FindRockField(type);
@@ -43,7 +43,7 @@ public class PathNodeMapGenerator
         return pathNodes;
     }
 
-    private void FindRockField(GeneratorGroundType[] type)
+    private void FindRockField(GeneratorGroundData[] type)
     {
         for (int i = 0; i < type.Length; i++)
         {

@@ -10,7 +10,7 @@ public class TilePainter : MonoBehaviour
     [SerializeField] private TileBase _ground;
     [SerializeField] private TileBase _rockField;
 
-    public void PaintGroundGrid(SeedMapData data, List<float> noise, GeneratorGroundType[] type)
+    public void PaintGroundGrid(SeedMapData data, List<float> noise, GeneratorGroundData[] type)
     {
         _tileMap.ClearAllTiles();
         var mapSize = data.GetMapSize()-1;

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [System.Serializable]
-public struct GeneratorGroundType
+public struct GeneratorGroundData
 {
     public GroundType Type;
     public float height;

@@ -15,7 +15,7 @@ public class MapGenerator : MonoBehaviour
     [Header("생성 방식")]
     [SerializeField] private SeedMapData _seedMap;
     [SerializeField] private NoiseData _noiseData;
-    [SerializeField] private GeneratorGroundType[] _groundType;
+    [SerializeField] private GeneratorGroundData[] _groundType;
     [SerializeField] private bool _isColorMap;
 
     public SeedMapData SeedMapInfo { get { return _seedMap; } set { _seedMap = value; } }
