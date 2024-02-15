@@ -28,10 +28,13 @@ public class SceneTrigger : MonoBehaviour
 
     private void LoadMainScene()
     {
+        new DataManager().InitializeItemData();
+
         SeedMapData seed = new(100, 100, 9123);
 
         var inputController = gameObject.AddComponent<PlayerInputController>();
         var unitController = gameObject.AddComponent<UnitController>();
+        var itemController = gameObject.AddComponent<ItemController>();
 
         var mapGenerator = Instantiate(Resources.Load<MapGenerator>("Prefabs/MapGenerator"));
         var GroundGiud = Instantiate(Resources.Load<TilePainter>("Prefabs/GroundGrid"));
