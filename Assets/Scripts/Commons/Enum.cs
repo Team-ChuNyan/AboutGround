@@ -28,3 +28,40 @@ public enum WorkType
 {
     Construction,
 }
+
+public enum ItemType
+{
+    None,
+    Shirt = 100000,
+    Apple = 200000,
+    Wood = 300000
+}
+
+public enum EquipType
+{
+    Head,
+    Top,
+    Pant,
+    Shoes,
+    LeftHand,
+    RightHand,
+    TwoHand,
+    Accessory
+}
+
+public enum GradeType
+{
+    Common,
+    Magic,
+    Rare,
+    Unique,
+    Epic,
+}
+
+public enum ItemCategory 
+{ 
+    Equipment   = 100000,
+    Consumable  = 200000,
+    Resource    = 300000
+}
+
