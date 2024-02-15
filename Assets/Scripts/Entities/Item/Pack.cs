@@ -2,15 +2,15 @@ using UnityEngine;
 
 public class Pack : MonoBehaviour, IPickupable, IAttackable
 {
-    private Item _item;
+    private IPackable _item;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
 
-    private bool _isFull;
-    public bool IsFull { get { return _isFull;} }
+    public IPackable Item { get { return _item; } }
+    public SpriteRenderer SpriteRenderer { get { return _spriteRenderer; } }
 
-    public void SetItem(Item newItem)
+    public void SetItem(IPackable newItem)
     {
         _item = newItem;
-        _isFull = _item.Stack >= _item.ItemData.MaxStack;
     }
 
     public void StackItem(Pack target)

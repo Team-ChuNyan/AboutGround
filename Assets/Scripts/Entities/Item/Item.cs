@@ -1,4 +1,4 @@
-public abstract class Item
+public abstract class Item : IPackable
 {
     private ItemData _itemData;
     private int _stack;
@@ -30,5 +30,14 @@ public abstract class Item
     public float GetDurabilityPercent()
     {
         return _durability / _itemData.MaxDurability * 100;
+    }
+
+    public void PassItem()
+    {
+    }
+
+    public bool IsFullPack()
+    {
+        return false;
     }
 }
