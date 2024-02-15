@@ -32,9 +32,9 @@ public enum WorkType
 public enum ItemType
 {
     None,
-    Shirt,
-    Apple,
-    Wood
+    Shirt = 100000,
+    Apple = 200000,
+    Wood = 300000
 }
 
 public enum EquipType
@@ -57,3 +57,11 @@ public enum GradeType
     Unique,
     Epic,
 }
+
+public enum ItemCategory 
+{ 
+    Equipment   = 100000,
+    Consumable  = 200000,
+    Resource    = 300000
+}
+
