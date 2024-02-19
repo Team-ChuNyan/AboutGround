@@ -16,8 +16,10 @@ public class WorkDictionary
     {
         int enumCount = (int)WorkType.Construction + 1;
 
+        _storage = new();
         for (int i = 0; i < enumCount; i++) 
         {
+            _storage[(WorkType)i] = new();
             for (int j = 0; j < PRIORITY_COUNT; j++) 
             {
                 _storage.Add((WorkType)i, j, new List<Work>(8));

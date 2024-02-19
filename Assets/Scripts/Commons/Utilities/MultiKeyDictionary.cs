@@ -4,6 +4,11 @@ public class MultiKeyDictionary<TKey1, TKey2, Value>
 {
     private Dictionary<TKey1, Dictionary<TKey2, Value>> _dictionary;
 
+    public MultiKeyDictionary() 
+    {
+        _dictionary = new();
+    }
+
     public Value this[TKey1 key1, TKey2 key2]
     {
         get
