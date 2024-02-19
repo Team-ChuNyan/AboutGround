@@ -1,17 +1,80 @@
-using UnityEngine;
+using System;
 
 public class Work
 {
-    private Vector2Int _pos; 
-    private WorkType _type;
-    private int _workload;
+    private WorkType _workType;
+    private int _priority;
+    private float _maxWorkload;
+    private float _workload;
+    private bool _isAssignWorker;
 
-    public Vector2Int Pos { get { return _pos; } set { _pos = value; } }
+    public WorkType WorkType { get { return _workType; } }
+    public int Priority { get { return _priority; } }
+    public bool IsAssignWorker { get { return _isAssignWorker; } }
 
-    public Work(Vector2Int pos, WorkType type, int workload)
+    public event Action OnStarted;
+    public event Action OnProcessed;
+    public event Action OnCompleted;
+
+    public Work SetWorkData(WorkType type, int maxWorkload)
     {
-        Pos = pos;
-        _type = type;
-        _workload = workload;
+        _workType = type;
+        _maxWorkload = maxWorkload;
+        _workload = 0;
+
+        return this;
+    }
+
+    public Work SetPriority(int value = 3)
+    {
+        _priority = value;
+
+        return this;
+    }
+
+    public Work SetAssignWorker(bool isAssign)
+    {
+        _isAssignWorker = isAssign;
+
+        return this;
+    }
+
+    public void OnProcess(IWorkable worker)
+    {
+        // TODO : 작업자의 정보를 받아 작업도를 증가시킴
+        if (_workload < _maxWorkload)
+        {
+            OnProcessed?.Invoke();
+        }
+        else
+        {
+            OnCompleted?.Invoke();
+        }
+    }
+
+    public void RegisterProcessed(Action onProcessed)
+    {
+        OnProcessed += onProcessed;
+    }
+
+    public void RegisterCompleted(Action onCompleted)
+    {
+        OnCompleted += onCompleted;
+    }
+
+    public void UnregisterProcessed(Action onProcessed)
+    {
+        OnProcessed -= onProcessed;
+    }
+
+    public void UnregisterCompleted(Action onCompleted)
+    {
+        OnCompleted -= onCompleted;
+    }
+
+    public void ResetRegister()
+    {
+        OnProcessed = null;
+        OnCompleted = null;
     }
 }

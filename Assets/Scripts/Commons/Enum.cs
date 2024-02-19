@@ -26,7 +26,15 @@ public enum RaceType
 
 public enum WorkType
 {
-    Construction,
+    Construct,
+    Cook,
+    Plant,
+    Animal,
+    Medical,
+    Social,
+    Research,
+    Carry,
+    Clean
 }
 
 public enum ItemType

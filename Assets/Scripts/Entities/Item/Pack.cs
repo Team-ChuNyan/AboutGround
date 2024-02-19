@@ -18,14 +18,32 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable
 
     }
 
-
-    public void PickUp()
+    public void PickUp(IWorkable worker)
     {
 
     }
 
-    public void PutDown()
+    public void PutDown(IWorkable worker)
     {
 
+    }
+
+    public Work CreateCarryWork(int amount)
+    {
+        Work work = new Work(); // TODO : 오브젝트 풀링
+        work.SetWorkData(WorkType.Carry, amount)
+            .SetPriority();
+
+        return work;
+    }
+
+    public Vector3 GetPosition()
+    {
+        return transform.position;
+    }
+
+    public Work CreateCarryWork()
+    {
+        throw new System.NotImplementedException();
     }
 }
