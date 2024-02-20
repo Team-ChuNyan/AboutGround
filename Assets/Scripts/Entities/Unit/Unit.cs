@@ -1,28 +1,36 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Unit : MonoBehaviour, IMovable
 {
+    private IMoveSystem _moveSystem;
+
     public UnitData UnitData;
     public Dictionary<BodyPartType, BodyPart> BodyParts;
 
     protected List<PathNode> _movementPath;
     protected Coroutine _moveCoroutine;
 
+    public event Action OnArrived;
+
     public virtual void Awake()
     {
         _movementPath = new List<PathNode>(64);
     }
 
-    public void Move()
+    public void Move(Vector2Int goal)
     {
+        Vector2Int currentPos = new((int)transform.position.x, (int)transform.position.y);
+        _moveSystem.UpdateMovementPath(_movementPath, currentPos, goal);
         _moveCoroutine = StartCoroutine(FollowPathNode());
     }
 
     public void StopMovement()
     {
         StopCoroutine(_moveCoroutine);
+        OnArrived = null;
         _movementPath.Clear();
     }
 
@@ -30,7 +38,7 @@ public abstract class Unit : MonoBehaviour, IMovable
     {
         for (int i = 0; i < _movementPath.Count; i++)
         {
-            Vector3 targetPos = new(_movementPath[i].Pos.x, _movementPath[i].Pos.y, 0);
+            Vector3 targetPos = Util.Vector2IntToVector3(_movementPath[i].Pos);
             while (transform.position != targetPos)
             {
                 var movePos = Time.deltaTime * UnitData.MoveSpeed * 10;
@@ -38,18 +46,23 @@ public abstract class Unit : MonoBehaviour, IMovable
                 yield return null;
             }
         }
-
         _movementPath.Clear();
+        OnArrived?.Invoke();
+        OnArrived = null;
     }
 
-    public Vector2Int GetCurrentPosition()
+    public void RegisterOnArrived(Action action)
     {
-        var vector3 = transform.position;
-        return new Vector2Int((int)vector3.x, (int)vector3.y);
+        OnArrived += action;
     }
 
-    public List<PathNode> GetMovementPath()
+    public void UnregisterOnArrived(Action action)
     {
-        return _movementPath;
+        OnArrived -= action;
+    }
+
+    public void SetMoveSystem(IMoveSystem sys)
+    {
+        _moveSystem = sys;
     }
 }

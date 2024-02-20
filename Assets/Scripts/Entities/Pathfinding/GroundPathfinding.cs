@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pathfinding
+public class GroundPathfinding : IMoveSystem
 {
     private const int Move_STARIGHT_COST = 10;
     private const int Move_DIAGONAL_COST = 14;
@@ -15,7 +15,7 @@ public class Pathfinding
     private Vector2Int _nodeMapSize;
     private Vector2Int _goal;
 
-    public Pathfinding()
+    public GroundPathfinding()
     {
         _openList = new NodePriorityQueue(1024);
         _closeList = new HashSet<PathNode>(16384);
@@ -27,7 +27,7 @@ public class Pathfinding
         _nodeMapSize = new(_nodes.GetLength(0), _nodes.GetLength(1));
     }
 
-    public void ReceiveMovementPath(List<PathNode> path, Vector2Int start, Vector2Int goal)
+    public void UpdateMovementPath(List<PathNode> path, Vector2Int start, Vector2Int goal)
     {
         if (_nodes[goal.x, goal.y].IsBlocked
          || _nodes[start.x, start.y].IsBlocked)

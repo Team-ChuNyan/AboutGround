@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
@@ -10,12 +11,12 @@ public class MainSceneDebugger : MonoBehaviour
 
     public MapGenerator MapGenerator;
     public UnitController UnitController;
-    public Pathfinding Pathfinding;
+    public GroundPathfinding Pathfinding;
 
     public string Name;
     public RaceType Race;
 
-    public Unit Unit;
+    public IMovable MovableObject;
     public Vector2Int Goal;
 
     private Stopwatch _sw;
@@ -26,11 +27,6 @@ public class MainSceneDebugger : MonoBehaviour
         StartPos = new Vector2Int();
         EndPos = new Vector2Int();
         _sw = new();
-    }
-
-    private void Start()
-    {
-        Pathfinding = UnitController.Pathfinding;
     }
 
     public void GenerateNewMap()
@@ -48,25 +44,13 @@ public class MainSceneDebugger : MonoBehaviour
 
     public void MoveUnit()
     {
-        UnitController.MoveUnit(Unit, Goal);
+        Action action = () => { UnityEngine.Debug.Log("도착"); };
+        MovableObject.RegisterOnArrived(action);
+        MovableObject.Move(Goal);
     }
 
     public void StopMovementUnit()
     {
-        UnitController.StopMovementUnit(Unit);
-    }
-
-    public void FindPath()
-    {
-        _sw.Start();
-        Pathfinding.ReceiveMovementPath(new List<PathNode>(),StartPos, EndPos);
-        PrintStopWatch();
-    }
-
-    private void PrintStopWatch()
-    {
-        _sw.Stop();
-        UnityEngine.Debug.Log(_sw.ElapsedMilliseconds + "ms");
-        _sw.Reset();
+        MovableObject.StopMovement();
     }
 }

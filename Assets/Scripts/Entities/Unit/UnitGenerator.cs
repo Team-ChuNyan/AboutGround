@@ -49,6 +49,12 @@ public class UnitGenerator : MonoBehaviour
         return this;
     }
 
+    public UnitGenerator SetMoveSystem(IMoveSystem sys)
+    {
+        _newUnit.SetMoveSystem(sys);
+        return this;
+    }
+
     public Unit GetNewUnit()
     {
         var temp = _newUnit;

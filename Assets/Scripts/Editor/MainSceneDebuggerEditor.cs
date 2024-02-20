@@ -15,8 +15,6 @@ public class MainSceneDebuggerEditor : Editor
     {
         DrawMapGenerator();
         GUILayout.Space(10);
-        DrawPathfinding();
-        GUILayout.Space(10);
         DrawCreatePlayerUnit();
         GUILayout.Space(10);
         DrawMoveUnit();
@@ -38,21 +36,6 @@ public class MainSceneDebuggerEditor : Editor
         EditorGUI.indentLevel--;
     }
 
-    private void DrawPathfinding()
-    {
-        GUILayout.Label("Pathfinding", EditorStyles.boldLabel);
-        EditorGUI.indentLevel++;
-
-        _debugger.StartPos= EditorGUILayout.Vector2IntField("StartPos", _debugger.StartPos);
-        _debugger.EndPos = EditorGUILayout.Vector2IntField("EndPos", _debugger.EndPos);
-        if (GUILayout.Button("Move"))
-        {
-            _debugger.FindPath();
-        }
-
-        EditorGUI.indentLevel--;
-    }
-
     private void DrawCreatePlayerUnit()
     {
         GUILayout.Label("CreatePlayerUnit", EditorStyles.boldLabel);
@@ -67,7 +50,7 @@ public class MainSceneDebuggerEditor : Editor
     private void DrawMoveUnit()
     {
         GUILayout.Label("UnitMove", EditorStyles.boldLabel);
-        _debugger.Unit = (Unit)EditorGUILayout.ObjectField("Unit", _debugger.Unit,typeof(Unit),true);
+        _debugger.MovableObject = (IMovable)EditorGUILayout.ObjectField("Unit", _debugger.MovableObject as MonoBehaviour,typeof(MonoBehaviour),true);
         _debugger.Goal = EditorGUILayout.Vector2IntField("EndPos", _debugger.Goal);
         if (GUILayout.Button("Move"))
         {

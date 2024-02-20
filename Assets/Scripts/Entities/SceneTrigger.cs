@@ -47,7 +47,9 @@ public class SceneTrigger : MonoBehaviour
             .GeneratePathNodeMap()
             .PaintTileMap();
 
-        unitController.Pathfinding.SetNodeMap(mapGenerator.PathNodeMap);
+        var groundPathfinder = new GroundPathfinding();
+        groundPathfinder.SetNodeMap(mapGenerator.PathNodeMap);
+        unitController.SetGroundPathFinding(groundPathfinder);
 
         if (_debugger.TryGetComponent(out MainSceneDebugger debugger))
         {

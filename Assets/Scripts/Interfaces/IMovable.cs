@@ -1,10 +1,12 @@
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public interface IMovable
 {
-    public void Move();
+    public event Action OnArrived;
+
+    public void Move(Vector2Int pos);
     public void StopMovement();
-    public Vector2Int GetCurrentPosition();
-    public List<PathNode> GetMovementPath();
+    public void RegisterOnArrived(Action action);
+    public void UnregisterOnArrived(Action action);
 }
