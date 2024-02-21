@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Pack : MonoBehaviour, IPickupable, IAttackable
@@ -18,32 +19,24 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable
 
     }
 
-    public void PickUp(IWorkable worker)
+    public void PickUp(int count)
     {
 
     }
 
-    public void PutDown(IWorkable worker)
+    public void PutDown(int count)
     {
 
     }
 
-    public Work CreateCarryWork(int amount)
+    public void CreateCarryWork(int amount = int.MaxValue)
     {
-        Work work = new Work(); // TODO : 오브젝트 풀링
-        work.SetWorkData(WorkType.Carry, amount)
-            .SetPriority();
+        Vector2Int workPos = Util.Vector3ToVector2Int(transform.position);
+        Work work = WorkGenerator.Instance.CreateNewWork(WorkType.Carry, amount)
+                    .SetWorkPos(workPos)
+                    .GetWork();
 
-        return work;
-    }
-
-    public Vector3 GetPosition()
-    {
-        return transform.position;
-    }
-
-    public Work CreateCarryWork()
-    {
-        throw new System.NotImplementedException();
+        Action action = () => { PickUp(amount); };
+        work.RegisterOnStarted(action);
     }
 }

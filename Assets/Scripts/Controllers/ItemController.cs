@@ -11,9 +11,13 @@ public class ItemController : MonoBehaviour
     private void Awake()
     {
         _generator = new ItemGenerator();
-        _packGenerator = gameObject.AddComponent<PackGenerator>();
         _items = new List<Item>();
         _packs = new List<Pack>();
+    }
+
+    public void Initialize(PackGenerator packGenerator)
+    {
+        _packGenerator = packGenerator;
     }
 
     public Item CreateNewItem(ItemType type, int stack = 1, int durability = int.MaxValue)

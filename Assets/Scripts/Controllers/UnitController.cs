@@ -5,6 +5,7 @@ public class UnitController : MonoBehaviour
 {
     private IMoveSystem _groundPathfinding;
     private UnitGenerator _unitGenerator;
+    private WorkPlan _workPlan;
     public List<Unit> PlayerUnit;
     public List<Unit> NpcUnit;
     public List<IWorkable> WorkablePlayerUnit;
@@ -15,6 +16,11 @@ public class UnitController : MonoBehaviour
         PlayerUnit = new List<Unit>(8);
         NpcUnit = new List<Unit>(16);
         WorkablePlayerUnit = new List<IWorkable>(8);
+    }
+
+    public void Initialize(WorkPlan workPlan)
+    {
+        _workPlan = workPlan;
     }
 
     public Unit CreateNewPlayerUnit(RaceType race, string name = null)
@@ -29,13 +35,13 @@ public class UnitController : MonoBehaviour
         return unit;
     }
 
-
     private void AddPlayerUnitList(Unit unit)
     {
         PlayerUnit.Add(unit);
         if (unit is IWorkable workable)
         {
             WorkablePlayerUnit.Add(workable);
+            _workPlan.AddWaitWorker(workable);
         }
     }
 
@@ -52,5 +58,10 @@ public class UnitController : MonoBehaviour
     public void SetGroundPathFinding(GroundPathfinding groundPathfinding)
     {
         _groundPathfinding = groundPathfinding;
+    }
+
+    public void SetWorkPlan(WorkPlan plan)
+    {
+        _workPlan = plan;
     }
 }

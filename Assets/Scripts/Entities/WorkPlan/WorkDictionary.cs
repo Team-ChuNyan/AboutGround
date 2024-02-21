@@ -76,7 +76,6 @@ public class WorkDictionary
                     if (workList[j].IsAssignWorker == true)
                         continue;
 
-                    workList[j].SetAssignWorker(true);
                     work = workList[j];
                     return true;
                 }
