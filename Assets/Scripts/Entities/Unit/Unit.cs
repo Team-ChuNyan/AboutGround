@@ -7,13 +7,16 @@ public abstract class Unit : MonoBehaviour, IMovable
 {
     private IMoveSystem _moveSystem;
 
-    public UnitData UnitData;
-    public Dictionary<BodyPartType, BodyPart> BodyParts;
+    protected UnitData _unitData;
+    protected Dictionary<BodyPartType, BodyPart> _bodyParts;
 
     protected List<PathNode> _movementPath;
     protected Coroutine _moveCoroutine;
 
     public event Action OnArrived;
+
+    public UnitData UnitData { get { return _unitData; } set { _unitData = value; } }
+    public Dictionary<BodyPartType, BodyPart> BodyParts { get { return _bodyParts; } set { _bodyParts = value; } }
 
     public virtual void Awake()
     {

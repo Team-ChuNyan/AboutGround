@@ -26,13 +26,15 @@ public class UnitGenerator : MonoBehaviour
             case RaceType.Human:
                 var newobj = Instantiate(_unitPrefab);
                 _newUnit = newobj.AddComponent<Human>();
-                SetDefaultHumanUnitData();
+                _newUnit.UnitData.SetRace(type);
                 break;
             case RaceType.Animal:
                 break;
             default:
                 break;
         }
+
+        SetDefaultUnitData();
         _newUnit.gameObject.name = "Unit";
     }
 
@@ -62,10 +64,9 @@ public class UnitGenerator : MonoBehaviour
         return temp;
     }
 
-    private void SetDefaultHumanUnitData()
+    private void SetDefaultUnitData()
     {
-        _newUnit.UnitData.SetDesc("asdddd");
-        _newUnit.UnitData.SetMoveSpeed(1.0f);
+        _newUnit.UnitData = DataManager.Instance.GetUnitData(_newUnit.UnitData.Race);
     }
 
     private string GetRandomName()
