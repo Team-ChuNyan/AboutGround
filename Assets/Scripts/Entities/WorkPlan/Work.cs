@@ -10,12 +10,12 @@ public class Work
     private int _priority;
     private float _maxWorkload;
     private float _workload;
-    private bool _isAssignWorker;
+    private IWorkable _assignWorker;
 
     public WorkType WorkType { get { return _workType; } set { _workType = value; } }
     public Vector2Int WorkPos { get { return _workPos; } set { _workPos = value; } }
     public int Priority { get { return _priority; } set { _priority = value; } }
-    public bool IsAssignWorker { get { return _isAssignWorker; } set { _isAssignWorker = value; } }
+    public IWorkable AssignWorker { get { return _assignWorker; } set { _assignWorker = value; } }
 
     public event Action OnStarted;
     public event Action OnProcessed;
@@ -32,13 +32,15 @@ public class Work
         _priority = 3;
         _maxWorkload = maxWorkload;
         _workload = 0;
-        _isAssignWorker = false;
+        _assignWorker = null;
         ResetRegister();
     }
 
-    public void OnProcess(IWorkable worker)
+    public void OnProcess()
     {
         // TODO : 작업자의 정보를 받아 작업도를 증가시킴
+        OnStarted?.Invoke();
+
         if (_workload < _maxWorkload)
         {
             OnProcessed?.Invoke();
@@ -47,6 +49,11 @@ public class Work
         {
             OnCompleted?.Invoke();
         }
+    }
+
+    public void AddWorkPlan()
+    {
+        _workplan.AddObject(this);
     }
 
     public void RegisterOnStarted(Action onStarted)

@@ -18,7 +18,7 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
 
     public PackGenerator CreateNewItemPack(IPackable item)
     {
-        TakeOutItemPackPooling(item);
+        ObjectPooling(item);
         ChangeItemPackSprite();
 
         return this;
@@ -35,7 +35,7 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
         return _newPack;
     }
 
-    private void TakeOutItemPackPooling(IPackable item)
+    private void ObjectPooling(IPackable item)
     {
         if (!_inactivePacks.TryDequeue(out _newPack))
         {
@@ -49,5 +49,11 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
     {
         // TODO 이미지 변경
         _newPack.SpriteRenderer.color = Color.black;
+    }
+
+    public void DestoryPack(Pack pack)
+    {
+        _inactivePacks.Enqueue(pack);
+        pack.gameObject.SetActive(false);
     }
 }

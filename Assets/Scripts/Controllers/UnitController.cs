@@ -4,7 +4,6 @@ using UnityEngine;
 public class UnitController : MonoBehaviour
 {
     private IMoveSystem _groundPathfinding;
-    private UnitGenerator _unitGenerator;
     private WorkPlan _workPlan;
     public List<Unit> PlayerUnit;
     public List<Unit> NpcUnit;
@@ -12,7 +11,6 @@ public class UnitController : MonoBehaviour
 
     private void Awake()
     {
-        _unitGenerator = gameObject.AddComponent<UnitGenerator>();
         PlayerUnit = new List<Unit>(8);
         NpcUnit = new List<Unit>(16);
         WorkablePlayerUnit = new List<IWorkable>(8);
@@ -25,7 +23,7 @@ public class UnitController : MonoBehaviour
 
     public Unit CreateNewPlayerUnit(RaceType race, string name = null)
     {
-        var unit = _unitGenerator
+        var unit = UnitGenerator.Instance
             .SetNewUnit(race)
             .SetName(name)
             .SetMoveSystem(_groundPathfinding)

@@ -30,19 +30,21 @@ public class SceneTrigger : MonoBehaviour
     {
         // 매니저 생성
         new DataManager().InitializeItemData();
+        new ItemGenerator();
+        var packGenerator = gameObject.AddComponent<PackGenerator>();
+        var unitGenerator = gameObject.AddComponent<UnitGenerator>();
+        var workGenerator = new WorkGenerator();
 
         // 클래스 생성
         var inputController = gameObject.AddComponent<PlayerInputController>();
         var unitController = gameObject.AddComponent<UnitController>();
         var itemController = gameObject.AddComponent<ItemController>();
-        var packGenerator = gameObject.AddComponent<PackGenerator>();
 
         var mapGenerator = Instantiate(Resources.Load<MapGenerator>("Prefabs/MapGenerator"));
         mapGenerator.name = "MapGenerator";
         var GroundGiud = Instantiate(Resources.Load<TilePainter>("Prefabs/GroundGrid"));
         GroundGiud.name = "GrundGrid";
 
-        var workGenerator = new WorkGenerator();
         var workplan = new WorkPlan();
         var groundPathfinder = new GroundPathfinding();
 
@@ -58,7 +60,6 @@ public class SceneTrigger : MonoBehaviour
         unitController.Initialize(workplan);
         workGenerator.Initialize(workplan);
 
-        itemController.Initialize(packGenerator);
         groundPathfinder.SetNodeMap(mapGenerator.PathNodeMap);
 
         // 디버거

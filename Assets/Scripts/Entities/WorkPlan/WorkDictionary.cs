@@ -73,7 +73,7 @@ public class WorkDictionary
                 var workList = _storage[type, i];
                 for (int j = 0; j < workList.Count; j++)
                 {
-                    if (workList[j].IsAssignWorker == true)
+                    if (workList[j].AssignWorker != null)
                         continue;
 
                     work = workList[j];

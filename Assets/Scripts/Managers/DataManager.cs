@@ -48,7 +48,8 @@ public class DataManager : Singleton<DataManager>
         };
 
         ItemData apple = new();
-        apple.MaxStack = 99;
+        apple.Type = ItemType.Apple;
+        apple.MaxAmount = 99;
         apple.IsStacked = true;
         apple.Description = "Good Apple";
         apple.Weight = 0.1f;

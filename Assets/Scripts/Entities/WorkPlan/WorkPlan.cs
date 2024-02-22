@@ -36,7 +36,7 @@ public class WorkPlan : IObjectStorage<Work>
         if (_workDictionary.TryGetWork(WorkType.Carry, out Work work) == false)
             return;
 
-        work.IsAssignWorker = true;
+        work.AssignWorker = worker;
         worker.Work(work);
     }
 

@@ -34,6 +34,12 @@ public class WorkGenerator : Singleton<WorkGenerator>
         return this;
     }
 
+    public WorkGenerator AddWorkPlan()
+    {
+        _newWork.AddWorkPlan();
+        return this;
+    }
+
     public Work GetWork()
     {
         return _newWork;

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 
@@ -18,6 +17,11 @@ public class MainSceneDebugger : MonoBehaviour
 
     public IMovable MovableObject;
     public Vector2Int Goal;
+
+    public ItemType ItemType;
+    public int Amount;
+    public float Durability;
+    public Vector2Int CreatePackPosition;
 
     private Stopwatch _sw;
 
@@ -52,5 +56,14 @@ public class MainSceneDebugger : MonoBehaviour
     public void StopMovementUnit()
     {
         MovableObject.StopMovement();
+    }
+
+    public void CreateItemPack()
+    {
+        var newItem = ItemGenerator.Instance.SetNewItem(ItemType)
+                                            .SetPersonalData(Amount,Durability)
+                                            .GetNewItem();
+        PackGenerator.Instance.CreateNewItemPack(newItem)
+                              .SetPosition(CreatePackPosition);
     }
 }

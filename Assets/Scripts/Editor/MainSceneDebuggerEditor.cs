@@ -18,6 +18,8 @@ public class MainSceneDebuggerEditor : Editor
         DrawCreatePlayerUnit();
         GUILayout.Space(10);
         DrawMoveUnit();
+        GUILayout.Space(10);
+        DrawCreatePack();
     }
 
     private void DrawMapGenerator()
@@ -59,6 +61,20 @@ public class MainSceneDebuggerEditor : Editor
         if (GUILayout.Button("Stop"))
         {
             _debugger.StopMovementUnit();
+        }
+    }
+
+    private void DrawCreatePack()
+    {
+        GUILayout.Label("CreatePack", EditorStyles.boldLabel);
+        _debugger.ItemType = (ItemType)EditorGUILayout.EnumPopup("ItemType", _debugger.ItemType);
+        _debugger.CreatePackPosition = EditorGUILayout.Vector2IntField("CreatePos", _debugger.CreatePackPosition);
+        _debugger.Amount = EditorGUILayout.IntField("Amount", _debugger.Amount);
+        _debugger.Durability = EditorGUILayout.FloatField("Durability", _debugger.Durability);
+
+        if (GUILayout.Button("Create"))
+        {
+            _debugger.CreateItemPack();
         }
     }
 }

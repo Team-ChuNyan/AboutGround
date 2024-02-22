@@ -1,12 +1,19 @@
+using UnityEngine;
+
 public abstract class Item : IPackable
 {
     private ItemData _itemData;
-    private int _stack;
+    private int _amount;
     private float _durability;
+    private bool _isActivity;
 
     public ItemData ItemData { get { return _itemData; } set { _itemData = value; } }
-    public int Stack { get { return _stack; } set { _stack = value; } }
+    public bool IsStack => ItemData.IsStacked;
+    public int MaxAmount => _itemData.MaxAmount;
+    public int Amount { get { return _amount; } set { _amount = value; } }
     public float Durability { get { return _durability; } set { _durability = value; } }
+    public bool IsFull { get { return _amount >= ItemData.MaxAmount; } }
+    public bool IsActivity { get { return _isActivity; } set { _isActivity = value; } }
 
     public Item SetNewItemData(ItemData data)
     {
@@ -15,9 +22,9 @@ public abstract class Item : IPackable
         return this;
     }
 
-    public Item SetStack(int stack)
+    public Item SetAmount(int amount)
     {
-        _stack = stack;
+        _amount = amount;
         return this;
     }
 
@@ -32,12 +39,42 @@ public abstract class Item : IPackable
         return _durability / _itemData.MaxDurability * 100;
     }
 
-    public void PassItem()
+    public void StackItem(IPackable packable)
     {
+        if (packable is not Item item
+         || _itemData.Type != item.ItemData.Type
+         || _amount >= item.ItemData.MaxAmount)
+            return;
+
+        int allAmount = _amount + item.Amount;
+        if (allAmount <= ItemData.MaxAmount)
+        {
+            _amount = allAmount;
+            item.Amount = 0;
+            return;
+        }
+        else
+        {
+            _amount = _itemData.MaxAmount;
+            item.Amount = allAmount - _amount;
+            return;
+        }
     }
 
-    public bool IsFullPack()
+    public void Pack(Vector2Int respawn)
     {
-        return false;
+        PackGenerator.Instance.CreateNewItemPack(this)
+                              .SetPosition(respawn);
+    }
+
+    public IPackable CopyPack()
+    {
+        return ItemGenerator.Instance.CopyItem(this);
+    }
+
+    public void Deactivate()
+    {
+        _isActivity = false;
+        ItemGenerator.Instance.DeactivateItem(this);
     }
 }

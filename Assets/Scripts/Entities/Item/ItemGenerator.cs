@@ -28,27 +28,26 @@ public class ItemGenerator : Singleton<ItemGenerator>
         }
 
         SetItemData(type);
+        _newItem.IsActivity = true;
         return this;
     }
 
     public Item CopyItem(Item item)
     {
         SetNewItem(item.ItemData.Type);
-        SetPersonalData(item.Stack, item.Durability);
+        SetPersonalData(item.Amount, item.Durability);
         return GetNewItem();
     }
 
     private void CreateConsumable(ItemType type)
     {
         var newConsumable = new Consumable();
-        newConsumable.ItemData.Type = type;
         _newItem = newConsumable;
     }
 
     private void CreateEquipment(ItemType type)
     {
         var newEquipment = new Equipment();
-        newEquipment.ItemData.Type = type;
         var data = DataManager.Instance.GetEquipmentData(type);
         newEquipment.SetEquipmentData(data);
 
@@ -58,7 +57,6 @@ public class ItemGenerator : Singleton<ItemGenerator>
     private void CreateResource(ItemType type)
     {
         var newResource = new Resource();
-        newResource.ItemData.Type = type;
         _newItem = newResource;
     }
 
@@ -69,8 +67,8 @@ public class ItemGenerator : Singleton<ItemGenerator>
 
     public ItemGenerator SetPersonalData(int stack, float currentDurability = float.MaxValue)
     {
-        _newItem.Stack = stack;
-        _newItem.Durability = currentDurability == int.MaxValue ? _newItem.ItemData.MaxStack : currentDurability;
+        _newItem.Amount = stack;
+        _newItem.Durability = currentDurability == int.MaxValue ? _newItem.ItemData.MaxAmount : currentDurability;
 
         return this;
     }
@@ -80,7 +78,7 @@ public class ItemGenerator : Singleton<ItemGenerator>
         return _newItem;
     }
 
-    public void RemoveItem(Item item)
+    public void DeactivateItem(Item item)
     {
         ItemCategory category = Util.SwitchItemTypeToItemCategory(item.ItemData.Type);
         _inactiveItem[category].Add(item);
