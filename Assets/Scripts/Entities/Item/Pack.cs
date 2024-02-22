@@ -1,9 +1,11 @@
+using System;
 using UnityEngine;
 
-public class Pack : MonoBehaviour, IPickupable, IAttackable
+public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage
 {
-    private IPackable _item;
     [SerializeField] private SpriteRenderer _spriteRenderer;
+
+    private IPackable _item;
 
     public IPackable Item { get { return _item; } }
     public SpriteRenderer SpriteRenderer { get { return _spriteRenderer; } }
@@ -13,19 +15,37 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable
         _item = newItem;
     }
 
-    public void StackItem(Pack target)
+    public void KeepItem(IPackable item)
     {
-
+        _item.StackItem(item);
     }
 
-
-    public void PickUp()
+    public void PickUp(IWorkable worker)
     {
+        var inven = worker.GetInventory();
 
+        inven.KeepItem(_item);
+        if (_item.Amount <= 0)
+        {
+            PackGenerator.Instance.DestoryPack(this);
+        }
     }
 
-    public void PutDown()
+    public void CreateCarryWork(int amount = int.MaxValue)
     {
+        Vector2Int workPos = Util.Vector3ToVector2Int(transform.position);
+        Work work = WorkGenerator.Instance.CreateNewWork(WorkType.Carry, amount)
+                    .SetWorkPos(workPos)
+                    .AddWorkPlan()
+                    .GetWork();
 
+        Action action = () => { PickUp(work.AssignWorker); };
+        work.RegisterOnStarted(action);
+    }
+
+    public void DestroyPack()
+    {
+        _item = null;
+        PackGenerator.Instance.DestoryPack(this);
     }
 }

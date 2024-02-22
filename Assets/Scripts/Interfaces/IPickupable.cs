@@ -1,6 +1,6 @@
-internal interface IPickupable
+public interface IPickupable
 {
-    public void PickUp();
-    public void PutDown();
+    public void CreateCarryWork(int amount);
+    public void PickUp(IWorkable worker);
 }
  

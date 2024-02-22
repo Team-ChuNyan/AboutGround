@@ -15,11 +15,11 @@ public class MainSceneDebuggerEditor : Editor
     {
         DrawMapGenerator();
         GUILayout.Space(10);
-        DrawPathfinding();
-        GUILayout.Space(10);
         DrawCreatePlayerUnit();
         GUILayout.Space(10);
         DrawMoveUnit();
+        GUILayout.Space(10);
+        DrawCreatePack();
     }
 
     private void DrawMapGenerator()
@@ -33,21 +33,6 @@ public class MainSceneDebuggerEditor : Editor
         if (GUILayout.Button("Map Generate"))
         {
             _debugger.GenerateNewMap();
-        }
-
-        EditorGUI.indentLevel--;
-    }
-
-    private void DrawPathfinding()
-    {
-        GUILayout.Label("Pathfinding", EditorStyles.boldLabel);
-        EditorGUI.indentLevel++;
-
-        _debugger.StartPos= EditorGUILayout.Vector2IntField("StartPos", _debugger.StartPos);
-        _debugger.EndPos = EditorGUILayout.Vector2IntField("EndPos", _debugger.EndPos);
-        if (GUILayout.Button("Move"))
-        {
-            _debugger.FindPath();
         }
 
         EditorGUI.indentLevel--;
@@ -67,7 +52,7 @@ public class MainSceneDebuggerEditor : Editor
     private void DrawMoveUnit()
     {
         GUILayout.Label("UnitMove", EditorStyles.boldLabel);
-        _debugger.Unit = (Unit)EditorGUILayout.ObjectField("Unit", _debugger.Unit,typeof(Unit),true);
+        _debugger.MovableObject = (IMovable)EditorGUILayout.ObjectField("Unit", _debugger.MovableObject as MonoBehaviour,typeof(MonoBehaviour),true);
         _debugger.Goal = EditorGUILayout.Vector2IntField("EndPos", _debugger.Goal);
         if (GUILayout.Button("Move"))
         {
@@ -76,6 +61,20 @@ public class MainSceneDebuggerEditor : Editor
         if (GUILayout.Button("Stop"))
         {
             _debugger.StopMovementUnit();
+        }
+    }
+
+    private void DrawCreatePack()
+    {
+        GUILayout.Label("CreatePack", EditorStyles.boldLabel);
+        _debugger.ItemType = (ItemType)EditorGUILayout.EnumPopup("ItemType", _debugger.ItemType);
+        _debugger.CreatePackPosition = EditorGUILayout.Vector2IntField("CreatePos", _debugger.CreatePackPosition);
+        _debugger.Amount = EditorGUILayout.IntField("Amount", _debugger.Amount);
+        _debugger.Durability = EditorGUILayout.FloatField("Durability", _debugger.Durability);
+
+        if (GUILayout.Button("Create"))
+        {
+            _debugger.CreateItemPack();
         }
     }
 }

@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitGenerator : MonoBehaviour
+public class UnitGenerator : MonoBehaviourSingleton<UnitGenerator>
 {
     private GameObject _unitPrefab;
     private Dictionary<RaceType, Queue<Unit>> _inactiveUnit;
@@ -11,12 +10,7 @@ public class UnitGenerator : MonoBehaviour
     private void Awake()
     {
         _unitPrefab = Resources.Load<GameObject>("Prefabs/Unit");
-        _inactiveUnit = new();
-        int enumCount = Enum.GetValues(typeof(RaceType)).Length;
-        for (int i = 0; i < enumCount; i++)
-        {
-            _inactiveUnit.Add((RaceType)i, new());
-        }
+        _inactiveUnit = Util.NewEnumKeyDictionary<RaceType, Queue<Unit>>();
     }
 
     private void CreateNewUnit(RaceType type)
@@ -26,13 +20,15 @@ public class UnitGenerator : MonoBehaviour
             case RaceType.Human:
                 var newobj = Instantiate(_unitPrefab);
                 _newUnit = newobj.AddComponent<Human>();
-                SetDefaultHumanUnitData();
+                _newUnit.UnitData.SetRace(type);
                 break;
             case RaceType.Animal:
                 break;
             default:
                 break;
         }
+
+        SetDefaultUnitData();
         _newUnit.gameObject.name = "Unit";
     }
 
@@ -49,6 +45,12 @@ public class UnitGenerator : MonoBehaviour
         return this;
     }
 
+    public UnitGenerator SetMoveSystem(IMoveSystem sys)
+    {
+        _newUnit.SetMoveSystem(sys);
+        return this;
+    }
+
     public Unit GetNewUnit()
     {
         var temp = _newUnit;
@@ -56,10 +58,9 @@ public class UnitGenerator : MonoBehaviour
         return temp;
     }
 
-    private void SetDefaultHumanUnitData()
+    private void SetDefaultUnitData()
     {
-        _newUnit.UnitData.SetDesc("asdddd");
-        _newUnit.UnitData.SetMoveSpeed(1.0f);
+        _newUnit.UnitData = DataManager.Instance.GetUnitData(_newUnit.UnitData.Race);
     }
 
     private string GetRandomName()

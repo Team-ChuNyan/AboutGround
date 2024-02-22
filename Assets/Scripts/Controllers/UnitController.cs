@@ -3,47 +3,34 @@ using UnityEngine;
 
 public class UnitController : MonoBehaviour
 {
-    public Pathfinding Pathfinding;
-
-    private UnitGenerator _unitGenerator;
+    private IMoveSystem _groundPathfinding;
+    private WorkPlan _workPlan;
     public List<Unit> PlayerUnit;
     public List<Unit> NpcUnit;
     public List<IWorkable> WorkablePlayerUnit;
 
     private void Awake()
     {
-        _unitGenerator = gameObject.AddComponent<UnitGenerator>();
-        Pathfinding = new Pathfinding();
         PlayerUnit = new List<Unit>(8);
         NpcUnit = new List<Unit>(16);
         WorkablePlayerUnit = new List<IWorkable>(8);
     }
 
+    public void Initialize(WorkPlan workPlan)
+    {
+        _workPlan = workPlan;
+    }
+
     public Unit CreateNewPlayerUnit(RaceType race, string name = null)
     {
-        var unit = _unitGenerator
+        var unit = UnitGenerator.Instance
             .SetNewUnit(race)
             .SetName(name)
+            .SetMoveSystem(_groundPathfinding)
             .GetNewUnit();
 
         AddPlayerUnitList(unit);
         return unit;
-    }
-
-    public void MoveUnit(Unit unit, Vector2Int goal)
-    {
-        if (unit is not IMovable move)
-            return;
-
-        var movementPath = move.GetMovementPath();
-        var currentPos = move.GetCurrentPosition();
-        Pathfinding.ReceiveMovementPath(movementPath,currentPos, goal);
-        move.Move();
-    }
-
-    public void StopMovementUnit(Unit unit)
-    {
-        unit.StopMovement();
     }
 
     private void AddPlayerUnitList(Unit unit)
@@ -52,6 +39,7 @@ public class UnitController : MonoBehaviour
         if (unit is IWorkable workable)
         {
             WorkablePlayerUnit.Add(workable);
+            _workPlan.AddWaitWorker(workable);
         }
     }
 
@@ -63,5 +51,15 @@ public class UnitController : MonoBehaviour
         {
             WorkablePlayerUnit.Remove(workable);
         }
+    }
+
+    public void SetGroundPathFinding(GroundPathfinding groundPathfinding)
+    {
+        _groundPathfinding = groundPathfinding;
+    }
+
+    public void SetWorkPlan(WorkPlan plan)
+    {
+        _workPlan = plan;
     }
 }
