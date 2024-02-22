@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PackGenerator : MonoBehaviour
+public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
 {
     private Pack _prefab;
 

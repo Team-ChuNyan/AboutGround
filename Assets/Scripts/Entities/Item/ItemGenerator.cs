@@ -1,6 +1,16 @@
-public class ItemGenerator : Generator<ItemCategory, Item>
+using System.Collections.Generic;
+
+public class ItemGenerator : Singleton<ItemGenerator>
 {
-    public ItemGenerator SetNewItem(ItemType type, int stack, int durability)
+    private Dictionary<ItemCategory, List<Item>> _inactiveItem;
+    private Item _newItem;
+
+    public ItemGenerator()
+    {
+        _inactiveItem = Util.NewEnumKeyDictionary<ItemCategory, List<Item>>();
+    }
+
+    public ItemGenerator SetNewItem(ItemType type)
     {
         ItemCategory category = Util.SwitchItemTypeToItemCategory(type);
 
@@ -16,45 +26,63 @@ public class ItemGenerator : Generator<ItemCategory, Item>
                 CreateResource(type);
                 break;
         }
-        SetCommonItemData(stack, durability);
 
+        SetItemData(type);
         return this;
+    }
+
+    public Item CopyItem(Item item)
+    {
+        SetNewItem(item.ItemData.Type);
+        SetPersonalData(item.Stack, item.Durability);
+        return GetNewItem();
     }
 
     private void CreateConsumable(ItemType type)
     {
-        var newConsumable = NewItemClass<Consumable>(type);
+        var newConsumable = new Consumable();
+        newConsumable.ItemData.Type = type;
+        _newItem = newConsumable;
     }
 
     private void CreateEquipment(ItemType type)
     {
-        var newEquipment = NewItemClass<Equipment>(type);
+        var newEquipment = new Equipment();
+        newEquipment.ItemData.Type = type;
         var data = DataManager.Instance.GetEquipmentData(type);
         newEquipment.SetEquipmentData(data);
+
+        _newItem = newEquipment;
     }
 
     private void CreateResource(ItemType type)
     {
-        var newResource = NewItemClass<Resource>(type);
+        var newResource = new Resource();
+        newResource.ItemData.Type = type;
+        _newItem = newResource;
     }
 
-    private T NewItemClass<T>(ItemType type) where T : Item, new()
+    private void SetItemData(ItemType type)
     {
-        T item = new();
-        _newItem = item;
-        var data = DataManager.Instance.GetItemData(type);
-        item.SetNewItemData(data);
-        return item;
+        _newItem.ItemData = DataManager.Instance.GetItemData(type);
     }
 
-    private void SetCommonItemData(int stack, int durability)
+    public ItemGenerator SetPersonalData(int stack, float currentDurability = float.MaxValue)
     {
         _newItem.Stack = stack;
-        _newItem.Durability = durability;
+        _newItem.Durability = currentDurability == int.MaxValue ? _newItem.ItemData.MaxStack : currentDurability;
+
+        return this;
     }
 
     public Item GetNewItem()
     {
         return _newItem;
+    }
+
+    public void RemoveItem(Item item)
+    {
+        ItemCategory category = Util.SwitchItemTypeToItemCategory(item.ItemData.Type);
+        _inactiveItem[category].Add(item);
     }
 }

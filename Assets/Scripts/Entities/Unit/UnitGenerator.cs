@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitGenerator : MonoBehaviour
+public class UnitGenerator : MonoBehaviourSingleton<UnitGenerator>
 {
     private GameObject _unitPrefab;
     private Dictionary<RaceType, Queue<Unit>> _inactiveUnit;
@@ -11,12 +10,7 @@ public class UnitGenerator : MonoBehaviour
     private void Awake()
     {
         _unitPrefab = Resources.Load<GameObject>("Prefabs/Unit");
-        _inactiveUnit = new();
-        int enumCount = Enum.GetValues(typeof(RaceType)).Length;
-        for (int i = 0; i < enumCount; i++)
-        {
-            _inactiveUnit.Add((RaceType)i, new());
-        }
+        _inactiveUnit = Util.NewEnumKeyDictionary<RaceType, Queue<Unit>>();
     }
 
     private void CreateNewUnit(RaceType type)
