@@ -19,14 +19,14 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
     public PackGenerator CreateNewItemPack(IPackable item)
     {
         ObjectPooling(item);
-        ChangeItemPackSprite();
+        ChangePackMesh();
 
         return this;
     }
 
     public PackGenerator SetPosition(Vector2Int pos)
     {
-        _newPack.transform.position = new Vector3(pos.x, pos.y, 0);
+        _newPack.transform.position = Util.Vector2IntToWorldPoint(pos);
         return this;
     }
 
@@ -45,10 +45,10 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
         _newPack.SetItem(item);
     }
 
-    private void ChangeItemPackSprite()
+    private void ChangePackMesh()
     {
         // TODO 이미지 변경
-        _newPack.SpriteRenderer.color = Color.black;
+        //_newPack.SetMesh();
     }
 
     public void DestoryPack(Pack pack)

@@ -1,18 +1,39 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class TilePainter : MonoBehaviour
 {
-    [SerializeField] private Tilemap _tileMap;
-    [SerializeField] private TileBase _water;
-    [SerializeField] private TileBase _grass;
-    [SerializeField] private TileBase _ground;
-    [SerializeField] private TileBase _rockField;
+    private Transform _rootTransform;
+    private GroundTile _groundTile;
+
+    private List<Mesh> _meshes;
+    private List<Material> _materials;
+
+    private enum FileOrder
+    {
+        Soil, Sand, Rock
+    }
+
+    private void Awake()
+    {
+        _rootTransform = new GameObject().transform;
+        _rootTransform.name = "Tiles";
+        _meshes = new();
+        _materials = new();
+        _groundTile = Resources.Load<GroundTile>("Prefabs/GroundTile");
+
+        _meshes.Add(Resources.Load<Mesh>("Models/Ground/Soil/Mesh"));
+        _materials.Add(Resources.Load<Material>("Models/Ground/Soil/Material"));
+
+        _meshes.Add(Resources.Load<Mesh>("Models/Ground/Sand/Mesh"));
+        _materials.Add(Resources.Load<Material>("Models/Ground/Sand/Material"));
+
+        _meshes.Add(Resources.Load<Mesh>("Models/Ground/Rock/Mesh"));
+        _materials.Add(Resources.Load<Material>("Models/Ground/Rock/Material"));
+    }
 
     public void PaintGroundGrid(SeedMapData data, List<float> noise, GeneratorGroundData[] type)
     {
-        _tileMap.ClearAllTiles();
         var mapSize = data.GetMapSize()-1;
         for (int height = 0; height < data.Height; height++)
         {
@@ -23,7 +44,7 @@ public class TilePainter : MonoBehaviour
                 {
                     if (currentHeight <= type[i].height)
                     {
-                        _tileMap.SetTile(new Vector3Int(width, height), SwitchTileBase(type[i].Type));
+                        GenerateTileObject(new Vector2Int(width, height), type[i].Type);
                         break;
                     }
                 }
@@ -31,21 +52,37 @@ public class TilePainter : MonoBehaviour
         }
     }
 
-    private TileBase SwitchTileBase(GroundType type)
+    private void GenerateTileObject(Vector2Int pos,GroundType type)
     {
+        int orderType;
         switch (type)
         {
             case GroundType.Water:
-                return _water;
+                return;
             case GroundType.Grass:
-                return _grass;
+                orderType = (int)FileOrder.Soil;
+                break;
             case GroundType.Ground:
-                return _ground;
+                orderType = (int)FileOrder.Sand;
+                break;
             case GroundType.RockField:
-                return _rockField;
+                orderType = (int)FileOrder.Rock;
+                break;
             default:
                 Debug.LogError("TileMatching Failed");
-                return _rockField;
+                return;
+        }
+        GroundTile newObj = Instantiate(_groundTile,_rootTransform);
+        newObj.transform.position = new Vector3(pos.x, -1, pos.y);
+        newObj.SetMesh(_meshes[orderType]);
+        newObj.SetMaterial(_materials[orderType]);
+
+        if (type == GroundType.RockField)
+        {
+            newObj = Instantiate(_groundTile, _rootTransform);
+            newObj.transform.position = new Vector3(pos.x, 0, pos.y);
+            newObj.SetMesh(_meshes[orderType]);
+            newObj.SetMaterial(_materials[orderType]);
         }
     }
 }
