@@ -25,7 +25,7 @@ public abstract class Unit : MonoBehaviour, IMovable
 
     public void Move(Vector2Int goal)
     {
-        Vector2Int currentPos = new((int)transform.position.x, (int)transform.position.y);
+        Vector2Int currentPos = new((int)transform.position.x, (int)transform.position.z);
         _moveSystem.UpdateMovementPath(_movementPath, currentPos, goal);
         _moveCoroutine = StartCoroutine(FollowPathNode());
     }
@@ -41,7 +41,7 @@ public abstract class Unit : MonoBehaviour, IMovable
     {
         for (int i = 0; i < _movementPath.Count; i++)
         {
-            Vector3 targetPos = Util.Vector2IntToVector3(_movementPath[i].Pos);
+            Vector3 targetPos = Util.Vector2IntToWorldPoint(_movementPath[i].Pos);
             while (transform.position != targetPos)
             {
                 var movePos = Time.deltaTime * UnitData.MoveSpeed * 10;

@@ -3,12 +3,18 @@ using UnityEngine;
 
 public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage
 {
-    [SerializeField] private SpriteRenderer _spriteRenderer;
+    [SerializeField] private MeshFilter _meshFilter;
+    [SerializeField] private MeshRenderer _renderer;
 
     private IPackable _item;
 
     public IPackable Item { get { return _item; } }
-    public SpriteRenderer SpriteRenderer { get { return _spriteRenderer; } }
+
+    public void SetMesh(Mesh mesh, Material material)
+    {
+        _meshFilter.mesh = mesh;
+        _renderer.material = material;
+    }
 
     public void SetItem(IPackable newItem)
     {

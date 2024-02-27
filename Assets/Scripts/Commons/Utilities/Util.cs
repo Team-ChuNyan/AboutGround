@@ -25,6 +25,11 @@ public static class Util
         return new Vector3(vector2Int.x, vector2Int.y, 0);
     }
 
+    public static Vector3 Vector2IntToWorldPoint(Vector2Int vector2Int)
+    {
+        return new Vector3(vector2Int.x,0, vector2Int.y);
+    }
+
 
     public static Dictionary<K, V> NewEnumKeyDictionary<K,V>() where K : Enum where V : class, new()
     {
