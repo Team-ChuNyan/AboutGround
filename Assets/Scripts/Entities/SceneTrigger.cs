@@ -3,7 +3,10 @@ using UnityEngine;
 public class SceneTrigger : MonoBehaviour
 {
     [SerializeField] private SceneType _currentScene;
+    [SerializeField] private GameObject _virtualCamera;
     [SerializeField] private GameObject _debugger;
+
+    [SerializeField] private Vector3 _startCameraPosition;
 
     private void Awake()
     {
@@ -36,6 +39,7 @@ public class SceneTrigger : MonoBehaviour
         var workGenerator = new WorkGenerator();
 
         // 클래스 생성
+        var cameraSystem = BuildCinemachineCameraSystem(_startCameraPosition);
         var inputController = gameObject.AddComponent<PlayerInputController>();
         var unitController = gameObject.AddComponent<UnitController>();
         var itemController = gameObject.AddComponent<ItemController>();
@@ -49,6 +53,7 @@ public class SceneTrigger : MonoBehaviour
         var groundPathfinder = new GroundPathfinding();
 
         // 클래스 초기화
+        cameraSystem.Initialize(inputController);
         SeedMapData seed = new(100, 100, 9123);
         mapGenerator.Initialize(GroundGiud)
             .GenerateNoiseMap(seed)
@@ -68,5 +73,15 @@ public class SceneTrigger : MonoBehaviour
             debugger.MapGenerator = mapGenerator;
             debugger.UnitController = unitController;
         }
+    }
+
+    private CameraInputHandler BuildCinemachineCameraSystem(Vector3 position)
+    {
+        var sys = new GameObject("CameraSystem").AddComponent<CameraInputHandler>();
+        sys.transform.position = position;
+
+        var cameraController = _virtualCamera.AddComponent<VirtualCameraController>();
+        cameraController.SetFollowTarget(sys.transform);
+        return sys;
     }
 }
