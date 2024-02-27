@@ -4,19 +4,26 @@ using UnityEngine.InputSystem;
 
 public class PlayerInputController : MonoBehaviour
 {
-    // TO DO : 인풋 시스템에 할당과 해제를 주기적으로 해야할 경우가 있는가?
     private PlayerInputAction _inputAction;
     private PlayerInputAction.PlayerActions _input;
 
     private event Action<Vector2> MoveStarted;
+    private event Action<Vector2> MovePerformed;
     private event Action<Vector2> MoveCanceled;
     private event Action EscCanceled;
-    
+
+    private event Action Updated;
+
     private void Awake()
     {
         _inputAction = new PlayerInputAction();
         _input = _inputAction.Player;
         RegisterInputCallback();
+    }
+
+    private void Update()
+    {
+        Updated?.Invoke();
     }
 
     private void OnEnable()
@@ -32,14 +39,20 @@ public class PlayerInputController : MonoBehaviour
     private void RegisterInputCallback()
     {
         _input.Move.started += OnMoveStarted;
+        _input.Move.performed += OnMovePerformed;
         _input.Move.canceled += OnMoveCanceled;
         _input.Esc.canceled += OnEscCanceled;
     }
 
-    #region Event
+    #region Register Action Map
     private void OnMoveStarted(InputAction.CallbackContext value)
     {
         MoveStarted?.Invoke(value.ReadValue<Vector2>());
+    }
+
+    private void OnMovePerformed(InputAction.CallbackContext value)
+    {
+        MovePerformed?.Invoke(value.ReadValue<Vector2>());
     }
 
     private void OnMoveCanceled(InputAction.CallbackContext value)
@@ -54,21 +67,56 @@ public class PlayerInputController : MonoBehaviour
     #endregion
 
     #region Register
-    public void RegisterMove(Action<Vector2> action)
+    public void RegisterUpdate(Action action)
     {
-        MoveStarted += action;
-        MoveCanceled += action;
+        Updated += action;
     }
 
-    public void UnregisterMove(Action<Vector2> action)
+    public void RegisterMoveStarted(Action<Vector2> action)
     {
-        MoveStarted -= action;
-        MoveCanceled -= action;
+        MoveStarted += action;
+    }
+
+    public void RegisterMovePerformed(Action<Vector2> action) 
+    {
+        MovePerformed += action;
+    }
+
+    public void RegisterMoveCancled(Action<Vector2> action)
+    {
+        MoveCanceled += action;
     }
 
     public void RegisterEsc(Action action)
     {
         EscCanceled += action;
+    }
+    #endregion
+
+    #region Unregister
+    public void UnregisterUpdate(Action action)
+    {
+        Updated -= action;
+    }
+
+    public void UnregisterMoveStarted(Action<Vector2> action)
+    {
+        MoveStarted -= action;
+    }
+
+    public void UnregisterMovePerformed(Action<Vector2> action)
+    {
+        MovePerformed -= action;
+    }
+
+    public void UnregisterMoveCancled(Action<Vector2> action)
+    {
+        MoveCanceled -= action;
+    }
+
+    public void UnregisterMovePerformed(Action action)
+    {
+        Updated -= action;
     }
 
     public void UnregisterEsc(Action action)
