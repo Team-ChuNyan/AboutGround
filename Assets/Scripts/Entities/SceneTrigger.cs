@@ -7,6 +7,7 @@ public class SceneTrigger : MonoBehaviour
     [SerializeField] private GameObject _debugger;
 
     [SerializeField] private Vector3 _startCameraPosition;
+    [SerializeField] private Vector3 _startCameraRotation;
 
     private void Awake()
     {
@@ -39,7 +40,8 @@ public class SceneTrigger : MonoBehaviour
         var workGenerator = new WorkGenerator();
 
         // 클래스 생성
-        var cameraSystem = BuildCinemachineCameraSystem(_startCameraPosition);
+        var cameraInputHandler = InstantiateCameraSystem();
+        var virualcameraController = _virtualCamera.AddComponent<VirtualCameraController>();
         var inputController = gameObject.AddComponent<PlayerInputController>();
         var unitController = gameObject.AddComponent<UnitController>();
         var itemController = gameObject.AddComponent<ItemController>();
@@ -53,7 +55,8 @@ public class SceneTrigger : MonoBehaviour
         var groundPathfinder = new GroundPathfinding();
 
         // 클래스 초기화
-        cameraSystem.Initialize(inputController);
+        cameraInputHandler.Initialize(inputController, virualcameraController);
+
         SeedMapData seed = new(100, 100, 9123);
         mapGenerator.Initialize(GroundGiud)
             .GenerateNoiseMap(seed)
@@ -75,13 +78,13 @@ public class SceneTrigger : MonoBehaviour
         }
     }
 
-    private CameraInputHandler BuildCinemachineCameraSystem(Vector3 position)
+    private CameraController InstantiateCameraSystem()
     {
-        var sys = new GameObject("CameraSystem").AddComponent<CameraInputHandler>();
-        sys.transform.position = position;
+        var cameraSystem = Instantiate(Resources.Load<CameraController>("Prefabs/CameraSystem"));
+        cameraSystem.name = "CameraSystem";
+        cameraSystem.SetCameraPosition(_startCameraPosition);
+        cameraSystem.SetCameraRotation(_startCameraRotation);
 
-        var cameraController = _virtualCamera.AddComponent<VirtualCameraController>();
-        cameraController.SetFollowTarget(sys.transform);
-        return sys;
+        return cameraSystem;
     }
 }

@@ -7,23 +7,29 @@ public class PlayerInputController : MonoBehaviour
     private PlayerInputAction _inputAction;
     private PlayerInputAction.PlayerActions _input;
 
-    private event Action<Vector2> MoveStarted;
     private event Action<Vector2> MovePerformed;
     private event Action<Vector2> MoveCanceled;
-    private event Action EscCanceled;
 
-    private event Action Updated;
+    private event Action<Vector2> MoveMousePerformed;
+
+    private event Action<Vector2> PressRotationPerformed;
+    private event Action<Vector2> PressRotationCancelded;
+
+    private event Action PushRotationStarted;
+    private event Action PushRotationCanceled;
+
+    private event Action<float> PressZoomPerformed;
+    private event Action<float> PressZoomCanceled;
+
+    private event Action<float> ScrollZoomPerformed;
+
+    private event Action EscCanceled;
 
     private void Awake()
     {
         _inputAction = new PlayerInputAction();
         _input = _inputAction.Player;
         RegisterInputCallback();
-    }
-
-    private void Update()
-    {
-        Updated?.Invoke();
     }
 
     private void OnEnable()
@@ -38,18 +44,27 @@ public class PlayerInputController : MonoBehaviour
 
     private void RegisterInputCallback()
     {
-        _input.Move.started += OnMoveStarted;
         _input.Move.performed += OnMovePerformed;
         _input.Move.canceled += OnMoveCanceled;
+
+
+        _input.PushRotation.started += OnPushRotationStarted;
+        _input.PushRotation.canceled += OnPushRotationCanceled;
+
+        _input.MoveMouse.performed += OnMoveMousePerformed;
+
+        _input.PressRotation.performed += OnPressRotationPerformed;
+        _input.PressRotation.canceled += OnPressRotationCanceled;
+
+        _input.ScrollZoom.performed += OnScrollZoomPerformed;
+
+        _input.PressZoom.performed += OnPressZoomPerformed;
+        _input.PressZoom.canceled += OnPressZoomCanceled;
+
         _input.Esc.canceled += OnEscCanceled;
     }
 
     #region Register Action Map
-    private void OnMoveStarted(InputAction.CallbackContext value)
-    {
-        MoveStarted?.Invoke(value.ReadValue<Vector2>());
-    }
-
     private void OnMovePerformed(InputAction.CallbackContext value)
     {
         MovePerformed?.Invoke(value.ReadValue<Vector2>());
@@ -64,20 +79,51 @@ public class PlayerInputController : MonoBehaviour
     {
         EscCanceled?.Invoke();
     }
+
+    private void OnPushRotationStarted(InputAction.CallbackContext value)
+    {
+        PushRotationStarted?.Invoke();
+    }
+
+    private void OnPushRotationCanceled(InputAction.CallbackContext value)
+    {
+        PushRotationCanceled?.Invoke();
+    }
+
+    private void OnMoveMousePerformed(InputAction.CallbackContext value)
+    {
+        MoveMousePerformed?.Invoke(value.ReadValue<Vector2>());
+    }
+
+    private void OnPressRotationPerformed(InputAction.CallbackContext value)
+    {
+        PressRotationPerformed?.Invoke(value.ReadValue<Vector2>());
+    }
+
+    private void OnPressRotationCanceled(InputAction.CallbackContext value)
+    {
+        PressRotationCancelded?.Invoke(value.ReadValue<Vector2>());
+    }
+
+    private void OnScrollZoomPerformed(InputAction.CallbackContext value)
+    {
+        ScrollZoomPerformed?.Invoke(value.ReadValue<float>());
+    }
+
+    private void OnPressZoomPerformed(InputAction.CallbackContext value)
+    {
+        PressZoomPerformed?.Invoke(value.ReadValue<float>());
+        Debug.Log(value.ReadValue<float>());
+    }
+
+    private void OnPressZoomCanceled(InputAction.CallbackContext value)
+    {
+        PressZoomCanceled?.Invoke(value.ReadValue<float>());
+    }
     #endregion
 
     #region Register
-    public void RegisterUpdate(Action action)
-    {
-        Updated += action;
-    }
-
-    public void RegisterMoveStarted(Action<Vector2> action)
-    {
-        MoveStarted += action;
-    }
-
-    public void RegisterMovePerformed(Action<Vector2> action) 
+    public void RegisterMovePerformed(Action<Vector2> action)
     {
         MovePerformed += action;
     }
@@ -91,19 +137,48 @@ public class PlayerInputController : MonoBehaviour
     {
         EscCanceled += action;
     }
-    #endregion
 
-    #region Unregister
-    public void UnregisterUpdate(Action action)
+    public void RegisterPushRotationStarted(Action action)
     {
-        Updated -= action;
+        PushRotationStarted += action;
     }
 
-    public void UnregisterMoveStarted(Action<Vector2> action)
+    public void RegisterPushRotationCanceled(Action action)
     {
-        MoveStarted -= action;
+        PushRotationCanceled += action;
     }
 
+    public void RegisterMoveMousePerformed(Action<Vector2> action)
+    {
+        MoveMousePerformed += action;
+    }
+
+    public void RegisterPressRotationPerformed(Action<Vector2> action)
+    {
+        PressRotationPerformed += action;
+    }
+
+    public void RegisterPressRotationCanceled(Action<Vector2> action)
+    {
+        PressRotationCancelded += action;
+    }
+
+    public void RegisterScrollZoomPerformed(Action<float> action)
+    {
+        ScrollZoomPerformed += action;
+    }
+
+    public void RegisterPressZoomPerformed(Action<float> action)
+    {
+        PressZoomPerformed += action;
+    }
+
+    public void RegisterPressZoomCanceled(Action<float> action)
+    {
+        PressZoomCanceled += action;
+    }
+
+    // Unregister
     public void UnregisterMovePerformed(Action<Vector2> action)
     {
         MovePerformed -= action;
@@ -114,14 +189,49 @@ public class PlayerInputController : MonoBehaviour
         MoveCanceled -= action;
     }
 
-    public void UnregisterMovePerformed(Action action)
-    {
-        Updated -= action;
-    }
-
     public void UnregisterEsc(Action action)
     {
         EscCanceled -= action;
+    }
+
+    public void UnregisterPushRotationStarted(Action action)
+    {
+        PushRotationStarted -= action;
+    }
+
+    public void UnregisterPushRotationCanceled(Action action)
+    {
+        PushRotationCanceled -= action;
+    }
+
+    public void UnregisterMoveMousePerformed(Action<Vector2> action)
+    {
+        MoveMousePerformed -= action;
+    }
+
+    public void UnregisterPressRotationPerformed(Action<Vector2> action)
+    {
+        PressRotationPerformed -= action;
+    }
+
+    public void UnregisterPressRotationCanceled(Action<Vector2> action)
+    {
+        PressRotationCancelded -= action;
+    }
+
+    public void UnregisterScrollZoomPerformed(Action<float> action)
+    {
+        ScrollZoomPerformed -= action;
+    }
+
+    public void UnregisterPressZoomPerformed(Action<float> action)
+    {
+        PressZoomPerformed -= action;
+    }
+
+    public void UnregisterPressZoomCanceled(Action<float> action)
+    {
+        PressZoomCanceled -= action;
     }
     #endregion
 }

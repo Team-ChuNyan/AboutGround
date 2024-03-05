@@ -37,6 +37,51 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
+                    ""name"": ""MoveMouse"",
+                    ""type"": ""Value"",
+                    ""id"": ""41adc7e8-d62f-457f-b6ee-7493ac45ad6c"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""PressRotation"",
+                    ""type"": ""Value"",
+                    ""id"": ""ed9a830b-0373-46ff-86e7-90851927cf2c"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""PushRotation"",
+                    ""type"": ""Button"",
+                    ""id"": ""c59620d9-a10d-4f01-888c-d63e0fb986b9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PressZoom"",
+                    ""type"": ""Value"",
+                    ""id"": ""4b56f0fb-c1f5-46eb-be91-0dc66e284459"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ScrollZoom"",
+                    ""type"": ""Value"",
+                    ""id"": ""2ee6652d-8bc1-41cc-abc7-a273c556c9fc"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": ""Clamp(min=-1,max=1)"",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
                     ""name"": ""Esc"",
                     ""type"": ""Button"",
                     ""id"": ""6f1d4e50-4274-4fe9-a5dc-7a20bc4b79a6"",
@@ -47,6 +92,61 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                 }
             ],
             ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""7564716b-00b7-401e-89f2-32795c5d359f"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Esc"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""827ec38a-0ebe-46a6-b4e0-c8b92119d983"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MoveMouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8e2739f8-19bf-46b7-b064-2053d4218451"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""PushRotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fdd6e067-3720-47e4-9f24-1e67e72ef869"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=-1)"",
+                    ""groups"": """",
+                    ""action"": ""PressZoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""51ceac88-a772-40c6-99ce-8ce3cee3f3d1"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale"",
+                    ""groups"": """",
+                    ""action"": ""PressZoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
                 {
                     ""name"": ""2D Vector"",
                     ""id"": ""3c40431c-cce0-4db6-bb8b-5ad43ab59793"",
@@ -159,14 +259,69 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""7564716b-00b7-401e-89f2-32795c5d359f"",
-                    ""path"": ""<Keyboard>/escape"",
+                    ""id"": ""c1839de9-b80b-4109-a21d-80004da8e0f2"",
+                    ""path"": ""<Mouse>/scroll/y"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Esc"",
+                    ""action"": ""ScrollZoom"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""63348e8b-43b1-4cc2-85b6-7f4cb0eed70c"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PressRotation"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""09a6336f-14aa-468c-a71c-b268b0301a19"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PressRotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""edef340e-6824-4478-ad6b-5e0c4ea3826e"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PressRotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""e0ec0607-318c-4a38-b4ec-083abb0d90b6"",
+                    ""path"": ""<Keyboard>/pageDown"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PressRotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""1d99cd76-b146-4ee3-a547-bbdb3e0e8238"",
+                    ""path"": ""<Keyboard>/pageUp"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PressRotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -193,6 +348,11 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
+        m_Player_MoveMouse = m_Player.FindAction("MoveMouse", throwIfNotFound: true);
+        m_Player_PressRotation = m_Player.FindAction("PressRotation", throwIfNotFound: true);
+        m_Player_PushRotation = m_Player.FindAction("PushRotation", throwIfNotFound: true);
+        m_Player_PressZoom = m_Player.FindAction("PressZoom", throwIfNotFound: true);
+        m_Player_ScrollZoom = m_Player.FindAction("ScrollZoom", throwIfNotFound: true);
         m_Player_Esc = m_Player.FindAction("Esc", throwIfNotFound: true);
     }
 
@@ -256,12 +416,22 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Player;
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_Move;
+    private readonly InputAction m_Player_MoveMouse;
+    private readonly InputAction m_Player_PressRotation;
+    private readonly InputAction m_Player_PushRotation;
+    private readonly InputAction m_Player_PressZoom;
+    private readonly InputAction m_Player_ScrollZoom;
     private readonly InputAction m_Player_Esc;
     public struct PlayerActions
     {
         private @PlayerInputAction m_Wrapper;
         public PlayerActions(@PlayerInputAction wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Player_Move;
+        public InputAction @MoveMouse => m_Wrapper.m_Player_MoveMouse;
+        public InputAction @PressRotation => m_Wrapper.m_Player_PressRotation;
+        public InputAction @PushRotation => m_Wrapper.m_Player_PushRotation;
+        public InputAction @PressZoom => m_Wrapper.m_Player_PressZoom;
+        public InputAction @ScrollZoom => m_Wrapper.m_Player_ScrollZoom;
         public InputAction @Esc => m_Wrapper.m_Player_Esc;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
@@ -275,6 +445,21 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
+            @MoveMouse.started += instance.OnMoveMouse;
+            @MoveMouse.performed += instance.OnMoveMouse;
+            @MoveMouse.canceled += instance.OnMoveMouse;
+            @PressRotation.started += instance.OnPressRotation;
+            @PressRotation.performed += instance.OnPressRotation;
+            @PressRotation.canceled += instance.OnPressRotation;
+            @PushRotation.started += instance.OnPushRotation;
+            @PushRotation.performed += instance.OnPushRotation;
+            @PushRotation.canceled += instance.OnPushRotation;
+            @PressZoom.started += instance.OnPressZoom;
+            @PressZoom.performed += instance.OnPressZoom;
+            @PressZoom.canceled += instance.OnPressZoom;
+            @ScrollZoom.started += instance.OnScrollZoom;
+            @ScrollZoom.performed += instance.OnScrollZoom;
+            @ScrollZoom.canceled += instance.OnScrollZoom;
             @Esc.started += instance.OnEsc;
             @Esc.performed += instance.OnEsc;
             @Esc.canceled += instance.OnEsc;
@@ -285,6 +470,21 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
+            @MoveMouse.started -= instance.OnMoveMouse;
+            @MoveMouse.performed -= instance.OnMoveMouse;
+            @MoveMouse.canceled -= instance.OnMoveMouse;
+            @PressRotation.started -= instance.OnPressRotation;
+            @PressRotation.performed -= instance.OnPressRotation;
+            @PressRotation.canceled -= instance.OnPressRotation;
+            @PushRotation.started -= instance.OnPushRotation;
+            @PushRotation.performed -= instance.OnPushRotation;
+            @PushRotation.canceled -= instance.OnPushRotation;
+            @PressZoom.started -= instance.OnPressZoom;
+            @PressZoom.performed -= instance.OnPressZoom;
+            @PressZoom.canceled -= instance.OnPressZoom;
+            @ScrollZoom.started -= instance.OnScrollZoom;
+            @ScrollZoom.performed -= instance.OnScrollZoom;
+            @ScrollZoom.canceled -= instance.OnScrollZoom;
             @Esc.started -= instance.OnEsc;
             @Esc.performed -= instance.OnEsc;
             @Esc.canceled -= instance.OnEsc;
@@ -317,6 +517,11 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     public interface IPlayerActions
     {
         void OnMove(InputAction.CallbackContext context);
+        void OnMoveMouse(InputAction.CallbackContext context);
+        void OnPressRotation(InputAction.CallbackContext context);
+        void OnPushRotation(InputAction.CallbackContext context);
+        void OnPressZoom(InputAction.CallbackContext context);
+        void OnScrollZoom(InputAction.CallbackContext context);
         void OnEsc(InputAction.CallbackContext context);
     }
 }
