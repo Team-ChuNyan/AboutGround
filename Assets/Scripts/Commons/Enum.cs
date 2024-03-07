@@ -37,6 +37,11 @@ public enum WorkType
     Clean
 }
 
+public enum InteractionType
+{
+
+}
+
 public enum ItemType
 {
     None,

@@ -46,6 +46,10 @@ public class SceneTrigger : MonoBehaviour
         var unitController = gameObject.AddComponent<UnitController>();
         var itemController = gameObject.AddComponent<ItemController>();
 
+        var inGameUI = Instantiate(Resources.Load<InGameUIController>("Prefabs/InGameUI"));
+        inGameUI.name = "InGameUI";
+        var interActionMenuUIViewModel = inGameUI.GetInteractionMenuViewModel();
+
         var mapGenerator = Instantiate(Resources.Load<MapGenerator>("Prefabs/MapGenerator"));
         mapGenerator.name = "MapGenerator";
         var GroundGiud = Instantiate(Resources.Load<TilePainter>("Prefabs/GroundGrid"));

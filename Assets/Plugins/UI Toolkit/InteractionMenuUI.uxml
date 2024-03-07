@@ -1,0 +1,21 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Plugins/UI%20Toolkit/Styles/Common.uss?fileID=7433441132597879392&amp;guid=312cb88b589f30b4fa04dd605a0df4fd&amp;type=3#Common" />
+    <engine:VisualElement name="InteractionMenu" style="flex-direction: row; flex-shrink: 0; flex-wrap: nowrap; align-items: auto; justify-content: flex-start; align-self: flex-start; width: auto; margin-right: 40px; margin-left: 50px;">
+        <engine:VisualElement name="Button0" style="flex-grow: 0; flex-shrink: 0; align-items: center; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px;">
+            <engine:VisualElement name="Icon" style="flex-grow: 0; flex-shrink: 0; background-image: url(&quot;project://database/Assets/Sprites/Icon/Carry.png?fileID=2800000&amp;guid=ac9cfc7d1bb0e1f4e8795cdb9a343c3c&amp;type=3#Carry&quot;); background-color: rgba(0, 0, 0, 0); width: 125px; height: 125px;" />
+            <engine:Label text="Label" name="Text" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; -unity-font-definition: url(&quot;project://database/Assets/Plugins/TextMesh%20Pro/Fonts/NotoSans-Bold.ttf?fileID=12800000&amp;guid=f6f2c313190d4f84a953052bcba327f0&amp;type=3#NotoSans-Bold&quot;); padding-top: 0; font-size: 25px;" />
+        </engine:VisualElement>
+        <engine:VisualElement name="Button1" style="flex-grow: 0; flex-shrink: 0; align-items: center; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px;">
+            <engine:VisualElement name="Icon" style="flex-grow: 0; flex-shrink: 0; background-image: url(&quot;project://database/Assets/Sprites/Icon/Carry.png?fileID=2800000&amp;guid=ac9cfc7d1bb0e1f4e8795cdb9a343c3c&amp;type=3#Carry&quot;); background-color: rgba(0, 0, 0, 0); width: 125px; height: 125px;" />
+            <engine:Label text="Label" name="Text" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; -unity-font-definition: url(&quot;project://database/Assets/Plugins/TextMesh%20Pro/Fonts/NotoSans-Bold.ttf?fileID=12800000&amp;guid=f6f2c313190d4f84a953052bcba327f0&amp;type=3#NotoSans-Bold&quot;); padding-top: 0; font-size: 25px;" />
+        </engine:VisualElement>
+        <engine:VisualElement name="Button2" style="flex-grow: 0; flex-shrink: 0; align-items: center; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px;">
+            <engine:VisualElement name="Icon" style="flex-grow: 0; flex-shrink: 0; background-image: url(&quot;project://database/Assets/Sprites/Icon/Carry.png?fileID=2800000&amp;guid=ac9cfc7d1bb0e1f4e8795cdb9a343c3c&amp;type=3#Carry&quot;); background-color: rgba(0, 0, 0, 0); width: 125px; height: 125px;" />
+            <engine:Label text="Label" name="Text" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; -unity-font-definition: url(&quot;project://database/Assets/Plugins/TextMesh%20Pro/Fonts/NotoSans-Bold.ttf?fileID=12800000&amp;guid=f6f2c313190d4f84a953052bcba327f0&amp;type=3#NotoSans-Bold&quot;); padding-top: 0; font-size: 25px;" />
+        </engine:VisualElement>
+        <engine:VisualElement name="Button3" style="flex-grow: 0; flex-shrink: 0; align-items: center; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px;">
+            <engine:VisualElement name="Icon" style="flex-grow: 0; flex-shrink: 0; background-image: url(&quot;project://database/Assets/Sprites/Icon/Carry.png?fileID=2800000&amp;guid=ac9cfc7d1bb0e1f4e8795cdb9a343c3c&amp;type=3#Carry&quot;); background-color: rgba(0, 0, 0, 0); width: 125px; height: 125px;" />
+            <engine:Label text="Label" name="Text" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; -unity-font-definition: url(&quot;project://database/Assets/Plugins/TextMesh%20Pro/Fonts/NotoSans-Bold.ttf?fileID=12800000&amp;guid=f6f2c313190d4f84a953052bcba327f0&amp;type=3#NotoSans-Bold&quot;); padding-top: 0; font-size: 25px;" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>
