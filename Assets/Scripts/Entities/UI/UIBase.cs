@@ -15,12 +15,12 @@ public abstract class UIBase
 
     }
 
-    protected virtual void Show()
+    public virtual void Show()
     {
         _root.style.display = DisplayStyle.Flex;
     }
 
-    protected virtual void Hide()
+    public virtual void Hide()
     {
         _root.style.display = DisplayStyle.None;
     }
