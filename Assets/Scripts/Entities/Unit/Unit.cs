@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Unit : MonoBehaviour, IMovable
+public abstract class Unit : MonoBehaviour, IMovable, ISelectable
 {
+    public UnitComponentHandler ComponentHandler;
     private IMoveSystem _moveSystem;
 
     protected UnitData _unitData;
@@ -67,5 +68,20 @@ public abstract class Unit : MonoBehaviour, IMovable
     public void SetMoveSystem(IMoveSystem sys)
     {
         _moveSystem = sys;
+    }
+
+    public void Select()
+    {
+        ComponentHandler.SelectMaker.SetActive(true);
+    }
+
+    public Bounds GetSelectBounds()
+    {
+        return ComponentHandler.Collider.bounds;
+    }
+
+    public void CancelSelection()
+    {
+        ComponentHandler.SelectMaker.SetActive(false);
     }
 }
