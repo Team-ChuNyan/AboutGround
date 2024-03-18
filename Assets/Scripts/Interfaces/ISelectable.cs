@@ -2,7 +2,8 @@ using UnityEngine;
 
 public interface ISelectable
 {
-    public void Select();
+    public void AddSelection();
+    public void WaitSelection();
     public void CancelSelection();
-    public Bounds GetSelectBounds();
+    public Vector3 GetSelectPoint();
 }

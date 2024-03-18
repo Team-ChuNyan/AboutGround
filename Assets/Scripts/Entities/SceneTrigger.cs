@@ -57,6 +57,7 @@ public class SceneTrigger : MonoBehaviour
 
         var workplan = new WorkPlan();
         var groundPathfinder = new GroundPathfinding();
+        var ObjectSelector = new ObjectSelector();
 
         // 클래스 초기화
         cameraInputHandler.Initialize(inputController, virualcameraController);
@@ -73,12 +74,22 @@ public class SceneTrigger : MonoBehaviour
         workGenerator.Initialize(workplan);
 
         groundPathfinder.SetNodeMap(mapGenerator.PathNodeMap);
+        ObjectSelector.Init(inputController, inGameUI.DragSelectionUI);
+        ObjectSelector.SetTargetProp(unitController.PlayerUnit);
 
         // 디버거
         if (_debugger.TryGetComponent(out MainSceneDebugger debugger))
         {
             debugger.MapGenerator = mapGenerator;
             debugger.UnitController = unitController;
+        }
+
+        for (int x = 0; x < 70; x++)
+        {
+            for (int z = 0; z < 70; z++)
+            {
+                unitController.CreateNewPlayerUnit(RaceType.Human).transform.position = new Vector3(x, 0, z);
+            }
         }
     }
 

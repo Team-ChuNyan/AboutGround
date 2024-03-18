@@ -6,6 +6,15 @@
             "id": "4b8db59e-ac5b-4b7c-a8fb-3e50e8261a4d",
             "actions": [
                 {
+                    "name": "Click",
+                    "type": "Button",
+                    "id": "b99a4862-0c2b-44b1-ad9e-1dc518df7f36",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Move",
                     "type": "Value",
                     "id": "f573e2e3-47f6-4a91-812d-6f44407f0909",
@@ -300,6 +309,17 @@
                     "action": "PressRotation",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "4f7f7d8d-ee1f-48d3-91e2-56216bf938f4",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

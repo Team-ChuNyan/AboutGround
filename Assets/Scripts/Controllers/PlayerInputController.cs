@@ -7,6 +7,9 @@ public class PlayerInputController : MonoBehaviour
     private PlayerInputAction _inputAction;
     private PlayerInputAction.PlayerActions _input;
 
+    private event Action ClickStarted;
+    private event Action ClickCanceled;
+
     private event Action<Vector2> MovePerformed;
     private event Action<Vector2> MoveCanceled;
 
@@ -44,6 +47,9 @@ public class PlayerInputController : MonoBehaviour
 
     private void RegisterInputCallback()
     {
+        _input.Click.started += OnClickStarted;
+        _input.Click.canceled += OnClickCanceled;
+
         _input.Move.performed += OnMovePerformed;
         _input.Move.canceled += OnMoveCanceled;
 
@@ -65,6 +71,16 @@ public class PlayerInputController : MonoBehaviour
     }
 
     #region Register Action Map
+    private void OnClickStarted(InputAction.CallbackContext value)
+    {
+        ClickStarted?.Invoke();
+    }
+
+    private void OnClickCanceled(InputAction.CallbackContext value)
+    {
+        ClickCanceled?.Invoke();
+    }
+
     private void OnMovePerformed(InputAction.CallbackContext value)
     {
         MovePerformed?.Invoke(value.ReadValue<Vector2>());
@@ -123,6 +139,16 @@ public class PlayerInputController : MonoBehaviour
     #endregion
 
     #region Register
+    public void RegisterClickStarted(Action action)
+    {
+        ClickStarted += action;
+    }
+
+    public void RegisterClickCanceled(Action action)
+    {
+        ClickCanceled += action;
+    }
+
     public void RegisterMovePerformed(Action<Vector2> action)
     {
         MovePerformed += action;
@@ -179,6 +205,16 @@ public class PlayerInputController : MonoBehaviour
     }
 
     // Unregister
+    public void UnregisterClickStarted(Action action)
+    {
+        ClickStarted -= action;
+    }
+
+    public void UnregisterClickCanceled(Action action)
+    {
+        ClickCanceled -= action;
+    }
+
     public void UnregisterMovePerformed(Action<Vector2> action)
     {
         MovePerformed -= action;

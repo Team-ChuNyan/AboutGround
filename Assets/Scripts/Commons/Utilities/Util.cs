@@ -45,4 +45,23 @@ public static class Util
 
         return dictionary;
     }
+
+    public static bool IsNumberInRange(float value, float min, float max)
+    {
+        if (value < min || value > max)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    public static void Swap<T>(ref T a, ref T b) where T : class
+    {
+        T temp = a;
+        a = b;
+        b = temp;
+    }
 }

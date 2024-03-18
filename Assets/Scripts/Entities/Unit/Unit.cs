@@ -14,6 +14,8 @@ public abstract class Unit : MonoBehaviour, IMovable, ISelectable
     protected List<PathNode> _movementPath;
     protected Coroutine _moveCoroutine;
 
+    private bool _isSelection;
+
     public event Action OnArrived;
 
     public UnitData UnitData { get { return _unitData; } set { _unitData = value; } }
@@ -70,18 +72,34 @@ public abstract class Unit : MonoBehaviour, IMovable, ISelectable
         _moveSystem = sys;
     }
 
-    public void Select()
+    public Vector3 GetSelectPoint()
     {
-        ComponentHandler.SelectMaker.SetActive(true);
+        return ComponentHandler.Collider.bounds.center;
     }
 
-    public Bounds GetSelectBounds()
+    public void AddSelection()
     {
-        return ComponentHandler.Collider.bounds;
+        if (_isSelection == false)
+        {
+            ComponentHandler.SelectMaker.SetActive(true);
+            _isSelection = true;
+        }
+        ComponentHandler.SelectMaker.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+    }
+
+    public void WaitSelection()
+    {
+        if (_isSelection == false)
+        {
+            ComponentHandler.SelectMaker.SetActive(true);
+            _isSelection = true;
+        }
+        ComponentHandler.SelectMaker.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
     }
 
     public void CancelSelection()
     {
         ComponentHandler.SelectMaker.SetActive(false);
+        _isSelection = false;
     }
 }
