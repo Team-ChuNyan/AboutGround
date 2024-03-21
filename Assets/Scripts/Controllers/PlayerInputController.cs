@@ -28,6 +28,8 @@ public class PlayerInputController : MonoBehaviour
 
     private event Action EscCanceled;
 
+    private event Action<bool> ShiftStarted;
+
     private void Awake()
     {
         _inputAction = new PlayerInputAction();
@@ -68,6 +70,9 @@ public class PlayerInputController : MonoBehaviour
         _input.PressZoom.canceled += OnPressZoomCanceled;
 
         _input.Esc.canceled += OnEscCanceled;
+
+        _input.Shift.started += OnShifPressed;
+        _input.Shift.canceled += OnShifPressed;
     }
 
     #region Register Action Map
@@ -135,6 +140,11 @@ public class PlayerInputController : MonoBehaviour
     private void OnPressZoomCanceled(InputAction.CallbackContext value)
     {
         PressZoomCanceled?.Invoke(value.ReadValue<float>());
+    }
+
+    private void OnShifPressed(InputAction.CallbackContext value)
+    {
+        ShiftStarted?.Invoke(value.started);
     }
     #endregion
 
@@ -204,6 +214,11 @@ public class PlayerInputController : MonoBehaviour
         PressZoomCanceled += action;
     }
 
+    public void RegisterShiftPressed(Action<bool> action)
+    {
+        ShiftStarted += action;
+    }
+
     // Unregister
     public void UnregisterClickStarted(Action action)
     {
@@ -268,6 +283,11 @@ public class PlayerInputController : MonoBehaviour
     public void UnregisterPressZoomCanceled(Action<float> action)
     {
         PressZoomCanceled -= action;
+    }
+
+    public void UnregisterShiftPressed(Action<bool> action)
+    {
+        ShiftStarted -= action;
     }
     #endregion
 }

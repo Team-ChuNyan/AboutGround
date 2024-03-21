@@ -98,6 +98,15 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Shift"",
+                    ""type"": ""Button"",
+                    ""id"": ""4f24063f-32a3-433b-bd1f-9c3c8a8e0270"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -342,6 +351,17 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""Click"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7d428964-20e4-45d6-850b-0b5b976690b2"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shift"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -375,6 +395,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_Player_PressZoom = m_Player.FindAction("PressZoom", throwIfNotFound: true);
         m_Player_ScrollZoom = m_Player.FindAction("ScrollZoom", throwIfNotFound: true);
         m_Player_Esc = m_Player.FindAction("Esc", throwIfNotFound: true);
+        m_Player_Shift = m_Player.FindAction("Shift", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -444,6 +465,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_PressZoom;
     private readonly InputAction m_Player_ScrollZoom;
     private readonly InputAction m_Player_Esc;
+    private readonly InputAction m_Player_Shift;
     public struct PlayerActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -456,6 +478,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         public InputAction @PressZoom => m_Wrapper.m_Player_PressZoom;
         public InputAction @ScrollZoom => m_Wrapper.m_Player_ScrollZoom;
         public InputAction @Esc => m_Wrapper.m_Player_Esc;
+        public InputAction @Shift => m_Wrapper.m_Player_Shift;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -489,6 +512,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Esc.started += instance.OnEsc;
             @Esc.performed += instance.OnEsc;
             @Esc.canceled += instance.OnEsc;
+            @Shift.started += instance.OnShift;
+            @Shift.performed += instance.OnShift;
+            @Shift.canceled += instance.OnShift;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -517,6 +543,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Esc.started -= instance.OnEsc;
             @Esc.performed -= instance.OnEsc;
             @Esc.canceled -= instance.OnEsc;
+            @Shift.started -= instance.OnShift;
+            @Shift.performed -= instance.OnShift;
+            @Shift.canceled -= instance.OnShift;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -553,5 +582,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         void OnPressZoom(InputAction.CallbackContext context);
         void OnScrollZoom(InputAction.CallbackContext context);
         void OnEsc(InputAction.CallbackContext context);
+        void OnShift(InputAction.CallbackContext context);
     }
 }
