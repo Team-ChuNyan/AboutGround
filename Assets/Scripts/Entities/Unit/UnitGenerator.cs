@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class UnitGenerator : MonoBehaviourSingleton<UnitGenerator>
 {
-    private GameObject _unitPrefab;
+    private UnitComponentHandler _unitPrefab;
     private Dictionary<RaceType, Queue<Unit>> _inactiveUnit;
     private Unit _newUnit;
 
     private void Awake()
     {
-        _unitPrefab = Resources.Load<GameObject>("Prefabs/Unit");
+        _unitPrefab = Resources.Load<UnitComponentHandler>("Prefabs/Unit");
         _inactiveUnit = Util.NewEnumKeyDictionary<RaceType, Queue<Unit>>();
     }
 
@@ -19,7 +19,8 @@ public class UnitGenerator : MonoBehaviourSingleton<UnitGenerator>
         {
             case RaceType.Human:
                 var newobj = Instantiate(_unitPrefab);
-                _newUnit = newobj.AddComponent<Human>();
+                _newUnit = newobj.gameObject.AddComponent<Human>();
+                _newUnit.ComponentHandler = newobj;
                 _newUnit.UnitData.SetRace(type);
                 break;
             case RaceType.Animal:
@@ -48,6 +49,12 @@ public class UnitGenerator : MonoBehaviourSingleton<UnitGenerator>
     public UnitGenerator SetMoveSystem(IMoveSystem sys)
     {
         _newUnit.SetMoveSystem(sys);
+        return this;
+    }
+
+    public UnitGenerator SetPosition(Vector3 pos)
+    {
+        _newUnit.transform.position = pos;
         return this;
     }
 

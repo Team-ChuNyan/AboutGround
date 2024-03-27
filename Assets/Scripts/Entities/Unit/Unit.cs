@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Unit : MonoBehaviour, IMovable
+public abstract class Unit : MonoBehaviour, IMovable, ISelectable
 {
+    public UnitComponentHandler ComponentHandler;
     private IMoveSystem _moveSystem;
 
     protected UnitData _unitData;
@@ -12,6 +13,8 @@ public abstract class Unit : MonoBehaviour, IMovable
 
     protected List<PathNode> _movementPath;
     protected Coroutine _moveCoroutine;
+
+    private bool _isSelection;
 
     public event Action OnArrived;
 
@@ -67,5 +70,36 @@ public abstract class Unit : MonoBehaviour, IMovable
     public void SetMoveSystem(IMoveSystem sys)
     {
         _moveSystem = sys;
+    }
+
+    public Vector3 GetSelectPoint()
+    {
+        return ComponentHandler.Collider.bounds.center;
+    }
+
+    public void AddSelection()
+    {
+        if (_isSelection == false)
+        {
+            ComponentHandler.SelectMaker.SetActive(true);
+            _isSelection = true;
+        }
+        ComponentHandler.SelectMaker.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+    }
+
+    public void WaitSelection()
+    {
+        if (_isSelection == false)
+        {
+            ComponentHandler.SelectMaker.SetActive(true);
+            _isSelection = true;
+        }
+        ComponentHandler.SelectMaker.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+    }
+
+    public void CancelSelection()
+    {
+        ComponentHandler.SelectMaker.SetActive(false);
+        _isSelection = false;
     }
 }

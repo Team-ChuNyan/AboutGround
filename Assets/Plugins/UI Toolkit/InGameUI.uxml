@@ -1,0 +1,8 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <engine:Template name="BottomIconUI" src="project://database/Assets/Plugins/UI%20Toolkit/InteractionMenuUI.uxml?fileID=9197481963319205126&amp;guid=82ad11f0cf470454687dae68ed8c1c0a&amp;type=3#InteractionMenuUI" />
+    <engine:VisualElement name="BottomBar" style="flex-grow: 1; min-height: auto; min-width: auto;" />
+    <engine:Instance template="BottomIconUI" name="InteractionMenu" style="max-height: none; margin-top: 0; margin-right: 0; margin-bottom: 15px; margin-left: 0; flex-grow: 0; flex-shrink: 0; bottom: auto;" />
+    <engine:VisualElement name="SafeArea" style="position: absolute; width: 100%; height: 100%;">
+        <engine:VisualElement name="SelectionBox" style="background-color: rgba(0, 0, 0, 0.84); width: 1px; height: 1px; translate: 0 0; display: flex; position: absolute; transform-origin: right top; scale: 1 1;" />
+    </engine:VisualElement>
+</engine:UXML>
