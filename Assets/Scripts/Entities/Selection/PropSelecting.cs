@@ -1,13 +1,16 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class ObjectSelector
+public class PropSelecting : ICancelable
 {
-    public enum Mode { Default, Add }
+    // TODO : 선택 방식을 레이캐스트로 통일
+    public enum Mode { Default, Add, Cancel }
 
     private Camera _mainCam;
     private SelectionBoxUIHandler _selectionBoxUI;
+    private QuickCanceling _quickCanceling;
     private List<Unit> _playerUnitProp;
 
     private Mode _selectMode;
@@ -23,8 +26,9 @@ public class ObjectSelector
     private Vector2 minPoint;
     private Vector2 maxPoint;
 
+    private event Action SelectionChanged;
 
-    public ObjectSelector()
+    public PropSelecting()
     {
         _mainCam = Camera.main;
         _selectMode = Mode.Default;
@@ -35,33 +39,54 @@ public class ObjectSelector
         _selectableLayer = Const.Layer_Selectable;
     }
 
-    public void Init(PlayerInputController con, SelectionBoxUIHandler ui)
+    public void Init(PlayerInputController con, SelectionBoxUIHandler ui, QuickCanceling quickCanceling, List<Unit> target)
     {
         _input = con;
         _selectionBoxUI = ui;
+        _quickCanceling = quickCanceling;
+        _playerUnitProp = target;
+
         con.RegisterClickStarted(StartSelection);
         con.RegisterClickCanceled(CancelSelection);
 
         con.RegisterShiftPressed(ToggleAddMode);
     }
 
-    public void SetTargetProp(List<Unit> target)
+    public HashSet<ISelectable> GetSelection()
     {
-        _playerUnitProp = target;
+        return _currentSelection;
+    }
+
+    public bool IsCanceled()
+    {
+        return _isSearching == false;
+    }
+
+    private void ToggleAddMode(bool isOn)
+    {
+        _selectMode = isOn == true ? Mode.Add : Mode.Default;
+    }
+
+    public void RegisterSelectionChanged(Action action)
+    {
+        SelectionChanged += action;
     }
 
     private void StartSelection()
     {
         if (_isSearching == false)
         {
+            _quickCanceling.Push(this);
             _input.RegisterMoveMousePerformed(PerformSelection);
             _isSearching = true;
         }
 
         _startPosition = Mouse.current.position.ReadValue();
+        _endPosition = _startPosition;
         _selectionBoxUI.Show();
         _selectionBoxUI.SetStartPosition(_startPosition);
-        SwapCurrentSelection();
+        _beforeSelection.Clear();
+        MergeCurnnetSelectionToBeforeSelection();
     }
 
     private void PerformSelection(Vector2 pos)
@@ -74,16 +99,31 @@ public class ObjectSelector
 
     private void CancelSelection()
     {
-        if (_isSearching == true)
-        {
-            _input.UnregisterMoveMousePerformed(PerformSelection);
-            _isSearching = false;
-        }
+        if (_isSearching == false)
+            return;
 
-        _selectionBoxUI.Hide();
+        _quickCanceling.Remove(this);
+        UnregisterPerformSelection();
         MergeBeforeSelectionToCurrentSelection();
         ClearBeforeSelections();
+        ClickSelection();
         DecideSelection();
+        OnChangeSelection();
+    }
+
+    public void QuickCancel()
+    {
+        _selectMode = Mode.Cancel;
+        ClearWaitSelections();
+        CancelSelection();
+        _selectMode = Mode.Default;
+    }
+
+    private void UnregisterPerformSelection()
+    {
+        _input.UnregisterMoveMousePerformed(PerformSelection);
+        _selectionBoxUI.Hide();
+        _isSearching = false;
     }
 
     private void CalcMinMaxPoint()
@@ -111,7 +151,7 @@ public class ObjectSelector
         }
     }
 
-    public void HandleSeletion()
+    private void HandleSeletion()
     {
         foreach (var item in _playerUnitProp)
         {
@@ -147,10 +187,14 @@ public class ObjectSelector
             }
             _waitSelection.Clear();
         }
-        else
-        {
-            RaycastStartPosition();
-        }
+    }
+
+    private void ClickSelection()
+    {
+        if (_startPosition != _endPosition)
+            return;
+
+        RaycastStartPosition();
     }
 
     private void RaycastStartPosition()
@@ -188,12 +232,6 @@ public class ObjectSelector
         _waitSelection.Remove(obj);
     }
 
-    private void SwapCurrentSelection()
-    {
-        _beforeSelection.Clear();
-        Util.Swap(ref _beforeSelection, ref _currentSelection);
-    }
-
     private void ClearBeforeSelections()
     {
         foreach (var item in _beforeSelection)
@@ -206,9 +244,18 @@ public class ObjectSelector
         _beforeSelection.Clear();
     }
 
+    private void ClearWaitSelections()
+    {
+        foreach (var item in _waitSelection)
+        {
+            item.CancelSelection();
+        }
+        _waitSelection.Clear();
+    }
+
     private void MergeBeforeSelectionToCurrentSelection()
     {
-        if (_selectMode != Mode.Add)
+        if (_selectMode == Mode.Default)
             return;
 
         foreach (var item in _beforeSelection)
@@ -217,8 +264,20 @@ public class ObjectSelector
         }
     }
 
-    private void ToggleAddMode(bool isOn)
+    private void MergeCurnnetSelectionToBeforeSelection()
     {
-        _selectMode = isOn == true ? Mode.Add : Mode.Default;
+        foreach (var item in _currentSelection)
+        {
+            _beforeSelection.Add(item);
+        }
+        _currentSelection.Clear();
+    }
+
+    private void OnChangeSelection()
+    {
+        if (_selectMode == Mode.Cancel)
+            return;
+
+        SelectionChanged?.Invoke();
     }
 }

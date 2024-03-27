@@ -45,10 +45,10 @@ public class SceneTrigger : MonoBehaviour
         var inputController = gameObject.AddComponent<PlayerInputController>();
         var unitController = gameObject.AddComponent<UnitController>();
         var itemController = gameObject.AddComponent<ItemController>();
+        var selectController = new SelectPropController();
 
         var inGameUI = Instantiate(Resources.Load<InGameUIController>("Prefabs/InGameUI"));
         inGameUI.name = "InGameUI";
-        var interActionMenuUIViewModel = inGameUI.GetInteractionMenuViewModel();
 
         var mapGenerator = Instantiate(Resources.Load<MapGenerator>("Prefabs/MapGenerator"));
         mapGenerator.name = "MapGenerator";
@@ -57,7 +57,7 @@ public class SceneTrigger : MonoBehaviour
 
         var workplan = new WorkPlan();
         var groundPathfinder = new GroundPathfinding();
-        var ObjectSelector = new ObjectSelector();
+        var quickCanceling = new QuickCanceling(inputController);
 
         // 클래스 초기화
         cameraInputHandler.Initialize(inputController, virualcameraController);
@@ -72,10 +72,10 @@ public class SceneTrigger : MonoBehaviour
         unitController.SetGroundPathFinding(groundPathfinder);
         unitController.Initialize(workplan);
         workGenerator.Initialize(workplan);
-
         groundPathfinder.SetNodeMap(mapGenerator.PathNodeMap);
-        ObjectSelector.Init(inputController, inGameUI.DragSelectionUI);
-        ObjectSelector.SetTargetProp(unitController.PlayerUnit);
+        selectController.Init(inputController, quickCanceling);
+        selectController.InitObjectSelecting(inGameUI.DragSelectionUI,unitController.PlayerUnit);
+
 
         // 디버거
         if (_debugger.TryGetComponent(out MainSceneDebugger debugger))
