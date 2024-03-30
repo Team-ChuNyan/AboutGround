@@ -43,7 +43,7 @@ public class MainSceneDebugger : MonoBehaviour
 
     public void CreatePlayerUnit()
     {
-        UnitController.CreateNewPlayerUnit(RaceType.Human);
+        UnitGenerator.Instance.SetNewUnit(PropOwner.Player,RaceType.Human);
     }
 
     public void MoveUnit()

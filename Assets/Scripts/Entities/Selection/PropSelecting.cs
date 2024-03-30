@@ -11,7 +11,7 @@ public class PropSelecting : ICancelable
     private Camera _mainCam;
     private SelectionBoxUIHandler _selectionBoxUI;
     private QuickCanceling _quickCanceling;
-    private List<Unit> _playerUnitProp;
+    private List<Unit> _playerHumans;
 
     private Mode _selectMode;
     private HashSet<ISelectable> _currentSelection;
@@ -32,19 +32,19 @@ public class PropSelecting : ICancelable
     {
         _mainCam = Camera.main;
         _selectMode = Mode.Default;
-        _playerUnitProp = new(16);
+        _playerHumans = new(16);
         _waitSelection = new(16);
         _currentSelection = new(16);
         _beforeSelection = new(16);
         _selectableLayer = Const.Layer_Selectable;
     }
 
-    public void Init(PlayerInputController con, SelectionBoxUIHandler ui, QuickCanceling quickCanceling, List<Unit> target)
+    public void Init(PlayerInputController con, SelectionBoxUIHandler ui, QuickCanceling quickCanceling, PropsContainer props)
     {
         _input = con;
         _selectionBoxUI = ui;
         _quickCanceling = quickCanceling;
-        _playerUnitProp = target;
+        _playerHumans = props.PlayerUnits[RaceType.Human];
 
         con.RegisterClickStarted(StartSelection);
         con.RegisterClickCanceled(CancelSelection);
@@ -153,7 +153,7 @@ public class PropSelecting : ICancelable
 
     private void HandleSeletion()
     {
-        foreach (var item in _playerUnitProp)
+        foreach (var item in _playerHumans)
         {
             bool isContains = _waitSelection.Contains(item);
             var point = item.GetSelectPoint();

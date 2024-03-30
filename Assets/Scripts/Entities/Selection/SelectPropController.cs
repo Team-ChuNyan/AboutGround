@@ -21,9 +21,9 @@ public class SelectPropController : ICancelable
         _quickCanceling = quickCanceling;
     }
 
-    public void InitObjectSelecting(SelectionBoxUIHandler selectionBoxUI, List<Unit> units)
+    public void InitObjectSelecting(SelectionBoxUIHandler selectionBoxUI, PropsContainer props)
     {
-        _selecting.Init(_inputController, selectionBoxUI, _quickCanceling, units);
+        _selecting.Init(_inputController, selectionBoxUI, _quickCanceling, props);
     }
 
     public bool IsCanceled()

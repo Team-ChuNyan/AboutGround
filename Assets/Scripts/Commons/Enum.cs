@@ -78,3 +78,8 @@ public enum ItemCategory
     Resource    = 300000
 }
 
+public enum PropOwner 
+{ 
+    Player,
+    NPC 
+}

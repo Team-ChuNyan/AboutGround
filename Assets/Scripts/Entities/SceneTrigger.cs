@@ -58,8 +58,14 @@ public class SceneTrigger : MonoBehaviour
         var workplan = new WorkPlan();
         var groundPathfinder = new GroundPathfinding();
         var quickCanceling = new QuickCanceling(inputController);
+        var propsContainer = new PropsContainer();
 
         // 클래스 초기화
+        propsContainer.SetPacks(PackGenerator.Instance.ActivePack)
+            .SetPlayerUnits(unitController.PlayerUnits)
+            .SetNpcUnits(unitController.NPCUnits);
+
+        unitGenerator.Init(groundPathfinder);
         cameraInputHandler.Initialize(inputController, virualcameraController);
 
         SeedMapData seed = new(100, 100, 9123);
@@ -69,12 +75,12 @@ public class SceneTrigger : MonoBehaviour
             .GeneratePathNodeMap()
             .PaintTileMap();
 
-        unitController.SetGroundPathFinding(groundPathfinder);
-        unitController.Initialize(workplan);
+        unitController.Init(workplan);
         workGenerator.Initialize(workplan);
         groundPathfinder.SetNodeMap(mapGenerator.PathNodeMap);
         selectController.Init(inputController, quickCanceling);
-        selectController.InitObjectSelecting(inGameUI.DragSelectionUI,unitController.PlayerUnit);
+        selectController.InitObjectSelecting(inGameUI.DragSelectionUI,propsContainer);
+
 
 
         // 디버거
@@ -88,7 +94,8 @@ public class SceneTrigger : MonoBehaviour
         {
             for (int z = 0; z < 70; z++)
             {
-                unitController.CreateNewPlayerUnit(RaceType.Human).transform.position = new Vector3(x, 0, z);
+                UnitGenerator.Instance.SetNewUnit(PropOwner.Player, RaceType.Human)
+                    .SetPosition(new Vector3(x, 0, z));
             }
         }
     }

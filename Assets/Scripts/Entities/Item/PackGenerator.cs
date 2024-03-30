@@ -9,6 +9,8 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
     private Queue<Pack> _inactivePacks;
     private Pack _newPack;
 
+    public List<Pack> ActivePack { get { return _activePack; } }
+
     private void Awake()
     {
         _prefab = Resources.Load<Pack>("Prefabs/Pack");

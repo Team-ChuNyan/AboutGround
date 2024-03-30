@@ -1,6 +1,7 @@
 public struct UnitData
 {
     private RaceType _race;
+    public PropOwner Owner;
     private string _name;
     private string _description;
     private float _moveSpeed; // 공통적인 부분은 스크립터블로 수정
@@ -38,4 +39,9 @@ public struct UnitData
         return this;
     }
 
+    public UnitData SetOwner(PropOwner owner)
+    {
+        Owner = owner;
+        return this;
+    }
 }
