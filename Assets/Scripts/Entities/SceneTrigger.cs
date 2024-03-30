@@ -79,7 +79,7 @@ public class SceneTrigger : MonoBehaviour
         workGenerator.Initialize(workplan);
         groundPathfinder.SetNodeMap(mapGenerator.PathNodeMap);
         selectController.Init(inputController, quickCanceling);
-        selectController.InitObjectSelecting(inGameUI.DragSelectionUI,propsContainer);
+        selectController.InitObjectSelecting(inGameUI.DragSelectionUI, propsContainer);
 
 
 
@@ -90,12 +90,16 @@ public class SceneTrigger : MonoBehaviour
             debugger.UnitController = unitController;
         }
 
-        for (int x = 0; x < 70; x++)
+        for (int x = 0; x < 4; x++)
         {
-            for (int z = 0; z < 70; z++)
+            for (int z = 0; z < 4; z++)
             {
                 UnitGenerator.Instance.SetNewUnit(PropOwner.Player, RaceType.Human)
                     .SetPosition(new Vector3(x, 0, z));
+
+                var item = ItemGenerator.Instance.SetNewItem(ItemType.Apple)
+                    .GetNewItem();
+                PackGenerator.Instance.CreateNewItemPack(item).SetPosition(new Vector2Int (x + 50, z + 50));
             }
         }
     }
