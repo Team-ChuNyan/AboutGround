@@ -18,6 +18,9 @@ public abstract class Unit : MonoBehaviour, IMovable, ISelectable
 
     public event Action OnArrived;
 
+    public static readonly List<InteractionType> PlayerUnitInteraction
+    = new() { InteractionType.Cancel };
+
     public UnitData UnitData { get { return _unitData; } set { _unitData = value; } }
     public Dictionary<BodyPartType, BodyPart> BodyParts { get { return _bodyParts; } set { _bodyParts = value; } }
 
@@ -101,5 +104,10 @@ public abstract class Unit : MonoBehaviour, IMovable, ISelectable
     {
         ComponentHandler.SelectMaker.SetActive(false);
         _isSelection = false;
+    }
+
+    public SelectPropType GetSelectPropType()
+    {
+        return UnitData.SelectPropType;
     }
 }

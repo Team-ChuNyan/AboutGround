@@ -60,12 +60,16 @@ public class SelectPropController : ICancelable
         List<InteractionType> defaultType = null;
         switch (_selecting.SelectType)
         {
-            case PropSelecting.SelectPropType.PlayerUnit:
+            case SelectPropType.PlayerUnit:
+                defaultType = Unit.PlayerUnitInteraction;
                 break;
-            case PropSelecting.SelectPropType.Pack:
+            case SelectPropType.NPC:
+                defaultType = Unit.PlayerUnitInteraction;
+                break;
+            case SelectPropType.Pack:
                 defaultType = Pack.DefaultInteraction;
                 break;
-            case PropSelecting.SelectPropType.None:
+            case SelectPropType.None:
             default:
                 UnityEngine.Debug.Log("RefreshInteractionUI");
                 break;

@@ -6,7 +6,6 @@ using UnityEngine.InputSystem;
 public class PropSelecting : ICancelable
 {
     public enum Mode { Default, Add, Cancel }
-    public enum SelectPropType { PlayerUnit, Pack, None }
 
     private Camera _mainCam;
     private SelectionBoxUIHandler _selectionBoxUI;
@@ -227,7 +226,8 @@ public class PropSelecting : ICancelable
             }
             _waitSelection.Clear();
         }
-        else
+
+        if (_currentSelection.Count == 0)
         {
             _selectType = SelectPropType.None;
         }
@@ -235,10 +235,11 @@ public class PropSelecting : ICancelable
 
     private void ClickSelection()
     {
-        if (_startPosition != _endPosition)
-            return;
-
-        RaycastStartPosition();
+        float distance = (_startPosition - _endPosition).sqrMagnitude;
+        if (distance < 500f)
+        {
+            RaycastStartPosition();
+        }
     }
 
     public void UnselectAllSelection()
@@ -258,6 +259,7 @@ public class PropSelecting : ICancelable
         if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, _selectableLayer) == true)
         {
             var obj = hitInfo.collider.gameObject.GetComponent<ISelectable>();
+            _selectType = obj.GetSelectPropType();
             AddCurrentObject(obj);
         }
     }

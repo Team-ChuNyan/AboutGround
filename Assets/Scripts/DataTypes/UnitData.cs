@@ -15,6 +15,8 @@ public struct UnitData
     public float Weight { get { return _weight; } set { _weight = value; } }
     public float MaxWeight { get { return _maxWeight; } set { _maxWeight = value; } }
 
+    public readonly SelectPropType SelectPropType { get { return Owner == PropOwner.Player ? SelectPropType.PlayerUnit : SelectPropType.NPC; } }
+
     public UnitData SetRace(RaceType race)
     {
         _race = race;

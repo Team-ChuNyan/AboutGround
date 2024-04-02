@@ -26,7 +26,14 @@ public class InteractionViewModel
 
     public void RegisterEvent(InteractionType type, Action action)
     {
-        _events[type] += action;
+        if (_events.ContainsKey(type) == false)
+        {
+            _events.Add(type, action);
+        }
+        else
+        {
+            _events[type] += action;
+        }
     }
 
     public void RegisterChangedSelection(Action action)

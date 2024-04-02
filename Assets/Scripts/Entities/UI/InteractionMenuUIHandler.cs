@@ -9,7 +9,7 @@ public class InteractionMenuUIHandler : UIBase
 
     private List<IconButton> _btns;
 
-    public InteractionMenuUIHandler(VisualElement root) : base(root) 
+    public InteractionMenuUIHandler(VisualElement root) : base(root)
     {
         Hide();
         ViewModel = new InteractionViewModel();
@@ -32,17 +32,17 @@ public class InteractionMenuUIHandler : UIBase
 
     public void RefreshButtons()
     {
-        var types = ViewModel.InteractionTypes;
-        int typeCount = types.Count;
-
-        if (typeCount > 0)
-            Show();
-        else
+        if (ViewModel.Selections.Count == 0)
+        {
             Hide();
+            return;
+        }
 
+        Show();
+        var types = ViewModel.InteractionTypes;
         for (int i = 0; i < _btns.Count; i++)
         {
-            if (typeCount <= i )
+            if (types.Count <= i)
             {
                 _btns[i].Hide();
                 continue;

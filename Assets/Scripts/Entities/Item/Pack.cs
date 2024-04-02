@@ -93,4 +93,9 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
     {
         return _selectColider.bounds.center;
     }
+
+    public SelectPropType GetSelectPropType()
+    {
+        return SelectPropType.Pack;
+    }
 }

@@ -43,6 +43,14 @@ public enum InteractionType
     Carry,
 }
 
+public enum SelectPropType 
+{ 
+    PlayerUnit,
+    NPC,
+    Pack,
+    None
+}
+
 public enum ItemType
 {
     None,
