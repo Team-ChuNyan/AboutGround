@@ -22,9 +22,4 @@ public class InGameUIController : MonoBehaviour
         InteractionMenuUI = new(childRoot);
         DragSelectionUI = new(dragSelectionRoot);
     }
-
-    public EnumViewModel<InteractionType> GetInteractionMenuViewModel()
-    {
-        return InteractionMenuUI.GetViewModel();
-    }
 }

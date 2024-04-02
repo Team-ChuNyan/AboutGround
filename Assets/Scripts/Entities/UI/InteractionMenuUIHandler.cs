@@ -3,17 +3,17 @@ using UnityEngine.UIElements;
 
 public class InteractionMenuUIHandler : UIBase
 {
+    public readonly InteractionViewModel ViewModel;
     private const string ButtonName = "Button";
     private const int _count = 4;
 
-    private List<IDynamicTypeUpdater<InteractionType>> _btns;
-    private EnumViewModel<InteractionType> _interactionBtnViewModel;
-
+    private List<IconButton> _btns;
 
     public InteractionMenuUIHandler(VisualElement root) : base(root) 
     {
-        _interactionBtnViewModel = new EnumViewModel<InteractionType>();
-        _interactionBtnViewModel.RegisterValueChanged(ChangeButtons);
+        Hide();
+        ViewModel = new InteractionViewModel();
+        ViewModel.RegisterChangedSelection(RefreshButtons);
     }
 
     protected override void SetVisualElement()
@@ -21,22 +21,41 @@ public class InteractionMenuUIHandler : UIBase
         _btns = new(_count);
         for (int i = 0; i < _count; i++)
         {
-            var btn = _root.Q<VisualElement>($"{ButtonName}{i}");
-            _btns.Add(new IconButton<InteractionType>(btn));
+            var btnUI = _root.Q<VisualElement>($"{ButtonName}{i}");
+            var iconBtn = new IconButton(btnUI);
+            iconBtn.SetIndex(i);
+            iconBtn.RegisterEvent(StartInteractionEvent);
+
+            _btns.Add(iconBtn);
         }
     }
 
-    public EnumViewModel<InteractionType> GetViewModel()
+    public void RefreshButtons()
     {
-        return _interactionBtnViewModel;
-    }
+        var types = ViewModel.InteractionTypes;
+        int typeCount = types.Count;
 
-    private void ChangeButtons()
-    {
-        var list = _interactionBtnViewModel.ActionList;
-        for (int i = 0; i < list.Count; i++)
+        if (typeCount > 0)
+            Show();
+        else
+            Hide();
+
+        for (int i = 0; i < _btns.Count; i++)
         {
-            _btns[i].UpdateFormType(list[i]);
+            if (typeCount <= i )
+            {
+                _btns[i].Hide();
+                continue;
+            }
+            _btns[i].Show();
+            _btns[i].SetText(types[i].ToString());
+            //_btns[i].SetSprite() TODO : 이미지 변경
         }
+    }
+
+    private void StartInteractionEvent(int index)
+    {
+        InteractionType type = ViewModel.InteractionTypes[index];
+        ViewModel.Events[type]?.Invoke();
     }
 }

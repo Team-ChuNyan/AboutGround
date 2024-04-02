@@ -39,7 +39,8 @@ public enum WorkType
 
 public enum InteractionType
 {
-
+    Cancel,
+    Carry,
 }
 
 public enum ItemType

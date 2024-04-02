@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISelectable
@@ -10,6 +11,10 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
 
     private IPackable _item;
     private bool _isSelection;
+
+    public static readonly List<InteractionType> DefaultInteraction
+        = new() { InteractionType.Cancel, InteractionType.Carry };
+
 
     public IPackable Item { get { return _item; } }
 

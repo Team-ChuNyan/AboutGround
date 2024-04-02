@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class PropSelecting : ICancelable
 {
     public enum Mode { Default, Add, Cancel }
-    public enum SelectProp { PlayerUnit, Pack }
+    public enum SelectPropType { PlayerUnit, Pack, None }
 
     private Camera _mainCam;
     private SelectionBoxUIHandler _selectionBoxUI;
@@ -15,9 +15,9 @@ public class PropSelecting : ICancelable
     private List<Pack> _packs;
 
     private Mode _mode;
-    private SelectProp _selectProp;
-    private SelectProp _beforeProp;
-    private HashSet<ISelectable> _currentSelection;
+    private SelectPropType _selectType;
+    private SelectPropType _beforeType;
+    private List<ISelectable> _currentSelection;
     private HashSet<ISelectable> _waitSelection;
     private HashSet<ISelectable> _beforeSelection;
     private PlayerInputController _input;
@@ -30,6 +30,9 @@ public class PropSelecting : ICancelable
     private Vector2 maxPoint;
 
     private event Action SelectionChanged;
+
+    public SelectPropType SelectType { get { return _selectType; } }
+    public List<ISelectable> CurrentSelection { get { return _currentSelection; } }
 
     public PropSelecting()
     {
@@ -56,7 +59,7 @@ public class PropSelecting : ICancelable
         con.RegisterShiftPressed(ToggleAddMode);
     }
 
-    public HashSet<ISelectable> GetSelection()
+    public List<ISelectable> GetSelection()
     {
         return _currentSelection;
     }
@@ -71,9 +74,9 @@ public class PropSelecting : ICancelable
         if (isOn == true)
         {
             _mode = Mode.Add;
-            if (_isSearching == true && _selectProp != _beforeProp)
+            if (_isSearching == true && _selectType != _beforeType)
             {
-                _selectProp = _beforeProp;
+                _selectType = _beforeType;
                 ClearWaitSelections();
                 HandleSeletion();
             }
@@ -173,15 +176,15 @@ public class PropSelecting : ICancelable
         if (_mode == Mode.Default)
         {
             if (TryFindPropsInSelectionBox(_playerHumans))
-                _selectProp = SelectProp.PlayerUnit;
+                _selectType = SelectPropType.PlayerUnit;
             else if (TryFindPropsInSelectionBox(_packs))
-                _selectProp = SelectProp.Pack;
+                _selectType = SelectPropType.Pack;
         }
         else if (_mode == Mode.Add)
         {
-            if (_selectProp == SelectProp.PlayerUnit)
+            if (_selectType == SelectPropType.PlayerUnit)
                 TryFindPropsInSelectionBox(_playerHumans);
-            else if (_selectProp == SelectProp.Pack)
+            else if (_selectType == SelectPropType.Pack)
                 TryFindPropsInSelectionBox(_packs);
         }
     }
@@ -224,6 +227,10 @@ public class PropSelecting : ICancelable
             }
             _waitSelection.Clear();
         }
+        else
+        {
+            _selectType = SelectPropType.None;
+        }
     }
 
     private void ClickSelection()
@@ -232,6 +239,17 @@ public class PropSelecting : ICancelable
             return;
 
         RaycastStartPosition();
+    }
+
+    public void UnselectAllSelection()
+    {
+        foreach (var item in _currentSelection)
+        {
+            item.CancelSelection();
+        }
+        _currentSelection.Clear();
+
+        OnChangeSelection();
     }
 
     private void RaycastStartPosition()
@@ -293,7 +311,7 @@ public class PropSelecting : ICancelable
     private void MergeBeforeSelectionToCurrentSelection()
     {
         if (_mode == Mode.Default
-         || _selectProp != _beforeProp)
+         || _selectType != _beforeType)
             return;
 
         foreach (var item in _beforeSelection)
@@ -308,7 +326,7 @@ public class PropSelecting : ICancelable
         {
             _beforeSelection.Add(item);
         }
-        _beforeProp = _selectProp;
+        _beforeType = _selectType;
         _currentSelection.Clear();
     }
 

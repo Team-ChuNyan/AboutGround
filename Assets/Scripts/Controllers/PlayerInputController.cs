@@ -1,11 +1,14 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class PlayerInputController : MonoBehaviour
 {
     private PlayerInputAction _inputAction;
     private PlayerInputAction.PlayerActions _input;
+
+    public static bool IsPointerOverUI;
 
     private event Action ClickStarted;
     private event Action ClickCanceled;
@@ -35,6 +38,11 @@ public class PlayerInputController : MonoBehaviour
         _inputAction = new PlayerInputAction();
         _input = _inputAction.Player;
         RegisterInputCallback();
+    }
+
+    private void Update()
+    {
+        IsPointerOverUI = EventSystem.current.IsPointerOverGameObject();
     }
 
     private void OnEnable()
@@ -78,6 +86,9 @@ public class PlayerInputController : MonoBehaviour
     #region Register Action Map
     private void OnClickStarted(InputAction.CallbackContext value)
     {
+        if (IsPointerOverUI == true)
+            return;
+
         ClickStarted?.Invoke();
     }
 

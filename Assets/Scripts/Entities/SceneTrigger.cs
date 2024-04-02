@@ -59,6 +59,7 @@ public class SceneTrigger : MonoBehaviour
         var groundPathfinder = new GroundPathfinding();
         var quickCanceling = new QuickCanceling(inputController);
         var propsContainer = new PropsContainer();
+        var interactionViewModel = inGameUI.InteractionMenuUI.ViewModel;
 
         // 클래스 초기화
         propsContainer.SetPacks(PackGenerator.Instance.ActivePack)
@@ -79,7 +80,7 @@ public class SceneTrigger : MonoBehaviour
         workGenerator.Initialize(workplan);
         groundPathfinder.SetNodeMap(mapGenerator.PathNodeMap);
         selectController.Init(inputController, quickCanceling);
-        selectController.InitObjectSelecting(inGameUI.DragSelectionUI, propsContainer);
+        selectController.InitObjectSelecting(interactionViewModel, inGameUI.DragSelectionUI, propsContainer);
 
 
 
