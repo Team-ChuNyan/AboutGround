@@ -5,11 +5,14 @@ public class QuickCanceling
     private PlayerInputController _playerInputController;
     private List<ICancelable> _stack;
 
-    public QuickCanceling(PlayerInputController controller)
+    public QuickCanceling()
+    {
+        _stack = new();
+    }
+
+    public void Init(PlayerInputController controller)
     {
         _playerInputController = controller;
-        _stack = new();
-
         _playerInputController.RegisterEsc(CancelLastAction);
     }
 
