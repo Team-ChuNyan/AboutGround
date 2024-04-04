@@ -63,6 +63,8 @@ public class SceneTrigger : MonoBehaviour
         CreateMap();
         InitClass();
         InitDebuger();
+
+        RegisterInteractionViewModel();
     }
 
     private void InstantiateManagers()
@@ -159,5 +161,11 @@ public class SceneTrigger : MonoBehaviour
                 PackGenerator.Instance.CreateNewItemPack(item).SetPosition(new Vector2Int(x + 50, z + 50));
             }
         }
+    }
+
+    private void RegisterInteractionViewModel()
+    {
+        _interactionViewModel.RegisterEvent(InteractionType.Cancel, _selectController.QuickCancel);
+        _interactionViewModel.RegisterEvent(InteractionType.Carry, () => { PackController.CarryAll(_interactionViewModel.Selections); });
     }
 }

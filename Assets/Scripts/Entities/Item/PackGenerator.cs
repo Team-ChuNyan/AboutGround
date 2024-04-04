@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +12,8 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
 
     public List<Pack> ActivePack { get { return _activePack; } }
 
+    private event Action<Pack> GeneratedPack;
+
     private void Awake()
     {
         _prefab = Resources.Load<Pack>("Prefabs/Pack");
@@ -18,11 +21,21 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
         _inactivePacks = new Queue<Pack>();
     }
 
+    public void RegisterGenerated(Action<Pack> action)
+    {
+        GeneratedPack += action;
+    }
+
+    private void OnGeneratedPack()
+    {
+        GeneratedPack?.Invoke(_newPack);
+    }
+
     public PackGenerator CreateNewItemPack(IPackable item)
     {
         ObjectPooling(item);
         ChangePackMesh();
-
+        OnGeneratedPack();
         return this;
     }
 
