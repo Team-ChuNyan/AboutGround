@@ -58,9 +58,15 @@ public class UnitGenerator : MonoBehaviourSingleton<UnitGenerator>
         return this;
     }
 
+    public UnitGenerator SetPosition(Vector2Int pos)
+    {
+        _newUnit.transform.position = Util.Vector2IntToVector3(pos);
+        return this;
+    }
+
     public UnitGenerator SetPosition(Vector3 pos)
     {
-        _newUnit.transform.position = pos;
+        _newUnit.transform.position = Util.FloorVector3(pos);
         return this;
     }
 

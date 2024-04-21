@@ -45,6 +45,12 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
         return this;
     }
 
+    public PackGenerator SetPosition(Vector3 pos)
+    {
+        _newPack.transform.position = Util.FloorVector3(pos);
+        return this;
+    }
+
     public Pack GetNewItemPack()
     {
         return _newPack;

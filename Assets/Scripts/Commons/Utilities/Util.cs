@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class Util
@@ -23,6 +23,11 @@ public static class Util
     public static Vector3 Vector2IntToVector3(Vector2Int vector2Int)
     {
         return new Vector3(vector2Int.x,0, vector2Int.y);
+    }
+
+    public static Vector3 FloorVector3(Vector3 vector3)
+    {
+        return new Vector3((int)vector3.x, (int)vector3.y, (int)vector3.z);
     }
 
     public static Dictionary<K, V> NewEnumKeyDictionary<K,V>() where K : Enum where V : class, new()
