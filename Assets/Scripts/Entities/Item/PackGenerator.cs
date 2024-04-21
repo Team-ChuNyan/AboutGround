@@ -41,7 +41,7 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
 
     public PackGenerator SetPosition(Vector2Int pos)
     {
-        _newPack.transform.position = Util.Vector2IntToWorldPoint(pos);
+        _newPack.transform.position = Util.Vector2IntToVector3(pos);
         return this;
     }
 
