@@ -15,9 +15,9 @@ public static class Util
         };
     }
 
-    public static Vector2Int Vector3ToVector2Int(Vector3 vector3)
+    public static Vector2Int Vector3XZToVector2Int(Vector3 vector3)
     {
-        return new Vector2Int((int)vector3.x, (int)vector3.y);
+        return new Vector2Int((int)vector3.x, (int)vector3.z);
     }
 
     public static Vector3 Vector2IntToVector3(Vector2Int vector2Int)
