@@ -62,6 +62,10 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
         {
             _newPack = Instantiate(_prefab);
         }
+        else
+        {
+            _newPack.gameObject.SetActive(true);
+        }
         _activePack.Add(_newPack);
         _newPack.SetItem(item);
     }
