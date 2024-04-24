@@ -13,13 +13,21 @@ public abstract class Unit : MonoBehaviour, IMovable, ISelectable
 
     protected List<PathNode> _movementPath;
     protected Coroutine _moveCoroutine;
+    private Vector2Int _targetPosition;
 
     private bool _isSelection;
 
     public event Action OnArrived;
+    public bool IsArrive { get; set; }
+
+    public static readonly List<InteractionType> PlayerUnitInteraction
+    = new() { InteractionType.Cancel };
 
     public UnitData UnitData { get { return _unitData; } set { _unitData = value; } }
     public Dictionary<BodyPartType, BodyPart> BodyParts { get { return _bodyParts; } set { _bodyParts = value; } }
+    public Vector3 Position { get { return transform.position; } }
+
+    public bool IsSelection { get { return _isSelection; } }
 
     public virtual void Awake()
     {
@@ -28,6 +36,7 @@ public abstract class Unit : MonoBehaviour, IMovable, ISelectable
 
     public void Move(Vector2Int goal)
     {
+        _targetPosition = goal;
         Vector2Int currentPos = new((int)transform.position.x, (int)transform.position.z);
         _moveSystem.UpdateMovementPath(_movementPath, currentPos, goal);
         _moveCoroutine = StartCoroutine(FollowPathNode());
@@ -35,31 +44,36 @@ public abstract class Unit : MonoBehaviour, IMovable, ISelectable
 
     public void StopMovement()
     {
+        if (_moveCoroutine is null)
+            return;
+
         StopCoroutine(_moveCoroutine);
-        OnArrived = null;
         _movementPath.Clear();
     }
 
     protected IEnumerator FollowPathNode()
     {
+        IsArrive = false;
         for (int i = 0; i < _movementPath.Count; i++)
         {
-            Vector3 targetPos = Util.Vector2IntToWorldPoint(_movementPath[i].Pos);
+            Vector3 targetPos = Util.Vector2IntToVector3(_movementPath[i].Pos);
             while (transform.position != targetPos)
             {
                 var movePos = Time.deltaTime * UnitData.MoveSpeed * 10;
-                transform.position = Vector3.MoveTowards(transform.position, targetPos, movePos);
+                var nextPos = Vector3.MoveTowards(transform.position, targetPos, movePos);
+                transform.position = nextPos;
                 yield return null;
             }
         }
         _movementPath.Clear();
-        OnArrived?.Invoke();
-        OnArrived = null;
-    }
 
-    public void RegisterOnArrived(Action action)
-    {
-        OnArrived += action;
+        Vector3 goal = Util.Vector2IntToVector3(_targetPosition);
+        if (goal == transform.position)
+        {
+            OnArrived?.Invoke();
+            OnArrived = null;
+            IsArrive = true;
+        }
     }
 
     public void UnregisterOnArrived(Action action)
@@ -67,6 +81,10 @@ public abstract class Unit : MonoBehaviour, IMovable, ISelectable
         OnArrived -= action;
     }
 
+    public void RegisterOnArrived(Action action)
+    {
+        OnArrived += action;
+    }
     public void SetMoveSystem(IMoveSystem sys)
     {
         _moveSystem = sys;
@@ -101,5 +119,10 @@ public abstract class Unit : MonoBehaviour, IMovable, ISelectable
     {
         ComponentHandler.SelectMaker.SetActive(false);
         _isSelection = false;
+    }
+
+    public SelectPropType GetSelectPropType()
+    {
+        return UnitData.SelectPropType;
     }
 }

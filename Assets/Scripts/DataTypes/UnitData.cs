@@ -1,6 +1,7 @@
 public struct UnitData
 {
     private RaceType _race;
+    public PropOwner Owner;
     private string _name;
     private string _description;
     private float _moveSpeed; // 공통적인 부분은 스크립터블로 수정
@@ -13,6 +14,8 @@ public struct UnitData
     public readonly float MoveSpeed { get { return _moveSpeed; } }
     public float Weight { get { return _weight; } set { _weight = value; } }
     public float MaxWeight { get { return _maxWeight; } set { _maxWeight = value; } }
+
+    public readonly SelectPropType SelectPropType { get { return Owner == PropOwner.Player ? SelectPropType.PlayerUnit : SelectPropType.NPC; } }
 
     public UnitData SetRace(RaceType race)
     {
@@ -38,4 +41,9 @@ public struct UnitData
         return this;
     }
 
+    public UnitData SetOwner(PropOwner owner)
+    {
+        Owner = owner;
+        return this;
+    }
 }

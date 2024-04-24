@@ -2,28 +2,35 @@ using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class IconButton<T> : IDynamicTypeUpdater<T> where T : Enum
+public class IconButton : UIBase
 {
     private VisualElement _button;
-    private event Action _clickedEventHandler;
+    private VisualElement _icon;
+    private Label _text;
 
-    public IconButton(VisualElement btn)
+    private int _index;
+
+    private event Action<int> _clickedEventHandler;
+
+    public IconButton(VisualElement btn) : base(btn)
     {
         _button = btn;
+        _icon = btn.Q<VisualElement>("Icon");
+        _text = btn.Q<Label>("Text");
         _button.RegisterCallback<ClickEvent>(OnClicked);
     }
 
     private void OnClicked(ClickEvent evt)
     {
-        _clickedEventHandler?.Invoke();
+        _clickedEventHandler?.Invoke(_index);
     }
 
-    public void RegisterEvent(Action action)
+    public void RegisterEvent(Action<int> action)
     {
         _clickedEventHandler += action;
     }
 
-    public void UnregisterEvent(Action action)
+    public void UnregisterEvent(Action<int>  action)
     {
         _clickedEventHandler -= action;
     }
@@ -33,8 +40,18 @@ public class IconButton<T> : IDynamicTypeUpdater<T> where T : Enum
         _clickedEventHandler = null;
     }
 
-    public void UpdateFormType(T resourcesType)
+    public void SetIndex(int index)
     {
-        Debug.Log(resourcesType);
+        _index = index;
+    }
+
+    public void SetText(string text)
+    {
+        _text.text = text;
+    }
+
+    public void SetSprite(Sprite sprite)
+    {
+        _icon.style.backgroundImage = new StyleBackground(sprite);
     }
 }

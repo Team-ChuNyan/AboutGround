@@ -1,20 +1,20 @@
 using System;
 using System.Collections.Generic;
 
-public class WorkDictionary
+public class WorkProcessDictionary
 {
-    private MultiKeyDictionary<WorkType, int, List<Work>> _storage;
+    private MultiKeyDictionary<WorkType, int, List<WorkProcess>> _storage;
     private Dictionary<WorkType, int> _storageCount;
 
     private const int PRIORITY_COUNT = 5 + 1;
 
-    public List<Work> this[WorkType type, int priority]
+    public List<WorkProcess> this[WorkType type, int priority]
     {
         get { return _storage[type, priority]; }
         set { _storage[type, priority] = value; }
     }
 
-    public WorkDictionary()
+    public WorkProcessDictionary()
     {
         _storage = new();
         _storageCount = new();
@@ -27,12 +27,12 @@ public class WorkDictionary
             _storageCount.Add(type, 0);
             for (int j = 0; j < PRIORITY_COUNT; j++)
             {
-                _storage.Add((WorkType)i, j, new List<Work>(8));
+                _storage.Add((WorkType)i, j, new (8));
             }
         }
     }
 
-    public void Add(Work work)
+    public void Add(WorkProcess work)
     {
         WorkType type = work.WorkType;
         int priority = work.Priority;
@@ -41,7 +41,7 @@ public class WorkDictionary
         _storageCount[type]++;
     }
 
-    public void Remove(Work work)
+    public void Remove(WorkProcess work)
     {
         WorkType type = work.WorkType;
         int priority = work.Priority;
@@ -50,7 +50,7 @@ public class WorkDictionary
         _storageCount[type]--;
     }
 
-    public void ChangePriority(Work work, int priority)
+    public void ChangePriority(WorkProcess work, int priority)
     {
         WorkType type = work.WorkType;
         int beforePriority = work.Priority;
@@ -59,7 +59,7 @@ public class WorkDictionary
         _storage[type][priority].Add(work);
     }
 
-    public bool TryGetWork(WorkType type, out Work work)
+    public bool TryGetWork(WorkType type, out WorkProcess work)
     {
         work = null;
 
@@ -73,7 +73,7 @@ public class WorkDictionary
                 var workList = _storage[type, i];
                 for (int j = 0; j < workList.Count; j++)
                 {
-                    if (workList[j].AssignWorker != null)
+                    if (workList[j].IsStarting == true)
                         continue;
 
                     work = workList[j];

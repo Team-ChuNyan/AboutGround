@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,11 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
     private Queue<Pack> _inactivePacks;
     private Pack _newPack;
 
+    public List<Pack> ActivePack { get { return _activePack; } }
+
+    private event Action<Pack> Generated;
+    private event Action<Pack> Destroyed;
+
     private void Awake()
     {
         _prefab = Resources.Load<Pack>("Prefabs/Pack");
@@ -16,17 +22,38 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
         _inactivePacks = new Queue<Pack>();
     }
 
+    public void RegisterGenerated(Action<Pack> action)
+    {
+        Generated += action;
+    }
+
+    public void RegisterDestroyed(Action<Pack> action)
+    {
+        Destroyed += action;
+    }
+
+    private void OnGeneratedPack()
+    {
+        Generated?.Invoke(_newPack);
+    }
+
     public PackGenerator CreateNewItemPack(IPackable item)
     {
         ObjectPooling(item);
         ChangePackMesh();
-
+        OnGeneratedPack();
         return this;
     }
 
     public PackGenerator SetPosition(Vector2Int pos)
     {
-        _newPack.transform.position = Util.Vector2IntToWorldPoint(pos);
+        _newPack.transform.position = Util.Vector2IntToVector3(pos);
+        return this;
+    }
+
+    public PackGenerator SetPosition(Vector3 pos)
+    {
+        _newPack.transform.position = Util.FloorVector3(pos);
         return this;
     }
 
@@ -41,6 +68,10 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
         {
             _newPack = Instantiate(_prefab);
         }
+        else
+        {
+            _newPack.gameObject.SetActive(true);
+        }
         _activePack.Add(_newPack);
         _newPack.SetItem(item);
     }
@@ -53,6 +84,7 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
 
     public void DestoryPack(Pack pack)
     {
+        Destroyed?.Invoke(pack);
         _inactivePacks.Enqueue(pack);
         pack.gameObject.SetActive(false);
     }

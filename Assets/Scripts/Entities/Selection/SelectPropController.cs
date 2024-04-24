@@ -5,14 +5,15 @@ public class SelectPropController : ICancelable
     private PlayerInputController _inputController;
     private PropSelecting _selecting;
     private QuickCanceling _quickCanceling;
-    private HashSet<ISelectable> _selections;
+    private InteractionViewModel _interactionViewModel;
+
+    private List<InteractionType> _currentTypes;
 
     public SelectPropController()
     {
+        _currentTypes = new();
         _selecting = new();
-        _selections = _selecting.GetSelection();
-
-        _selecting.RegisterSelectionChanged(ToggleRegisterQuickCancel);
+        _selecting.RegisterSelectionChanged(ToggleQuickCanceling);
     }
 
     public void Init(PlayerInputController inputController, QuickCanceling quickCanceling)
@@ -21,35 +22,62 @@ public class SelectPropController : ICancelable
         _quickCanceling = quickCanceling;
     }
 
-    public void InitObjectSelecting(SelectionBoxUIHandler selectionBoxUI, List<Unit> units)
+    public void InitObjectSelecting(InteractionViewModel model,SelectionBoxUIHandler selectionBoxUI, PropsContainer props)
     {
-        _selecting.Init(_inputController, selectionBoxUI, _quickCanceling, units);
+        _interactionViewModel = model;
+        _selecting.Init(_inputController, selectionBoxUI, _quickCanceling, props);
+        model.Init(_selecting.CurrentSelection, _currentTypes);
     }
 
     public bool IsCanceled()
     {
-        return _selections.Count == 0;
+        return _selecting.CurrentSelection.Count == 0;
     }
 
     public void QuickCancel()
     {
-        UnselectAllSelection();
+        _selecting.UnselectAllSelection();
     }
 
-    private void UnselectAllSelection()
+    private void ToggleQuickCanceling()
     {
-        foreach (var item in _selections)
+        if (_selecting.CurrentSelection.Count > 0)
         {
-            item.CancelSelection();
+            _quickCanceling.Push(this);
+            ChangeCurrentInteractionTypes();
         }
-        _selections.Clear();
+        else
+        {
+            _quickCanceling.Remove(this);
+        }
+
+        _interactionViewModel.OnChangedSelection();
     }
 
-    private void ToggleRegisterQuickCancel()
+    private void ChangeCurrentInteractionTypes()
     {
-        if (_selections.Count > 0)
-            _quickCanceling.Push(this);
-        else
-            _quickCanceling.Remove(this);
+        _currentTypes.Clear();
+        List<InteractionType> defaultType = null;
+        switch (_selecting.SelectType)
+        {
+            case SelectPropType.PlayerUnit:
+                defaultType = Unit.PlayerUnitInteraction;
+                break;
+            case SelectPropType.NPC:
+                defaultType = Unit.PlayerUnitInteraction;
+                break;
+            case SelectPropType.Pack:
+                defaultType = Pack.DefaultInteraction;
+                break;
+            case SelectPropType.None:
+            default:
+                UnityEngine.Debug.Log("RefreshInteractionUI");
+                break;
+        }
+
+        foreach (InteractionType type in defaultType)
+        {
+            _currentTypes.Add(type);
+        }
     }
 }

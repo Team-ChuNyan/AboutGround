@@ -1,6 +1,12 @@
 public class Human : Unit, IWorkable, IAttackable
 {
+    public WorkerHandler _workProcess;
     private IItemStorage _inven;
+    private bool _isWorking;
+
+    public WorkerHandler WorkerHandler { get { return _workProcess; } }
+    public bool IsWorking { get { return _isWorking; } set { _isWorking = value; } }
+
     private const int DEFAULT_HUMAN_INVENTORY_SLOT = 4;
 
     public override void Awake()
@@ -8,20 +14,13 @@ public class Human : Unit, IWorkable, IAttackable
         base.Awake();
         UnitData.SetRace(RaceType.Human);
         _inven = new SlotInventory(DEFAULT_HUMAN_INVENTORY_SLOT);
+        _workProcess = gameObject.AddComponent<WorkerHandler>();
     }
 
-    public void Work(Work work)
+    public void StartWork()
     {
-        // TODO : 일하는 기능
-        Move(work.WorkPos);
-        OnArrived += work.OnProcess;
-
-    }
-
-    public bool IsPossibleToWork()
-    {
-        // TODO :  작업 가능 여부를 체크
-        return true;
+        _isWorking = true;
+        _workProcess.StartProcess(this);
     }
 
     public bool IsPossibleToWork(WorkType type)
@@ -33,5 +32,31 @@ public class Human : Unit, IWorkable, IAttackable
     public IItemStorage GetInventory()
     {
         return _inven;
+    }
+
+    public void CompleteWork()
+    {
+        _isWorking = false;
+    }
+
+    public void PutDownItem(IPackable pack, int amount)
+    {
+        _inven.PutDownItem(pack, transform.position, amount);
+    }
+
+    public void StopWork()
+    {
+        StopMovement();
+        _workProcess.StopProcess();
+    }
+
+    public void ContractWork(WorkProcess work)
+    {
+        _workProcess.ContractWork(work);
+    }
+
+    public void AddWorkload(float value)
+    {
+        _workProcess.AddWorkload(value);
     }
 }

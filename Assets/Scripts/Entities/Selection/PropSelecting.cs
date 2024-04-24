@@ -5,15 +5,17 @@ using UnityEngine.InputSystem;
 
 public class PropSelecting : ICancelable
 {
-    // TODO : 선택 방식을 레이캐스트로 통일
     public enum Mode { Default, Add, Cancel }
 
     private Camera _mainCam;
     private SelectionBoxUIHandler _selectionBoxUI;
     private QuickCanceling _quickCanceling;
-    private List<Unit> _playerUnitProp;
+    private List<Unit> _playerHumans;
+    private List<Pack> _packs;
 
-    private Mode _selectMode;
+    private Mode _mode;
+    private SelectPropType _selectType;
+    private SelectPropType _beforeType;
     private HashSet<ISelectable> _currentSelection;
     private HashSet<ISelectable> _waitSelection;
     private HashSet<ISelectable> _beforeSelection;
@@ -28,23 +30,29 @@ public class PropSelecting : ICancelable
 
     private event Action SelectionChanged;
 
+    public SelectPropType SelectType { get { return _selectType; } }
+    public HashSet<ISelectable> CurrentSelection { get { return _currentSelection; } }
+
     public PropSelecting()
     {
         _mainCam = Camera.main;
-        _selectMode = Mode.Default;
-        _playerUnitProp = new(16);
+        _mode = Mode.Default;
+        _playerHumans = new(16);
         _waitSelection = new(16);
         _currentSelection = new(16);
         _beforeSelection = new(16);
         _selectableLayer = Const.Layer_Selectable;
+
+        PackGenerator.Instance.RegisterDestroyed(RemoveCurrentObject);
     }
 
-    public void Init(PlayerInputController con, SelectionBoxUIHandler ui, QuickCanceling quickCanceling, List<Unit> target)
+    public void Init(PlayerInputController con, SelectionBoxUIHandler ui, QuickCanceling quickCanceling, PropsContainer props)
     {
         _input = con;
         _selectionBoxUI = ui;
         _quickCanceling = quickCanceling;
-        _playerUnitProp = target;
+        _playerHumans = props.PlayerUnits[RaceType.Human];
+        _packs = props.Packs;
 
         con.RegisterClickStarted(StartSelection);
         con.RegisterClickCanceled(CancelSelection);
@@ -64,7 +72,20 @@ public class PropSelecting : ICancelable
 
     private void ToggleAddMode(bool isOn)
     {
-        _selectMode = isOn == true ? Mode.Add : Mode.Default;
+        if (isOn == true)
+        {
+            _mode = Mode.Add;
+            if (_isSearching == true && _selectType != _beforeType)
+            {
+                _selectType = _beforeType;
+                ClearWaitSelections();
+                HandleSeletion();
+            }
+        }
+        else
+        {
+            _mode = Mode.Default;
+        }
     }
 
     public void RegisterSelectionChanged(Action action)
@@ -113,10 +134,10 @@ public class PropSelecting : ICancelable
 
     public void QuickCancel()
     {
-        _selectMode = Mode.Cancel;
+        _mode = Mode.Cancel;
         ClearWaitSelections();
         CancelSelection();
-        _selectMode = Mode.Default;
+        _mode = Mode.Default;
     }
 
     private void UnregisterPerformSelection()
@@ -153,25 +174,45 @@ public class PropSelecting : ICancelable
 
     private void HandleSeletion()
     {
-        foreach (var item in _playerUnitProp)
+        if (_mode == Mode.Default)
         {
-            bool isContains = _waitSelection.Contains(item);
+            if (TryFindPropsInSelectionBox(_playerHumans))
+                _selectType = SelectPropType.PlayerUnit;
+            else if (TryFindPropsInSelectionBox(_packs))
+                _selectType = SelectPropType.Pack;
+        }
+        else if (_mode == Mode.Add)
+        {
+            if (_selectType == SelectPropType.PlayerUnit)
+                TryFindPropsInSelectionBox(_playerHumans);
+            else if (_selectType == SelectPropType.Pack)
+                TryFindPropsInSelectionBox(_packs);
+        }
+    }
+
+    private bool TryFindPropsInSelectionBox<T>(List<T> props) where T : ISelectable
+    {
+        int find = 0;
+        foreach (var item in props)
+        {
             var point = item.GetSelectPoint();
             point = _mainCam.WorldToScreenPoint(point);
 
             if (Util.IsNumberInRange(point.x, minPoint.x, maxPoint.x) == true
              && Util.IsNumberInRange(point.y, minPoint.y, maxPoint.y) == true)
             {
-                if (isContains == true)
-                    continue;
+                if (_waitSelection.Contains(item) == false)
+                    AddWaitObject(item);
 
-                AddWaitObject(item);
+                find++;
             }
-            else if (isContains == true)
+            else if (_waitSelection.Contains(item) == true)
             {
                 RemoveWaitObject(item);
             }
         }
+
+        return find > 0;
     }
 
     private void DecideSelection()
@@ -187,14 +228,31 @@ public class PropSelecting : ICancelable
             }
             _waitSelection.Clear();
         }
+
+        if (_currentSelection.Count == 0)
+        {
+            _selectType = SelectPropType.None;
+        }
     }
 
     private void ClickSelection()
     {
-        if (_startPosition != _endPosition)
-            return;
+        float distance = (_startPosition - _endPosition).sqrMagnitude;
+        if (distance < 500f)
+        {
+            RaycastStartPosition();
+        }
+    }
 
-        RaycastStartPosition();
+    public void UnselectAllSelection()
+    {
+        foreach (var item in _currentSelection)
+        {
+            item.CancelSelection();
+        }
+        _currentSelection.Clear();
+
+        OnChangeSelection();
     }
 
     private void RaycastStartPosition()
@@ -203,6 +261,7 @@ public class PropSelecting : ICancelable
         if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, _selectableLayer) == true)
         {
             var obj = hitInfo.collider.gameObject.GetComponent<ISelectable>();
+            _selectType = obj.GetSelectPropType();
             AddCurrentObject(obj);
         }
     }
@@ -211,6 +270,15 @@ public class PropSelecting : ICancelable
     {
         _currentSelection.Add(obj);
         obj.AddSelection();
+    }
+
+    private void RemoveCurrentObject(ISelectable obj)
+    {
+        if (obj.IsSelection == false)
+            return;
+
+        _currentSelection.Remove(obj);
+        OnChangeSelection();
     }
 
     private void AddWaitObject(ISelectable obj)
@@ -255,7 +323,8 @@ public class PropSelecting : ICancelable
 
     private void MergeBeforeSelectionToCurrentSelection()
     {
-        if (_selectMode == Mode.Default)
+        if (_mode == Mode.Default
+         || _selectType != _beforeType)
             return;
 
         foreach (var item in _beforeSelection)
@@ -270,12 +339,13 @@ public class PropSelecting : ICancelable
         {
             _beforeSelection.Add(item);
         }
+        _beforeType = _selectType;
         _currentSelection.Clear();
     }
 
     private void OnChangeSelection()
     {
-        if (_selectMode == Mode.Cancel)
+        if (_mode == Mode.Cancel)
             return;
 
         SelectionChanged?.Invoke();

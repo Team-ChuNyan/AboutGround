@@ -39,7 +39,16 @@ public enum WorkType
 
 public enum InteractionType
 {
+    Cancel,
+    Carry,
+}
 
+public enum SelectPropType 
+{ 
+    PlayerUnit,
+    NPC,
+    Pack,
+    None
 }
 
 public enum ItemType
@@ -78,3 +87,8 @@ public enum ItemCategory
     Resource    = 300000
 }
 
+public enum PropOwner 
+{ 
+    Player,
+    NPC 
+}

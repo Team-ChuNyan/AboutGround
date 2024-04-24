@@ -3,63 +3,52 @@ using UnityEngine;
 
 public class UnitController : MonoBehaviour
 {
-    private IMoveSystem _groundPathfinding;
     private WorkPlan _workPlan;
-    public List<Unit> PlayerUnit;
-    public List<Unit> NpcUnit;
-    public List<IWorkable> WorkablePlayerUnit;
+
+    private Dictionary<RaceType, List<Unit>> _playerUnits;
+    private Dictionary<RaceType, List<Unit>> _npcUnits;
+    private List<IWorkable> _playerWorkableUnits;
+
+    public Dictionary<RaceType, List<Unit>> PlayerUnits { get { return _playerUnits; } }
+    public Dictionary<RaceType, List<Unit>> NPCUnits { get { return _npcUnits; } }
+
 
     private void Awake()
     {
-        PlayerUnit = new List<Unit>(8);
-        NpcUnit = new List<Unit>(16);
-        WorkablePlayerUnit = new List<IWorkable>(8);
+        _playerUnits = Util.NewEnumKeyDictionary<RaceType, List<Unit>>();
+        _npcUnits = Util.NewEnumKeyDictionary<RaceType, List<Unit>>();
+        _playerWorkableUnits = new(8);
+
+        UnitGenerator.Instance.RegisterGeneratedUnit(AddUnitArray);
     }
 
-    public void Initialize(WorkPlan workPlan)
+    public void Init(WorkPlan workPlan)
     {
         _workPlan = workPlan;
     }
 
-    public Unit CreateNewPlayerUnit(RaceType race, string name = null)
+    public void TryAddWorker(Unit unit)
     {
-        var unit = UnitGenerator.Instance
-            .SetNewUnit(race)
-            .SetName(name)
-            .SetMoveSystem(_groundPathfinding)
-            .GetNewUnit();
+        if (unit is not IWorkable workable)
+            return;
 
-        AddPlayerUnitList(unit);
-        return unit;
+        _playerWorkableUnits.Add(workable);
+        _workPlan.AddWaitWorker(workable);
     }
 
-    private void AddPlayerUnitList(Unit unit)
+    private void AddUnitArray(Unit unit)
     {
-        PlayerUnit.Add(unit);
-        if (unit is IWorkable workable)
+        var race = unit.UnitData.Race;
+        var owner = unit.UnitData.Owner;
+
+        if (owner == PropOwner.Player)
         {
-            WorkablePlayerUnit.Add(workable);
-            _workPlan.AddWaitWorker(workable);
+            _playerUnits[race].Add(unit);
+            TryAddWorker(unit);
         }
-    }
-
-    private void RemovePlayerUnitList(Unit unit)
-    {
-        // TODO : 기능 추가
-        PlayerUnit.Remove(unit);
-        if (unit is IWorkable workable)
+        else if (owner == PropOwner.NPC)
         {
-            WorkablePlayerUnit.Remove(workable);
+            _npcUnits[race].Add(unit);
         }
-    }
-
-    public void SetGroundPathFinding(GroundPathfinding groundPathfinding)
-    {
-        _groundPathfinding = groundPathfinding;
-    }
-
-    public void SetWorkPlan(WorkPlan plan)
-    {
-        _workPlan = plan;
     }
 }
