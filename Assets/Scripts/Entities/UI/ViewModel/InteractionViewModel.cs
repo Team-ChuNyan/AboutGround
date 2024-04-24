@@ -4,11 +4,11 @@ using System.Collections.Generic;
 public class InteractionViewModel
 {
     private readonly Dictionary<InteractionType, Action> _events;
-    private List<ISelectable> _selections;
+    private HashSet<ISelectable> _selections;
     private List<InteractionType> _interactionTypes;
 
     public Dictionary<InteractionType, Action> Events { get { return _events; } }
-    public List<ISelectable> Selections { get { return _selections; } }
+    public HashSet<ISelectable> Selections { get { return _selections; } }
     public List<InteractionType> InteractionTypes { get { return _interactionTypes; } }
 
     private event Action ChangedSelection;
@@ -18,7 +18,7 @@ public class InteractionViewModel
         _events = new();
     }
 
-    public void Init(List<ISelectable> selections, List<InteractionType> types)
+    public void Init(HashSet<ISelectable> selections, List<InteractionType> types)
     {
         _selections = selections;
         _interactionTypes = types;

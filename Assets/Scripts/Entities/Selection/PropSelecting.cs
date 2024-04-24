@@ -16,7 +16,7 @@ public class PropSelecting : ICancelable
     private Mode _mode;
     private SelectPropType _selectType;
     private SelectPropType _beforeType;
-    private List<ISelectable> _currentSelection;
+    private HashSet<ISelectable> _currentSelection;
     private HashSet<ISelectable> _waitSelection;
     private HashSet<ISelectable> _beforeSelection;
     private PlayerInputController _input;
@@ -31,7 +31,7 @@ public class PropSelecting : ICancelable
     private event Action SelectionChanged;
 
     public SelectPropType SelectType { get { return _selectType; } }
-    public List<ISelectable> CurrentSelection { get { return _currentSelection; } }
+    public HashSet<ISelectable> CurrentSelection { get { return _currentSelection; } }
 
     public PropSelecting()
     {
@@ -42,6 +42,8 @@ public class PropSelecting : ICancelable
         _currentSelection = new(16);
         _beforeSelection = new(16);
         _selectableLayer = Const.Layer_Selectable;
+
+        PackGenerator.Instance.RegisterDestroyed(RemoveCurrentObject);
     }
 
     public void Init(PlayerInputController con, SelectionBoxUIHandler ui, QuickCanceling quickCanceling, PropsContainer props)
@@ -58,7 +60,7 @@ public class PropSelecting : ICancelable
         con.RegisterShiftPressed(ToggleAddMode);
     }
 
-    public List<ISelectable> GetSelection()
+    public HashSet<ISelectable> GetSelection()
     {
         return _currentSelection;
     }
@@ -268,6 +270,15 @@ public class PropSelecting : ICancelable
     {
         _currentSelection.Add(obj);
         obj.AddSelection();
+    }
+
+    private void RemoveCurrentObject(ISelectable obj)
+    {
+        if (obj.IsSelection == false)
+            return;
+
+        _currentSelection.Remove(obj);
+        OnChangeSelection();
     }
 
     private void AddWaitObject(ISelectable obj)

@@ -12,7 +12,8 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
 
     public List<Pack> ActivePack { get { return _activePack; } }
 
-    private event Action<Pack> GeneratedPack;
+    private event Action<Pack> Generated;
+    private event Action<Pack> Destroyed;
 
     private void Awake()
     {
@@ -23,12 +24,17 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
 
     public void RegisterGenerated(Action<Pack> action)
     {
-        GeneratedPack += action;
+        Generated += action;
+    }
+
+    public void RegisterDestroyed(Action<Pack> action)
+    {
+        Destroyed += action;
     }
 
     private void OnGeneratedPack()
     {
-        GeneratedPack?.Invoke(_newPack);
+        Generated?.Invoke(_newPack);
     }
 
     public PackGenerator CreateNewItemPack(IPackable item)
@@ -78,6 +84,7 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
 
     public void DestoryPack(Pack pack)
     {
+        Destroyed?.Invoke(pack);
         _inactivePacks.Enqueue(pack);
         pack.gameObject.SetActive(false);
     }

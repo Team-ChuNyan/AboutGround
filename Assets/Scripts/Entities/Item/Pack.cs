@@ -17,6 +17,7 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
 
     public IPackable Item { get { return _item; } }
     public Vector3 Position { get { return transform.position; } }
+    public bool IsSelection { get { return _isSelection; } }
     public bool IsGenerateCarry { get { return _isGenerateCarry; } set { _isGenerateCarry = value; } }
 
     public void SetMesh(Mesh mesh, Material material)
@@ -99,5 +100,13 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
     public void PutDownItem(IPackable item, Vector3 pos, int amount)
     {
         throw new System.NotImplementedException();
+    }
+
+    public void OnDisable()
+    {
+        if (_isSelection == true)
+        {
+            CancelSelection();
+        }
     }
 }

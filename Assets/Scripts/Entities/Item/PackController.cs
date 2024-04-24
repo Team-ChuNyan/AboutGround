@@ -17,15 +17,7 @@ public class PackController
         _packs.Add(pack);
     }
 
-    public static void CarryAll(List<Pack> packs)
-    {
-        foreach (Pack pack in packs) 
-        {
-            pack.CreateCarryWork();
-        }
-    }
-
-    public static void CarryAll(List<ISelectable> packs)
+    public static void CarryAll(IEnumerable<ISelectable> packs)
     {
         foreach (ISelectable selectable in packs)
         {

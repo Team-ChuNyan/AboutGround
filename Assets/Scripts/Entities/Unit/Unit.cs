@@ -27,6 +27,8 @@ public abstract class Unit : MonoBehaviour, IMovable, ISelectable
     public Dictionary<BodyPartType, BodyPart> BodyParts { get { return _bodyParts; } set { _bodyParts = value; } }
     public Vector3 Position { get { return transform.position; } }
 
+    public bool IsSelection { get { return _isSelection; } }
+
     public virtual void Awake()
     {
         _movementPath = new List<PathNode>(64);
