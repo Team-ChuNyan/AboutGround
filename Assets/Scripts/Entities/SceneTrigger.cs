@@ -12,7 +12,7 @@ public class SceneTrigger : MonoBehaviour
     private ItemGenerator _itemGenerator;
     private PackGenerator _packGenerator;
     private UnitGenerator _unitGenerator;
-    private WorkGenerator _workGenerator;
+    private WorkProcessGenerator _workGenerator;
     private MapGenerator _mapGenerator;
 
     private CameraController _cameraController;
@@ -73,7 +73,7 @@ public class SceneTrigger : MonoBehaviour
         _itemGenerator = new ItemGenerator();
         _packGenerator = gameObject.AddComponent<PackGenerator>();
         _unitGenerator = gameObject.AddComponent<UnitGenerator>();
-        _workGenerator = new WorkGenerator();
+        _workGenerator = new WorkProcessGenerator();
     }
 
     private void InstantiateController()

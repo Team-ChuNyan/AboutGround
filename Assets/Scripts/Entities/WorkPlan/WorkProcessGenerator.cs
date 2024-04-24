@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-public class WorkGenerator : Singleton<WorkGenerator>
+public class WorkProcessGenerator : Singleton<WorkProcessGenerator>
 {
     private Queue<WorkProcess> _inactiveWork;
     private WorkProcess _newWorkProcess;
@@ -9,7 +9,7 @@ public class WorkGenerator : Singleton<WorkGenerator>
     private event Action<WorkProcess> GeneratedWork;
     private event Action<WorkProcess> RemovedWork;
 
-    public WorkGenerator() 
+    public WorkProcessGenerator() 
     {
         _inactiveWork = new();
     }
@@ -24,7 +24,7 @@ public class WorkGenerator : Singleton<WorkGenerator>
         RemovedWork += action;
     }
 
-    public WorkGenerator SetNewWork(WorkType type)
+    public WorkProcessGenerator SetNewWork(WorkType type)
     {
         if (_inactiveWork.TryDequeue(out _newWorkProcess) == false)
         {
@@ -35,13 +35,13 @@ public class WorkGenerator : Singleton<WorkGenerator>
         return this;
     }
 
-    public WorkGenerator AddWork(Work work)
+    public WorkProcessGenerator AddWork(Work work)
     {
         _newWorkProcess.Add(work);
         return this;
     }
 
-    public WorkGenerator RegisterFinished(Action<IWorkable> action)
+    public WorkProcessGenerator RegisterFinished(Action<IWorkable> action)
     {
         _newWorkProcess.RegisterFinished(action);
         return this;

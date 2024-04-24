@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 public class WorkPlan
 {
-    private WorkDictionary _workDictionary;
+    private WorkProcessDictionary _workDictionary;
     private List<IWorkable> _waitWorker;
     private List<IWorkable> _workWorker;
 
@@ -11,8 +11,8 @@ public class WorkPlan
         _workDictionary = new();
         _waitWorker = new();
         _workWorker = new();
-        WorkGenerator.Instance.RegisterGenerated(AddWork);
-        WorkGenerator.Instance.RegisterRemoved(Remove);
+        WorkProcessGenerator.Instance.RegisterGenerated(AddWork);
+        WorkProcessGenerator.Instance.RegisterRemoved(Remove);
     }
 
     public void AddWork(WorkProcess work)

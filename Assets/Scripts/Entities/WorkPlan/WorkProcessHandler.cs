@@ -16,7 +16,7 @@ public class WorkProcessHandler
         workPutDown.RegisterStarted(Putdown);
 
         WorkProcess work = default;
-        work = WorkGenerator.Instance.SetNewWork(WorkType.Carry)
+        work = WorkProcessGenerator.Instance.SetNewWork(WorkType.Carry)
             .AddWork(workPickup)
             .AddWork(workPutDown)
             .Generate();

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-public class WorkDictionary
+public class WorkProcessDictionary
 {
     private MultiKeyDictionary<WorkType, int, List<WorkProcess>> _storage;
     private Dictionary<WorkType, int> _storageCount;
@@ -14,7 +14,7 @@ public class WorkDictionary
         set { _storage[type, priority] = value; }
     }
 
-    public WorkDictionary()
+    public WorkProcessDictionary()
     {
         _storage = new();
         _storageCount = new();
