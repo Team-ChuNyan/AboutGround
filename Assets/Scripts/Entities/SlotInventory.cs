@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class SlotInventory : IItemStorage
 {
@@ -56,5 +57,14 @@ public class SlotInventory : IItemStorage
                 return;
             }
         }
+    }
+
+    public void PutDownItem(IPackable item, Vector3 pos, int amount = int.MaxValue)
+    {
+        amount = amount == int.MaxValue ? item.MaxAmount : amount;
+
+        PackGenerator.Instance.CreateNewItemPack(item)
+                              .SetPosition(pos)
+                              .GetNewItemPack();
     }
 }

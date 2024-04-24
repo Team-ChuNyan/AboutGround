@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,12 +10,14 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
 
     private IPackable _item;
     private bool _isSelection;
+    private bool _isGenerateCarry; // TODO : Flag로 변경
 
     public static readonly List<InteractionType> DefaultInteraction
         = new() { InteractionType.Cancel, InteractionType.Carry };
 
-
     public IPackable Item { get { return _item; } }
+    public Vector3 Position { get { return transform.position; } }
+    public bool IsGenerateCarry { get { return _isGenerateCarry; } set { _isGenerateCarry = value; } }
 
     public void SetMesh(Mesh mesh, Material material)
     {
@@ -34,7 +35,7 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
         _item.StackItem(item);
     }
 
-    public void PickUp(IWorkable worker)
+    public void PickUp(IWorkable worker, int amount)
     {
         var inven = worker.GetInventory();
 
@@ -47,14 +48,10 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
 
     public void CreateCarryWork(int amount = int.MaxValue)
     {
-        Vector2Int workPos = Util.Vector3ToVector2Int(transform.position);
-        Work work = WorkGenerator.Instance.CreateNewWork(WorkType.Carry, amount)
-                    .SetWorkPos(workPos)
-                    .AddWorkPlan()
-                    .GetWork();
+        if (_isGenerateCarry == true)
+            return;
 
-        Action action = () => { PickUp(work.AssignWorker); };
-        work.RegisterOnStarted(action);
+        WorkProcessHandler.Carry(this, amount);
     }
 
     public void DestroyPack()
@@ -97,5 +94,10 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
     public SelectPropType GetSelectPropType()
     {
         return SelectPropType.Pack;
+    }
+
+    public void PutDownItem(IPackable item, Vector3 pos, int amount)
+    {
+        throw new System.NotImplementedException();
     }
 }

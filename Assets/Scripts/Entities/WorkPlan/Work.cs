@@ -1,101 +1,83 @@
 using System;
 using UnityEngine;
 
-public class Work
+public struct Work
 {
-    private static IObjectStorage<Work> _workplan;
-
-    private WorkType _workType;
     private Vector2Int _workPos;
-    private int _priority;
     private float _maxWorkload;
     private float _workload;
-    private IWorkable _assignWorker;
 
-    public WorkType WorkType { get { return _workType; } set { _workType = value; } }
-    public Vector2Int WorkPos { get { return _workPos; } set { _workPos = value; } }
-    public int Priority { get { return _priority; } set { _priority = value; } }
-    public IWorkable AssignWorker { get { return _assignWorker; } set { _assignWorker = value; } }
+    private Action<IWorkable> _started;
+    private Action<IWorkable> _processed;
+    private Action<IWorkable> _completed;
 
-    public event Action OnStarted;
-    public event Action OnProcessed;
-    public event Action OnCompleted;
-
-    public static void SetWorkplan(IObjectStorage<Work> workplan)
+    public readonly Vector2Int WorkPos { get { return _workPos; } }
+    public readonly float MaxWorkload { get { return _maxWorkload; } }
+    public float Workload 
     {
-        _workplan = workplan;
+        readonly get { return _workload; }
+        set
+        {
+            _workload = value < _maxWorkload ? value : _maxWorkload;
+        } 
     }
 
-    public void SetNewData(WorkType type, int maxWorkload)
+    public readonly bool IsComplete => _workload >= _maxWorkload;
+
+    public Work(int maxWorkload, Vector2Int pos)
     {
-        _workType = type;
-        _priority = 3;
         _maxWorkload = maxWorkload;
         _workload = 0;
-        _assignWorker = null;
-        ResetRegister();
+        _workPos = pos;
+
+        _started = null;
+        _processed = null;
+        _completed = null;
     }
 
-    public void OnProcess()
+    public readonly void OnStarted(IWorkable worker)
     {
-        // TODO : 작업자의 정보를 받아 작업도를 증가시킴
-        OnStarted?.Invoke();
-
-        if (_workload < _maxWorkload)
-        {
-            OnProcessed?.Invoke();
-        }
-        else
-        {
-            OnCompleted?.Invoke();
-        }
+        _started?.Invoke(worker);
     }
 
-    public void AddWorkPlan()
+    public readonly void OnProcessed(IWorkable worker)
     {
-        _workplan.AddObject(this);
+        _processed?.Invoke(worker);
+    }
+    public readonly void OnCompleted(IWorkable worker)
+    {
+        _completed?.Invoke(worker);
     }
 
-    public void RegisterOnStarted(Action onStarted)
+    #region Register
+    public void RegisterStarted(Action<IWorkable> action)
     {
-        OnStarted += onStarted;
+        _started += action;
     }
 
-    public void RegisterOnProcessed(Action onProcessed)
+    public void RegisterProcessed(Action<IWorkable> action)
     {
-        OnProcessed += onProcessed;
+        _processed += action;
     }
 
-    public void RegisterOnCompleted(Action onCompleted)
+    public void RegisterCompleted(Action<IWorkable> action)
     {
-        OnCompleted += onCompleted;
+        _completed += action;
     }
 
-    public void UnRegisterOnStarted(Action onStarted)
+    public void UnregisterStarted(Action<IWorkable> action)
     {
-        OnStarted -= onStarted;
+        _started -= action;
     }
 
-    public void UnregisterOnProcessed(Action onProcessed)
+    public void UnregisterProcessed(Action<IWorkable> action)
     {
-        OnProcessed -= onProcessed;
+        _processed -= action;
     }
 
-    public void UnregisterOnCompleted(Action onCompleted)
+    public void UnregisterCompleted(Action<IWorkable> action)
     {
-        OnCompleted -= onCompleted;
+        _completed -= action;
     }
-
-    public void Remove()
-    {
-        ResetRegister();
-        _workplan.RemoveObject(this);
-        WorkGenerator.Instance.Remove(this);
-    }
-
-    public void ResetRegister()
-    {
-        OnProcessed = null;
-        OnCompleted = null;
-    }
+    #endregion
 }

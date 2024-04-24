@@ -3,6 +3,8 @@ using UnityEngine;
 
 public interface IMovable
 {
+    public Vector3 Position { get; }
+
     public event Action OnArrived;
 
     public void Move(Vector2Int pos);

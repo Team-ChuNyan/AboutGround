@@ -120,7 +120,6 @@ public class SceneTrigger : MonoBehaviour
         _cameraController.SetCameraRotation(_startCameraRotation);
 
         _unitGenerator.Init(_groundPathfinder);
-        _workGenerator.Initialize(_workplan);
 
         _cameraController.Initialize(_inputController, _virualCameraController);
         _unitController.Init(_workplan);
@@ -153,12 +152,16 @@ public class SceneTrigger : MonoBehaviour
         {
             for (int z = 0; z < 4; z++)
             {
-                UnitGenerator.Instance.SetNewUnit(PropOwner.Player, RaceType.Human)
-                    .SetPosition(new Vector3(x, 0, z));
+                if (x == 0)
+                {
+                    UnitGenerator.Instance.SetNewUnit(PropOwner.Player, RaceType.Human)
+                                          .SetPosition(new Vector3(x, 0, z));
+                }
 
                 var item = ItemGenerator.Instance.SetNewItem(ItemType.Apple)
-                    .GetNewItem();
-                PackGenerator.Instance.CreateNewItemPack(item).SetPosition(new Vector2Int(x + 50, z + 50));
+                                                 .GetNewItem();
+                PackGenerator.Instance.CreateNewItemPack(item)
+                                      .SetPosition(new Vector3(x + 50,0, z + 50));
             }
         }
     }

@@ -1,53 +1,61 @@
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class WorkGenerator : Singleton<WorkGenerator>
 {
-    private Queue<Work> _inactiveWork;
-    private Work _newWork;
+    private Queue<WorkProcess> _inactiveWork;
+    private WorkProcess _newWorkProcess;
+
+    private event Action<WorkProcess> GeneratedWork;
+    private event Action<WorkProcess> RemovedWork;
 
     public WorkGenerator() 
     {
         _inactiveWork = new();
     }
 
-    public void Initialize(WorkPlan workPlan)
+    public void RegisterGenerated(Action<WorkProcess> action)
     {
-        Work.SetWorkplan(workPlan);
+        GeneratedWork += action;
     }
 
-    public WorkGenerator CreateNewWork(WorkType type, int maxWorkload)
+    public void RegisterRemoved(Action<WorkProcess> action)
     {
-        if (_inactiveWork.TryDequeue(out _newWork) == false)
+        RemovedWork += action;
+    }
+
+    public WorkGenerator SetNewWork(WorkType type)
+    {
+        if (_inactiveWork.TryDequeue(out _newWorkProcess) == false)
         {
-            _newWork = new();
+            _newWorkProcess = new();
         }
 
-        _newWork.SetNewData(type, maxWorkload);
+        _newWorkProcess.SetNewWorks(type);
         return this;
     }
 
-    public WorkGenerator SetWorkPos(Vector2Int pos)
+    public WorkGenerator AddWork(Work work)
     {
-        _newWork.WorkPos = pos;
-
+        _newWorkProcess.Add(work);
         return this;
     }
 
-    public WorkGenerator AddWorkPlan()
+    public WorkGenerator RegisterFinished(Action<IWorkable> action)
     {
-        _newWork.AddWorkPlan();
+        _newWorkProcess.RegisterFinished(action);
         return this;
     }
 
-    public Work GetWork()
+    public WorkProcess Generate()
     {
-        return _newWork;
+        GeneratedWork?.Invoke(_newWorkProcess);
+        return _newWorkProcess;
     }
 
-    public void Remove(Work work)
+    public void Remove(WorkProcess work)
     {
-        work.Remove();
+        RemovedWork?.Invoke(work);
         _inactiveWork.Enqueue(work);
     }
 }
