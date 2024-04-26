@@ -19,6 +19,7 @@ public class WorkProcessHandler
         work = WorkProcessGenerator.Instance.SetNewWork(WorkType.Carry)
             .AddWork(workPickup)
             .AddWork(workPutDown)
+            .RegisterFinished(FinishCarry)
             .Generate();
 
         void PickUpItem(IWorkable worker)
@@ -31,6 +32,11 @@ public class WorkProcessHandler
         {
             worker.PutDownItem(pickupable.Item, amount);
             worker.AddWorkload(amount);
+        }
+
+        void FinishCarry(IWorkable worker)
+        {
+            pickupable.FinishWork(WorkType.Carry);
         }
     }
 }

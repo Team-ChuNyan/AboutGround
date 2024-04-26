@@ -20,6 +20,15 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
     public bool IsSelection { get { return _isSelection; } }
     public bool IsGenerateCarry { get { return _isGenerateCarry; } set { _isGenerateCarry = value; } }
 
+    public void OnDisable()
+    {
+        _isGenerateCarry = false;
+        if (_isSelection == true)
+        {
+            CancelSelection();
+        }
+    }
+
     public void SetMesh(Mesh mesh, Material material)
     {
         _meshFilter.mesh = mesh;
@@ -102,11 +111,8 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
         throw new System.NotImplementedException();
     }
 
-    public void OnDisable()
+    public void FinishWork(WorkType type)
     {
-        if (_isSelection == true)
-        {
-            CancelSelection();
-        }
+        _isGenerateCarry = false;
     }
 }
