@@ -8,7 +8,7 @@ public class GroundPathfinding : IMoveSystem
     private const int _weight = 1;
 
     private PathNode[,] _nodes;
-    private readonly NodePriorityQueue _openList;
+    private readonly PriorityQueue<PathNode> _openList;
     private readonly HashSet<PathNode> _closeList;
     private PathNode _current;
 
@@ -17,7 +17,7 @@ public class GroundPathfinding : IMoveSystem
 
     public GroundPathfinding()
     {
-        _openList = new NodePriorityQueue(1024);
+        _openList = new PriorityQueue<PathNode>(1024);
         _closeList = new HashSet<PathNode>(16384);
     }
 
@@ -62,7 +62,7 @@ public class GroundPathfinding : IMoveSystem
     {
         foreach (var node in _closeList)
         {
-            node.ResetPathfindingData();
+            node.ResetPriorityData();
         }
         _closeList.Clear();
         _openList.Clear();
