@@ -9,10 +9,6 @@ public class SceneTrigger : MonoBehaviour
     [SerializeField] private Vector3 _startCameraPosition;
     [SerializeField] private Vector3 _startCameraRotation;
 
-    private ItemGenerator _itemGenerator;
-    private PackGenerator _packGenerator;
-    private UnitGenerator _unitGenerator;
-    private WorkProcessGenerator _workGenerator;
     private MapGenerator _mapGenerator;
 
     private CameraController _cameraController;
@@ -69,11 +65,12 @@ public class SceneTrigger : MonoBehaviour
 
     private void InstantiateManagers()
     {
-        new DataManager().InitializeItemData();
-        _itemGenerator = new ItemGenerator();
-        _packGenerator = gameObject.AddComponent<PackGenerator>();
-        _unitGenerator = gameObject.AddComponent<UnitGenerator>();
-        _workGenerator = new WorkProcessGenerator();
+        new DataManager();
+        new WorkProcessGenerator();
+
+        gameObject.AddComponent<PackGenerator>();
+        gameObject.AddComponent<UnitGenerator>();
+        gameObject.AddComponent<BuildingGenerator>();
     }
 
     private void InstantiateController()
@@ -119,7 +116,7 @@ public class SceneTrigger : MonoBehaviour
         _cameraController.SetCameraPosition(_startCameraPosition);
         _cameraController.SetCameraRotation(_startCameraRotation);
 
-        _unitGenerator.Init(_groundPathfinder);
+        UnitGenerator.Instance.Init(_groundPathfinder);
 
         _cameraController.Initialize(_inputController, _virualCameraController);
         _unitController.Init(_workplan);
@@ -164,6 +161,10 @@ public class SceneTrigger : MonoBehaviour
                                       .SetPosition(new Vector3(x + 50,0, z + 50));
             }
         }
+
+        BuildingGenerator.Instance.SetNewBuilding(BuildingType.Wall)
+                                  .SetPosition(new Vector2Int(10, 50))
+                                  .GenerateBuilding();
     }
 
     private void RegisterInteractionViewModel()

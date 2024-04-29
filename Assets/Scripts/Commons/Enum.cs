@@ -92,3 +92,9 @@ public enum PropOwner
     Player,
     NPC 
 }
+
+public enum BuildingType
+{
+    Rock,
+    Wall
+}
