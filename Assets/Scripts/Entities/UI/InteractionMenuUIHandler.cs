@@ -7,7 +7,7 @@ public class InteractionMenuUIHandler : UIBase
     private const string ButtonName = "Button";
     private const int _count = 4;
 
-    private List<IconButton> _btns;
+    private List<IconButton<int>> _btns;
 
     public InteractionMenuUIHandler(VisualElement root) : base(root)
     {
@@ -22,8 +22,8 @@ public class InteractionMenuUIHandler : UIBase
         for (int i = 0; i < _count; i++)
         {
             var btnUI = _root.Q<VisualElement>($"{ButtonName}{i}");
-            var iconBtn = new IconButton(btnUI);
-            iconBtn.SetIndex(i);
+            var iconBtn = new IconButton<int>(btnUI);
+            iconBtn.SetIdentityValue(i);
             iconBtn.RegisterEvent(StartInteractionEvent);
 
             _btns.Add(iconBtn);
