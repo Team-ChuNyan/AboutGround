@@ -1,0 +1,45 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Plugins/UI%20Toolkit/StyleSheets/Build.uss?fileID=7433441132597879392&amp;guid=a40e9806715224a42a70774c6f18028f&amp;type=3#Build" />
+    <engine:VisualElement name="Build" style="flex-grow: 1; flex-direction: column;">
+        <engine:VisualElement name="Category" style="flex-direction: row;">
+            <engine:VisualElement name="CancelButton" style="flex-direction: row; align-items: center; width: 60px; height: 60px; margin-left: 15px;">
+                <engine:VisualElement name="Icon" style="background-image: none; background-color: rgb(255, 255, 255); width: 60px; height: 60px; flex-shrink: 0;" />
+                <engine:Label name="Text" style="color: rgb(0, 0, 0); -unity-font-definition: url(&quot;project://database/Assets/Fonts/NotoSans-Medium.ttf?fileID=12800000&amp;guid=0335f2a18ffa5494eb9a39ef15854604&amp;type=3#NotoSans-Medium&quot;); display: none;" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+        <engine:VisualElement name="Detail" style="flex-direction: row;">
+            <engine:ScrollView name="ItemList" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="AlwaysVisible" style="width: 554px; align-self: flex-start; height: 286px; margin-top: 0; margin-bottom: 0; margin-right: 0; margin-left: 0; padding-top: 8px; padding-right: 7px; padding-bottom: 8px; padding-left: 12px; background-color: rgb(113, 113, 113); -unity-font-definition: url(&quot;project://database/Assets/Plugins/TextMesh%20Pro/Fonts/NotoSans-Regular.ttf?fileID=12800000&amp;guid=2db212e77b2ec434a885322bb19f2095&amp;type=3#NotoSans-Regular&quot;); position: relative;">
+                <engine:VisualElement name="Viewport" style="flex-grow: 1; flex-direction: row; flex-wrap: wrap;">
+                    <engine:VisualElement name="ItemButton0" class="BuildingCard" style="background-color: rgb(255, 255, 255);">
+                        <engine:VisualElement name="Icon" class="CardImage" />
+                        <engine:Label text="Firebalt Magic Scroll Maker" name="Text" class="ButtonText" />
+                    </engine:VisualElement>
+                </engine:VisualElement>
+            </engine:ScrollView>
+            <engine:VisualElement name="Material" style="width: 157px; height: 286px;">
+                <engine:VisualElement name="NameBar" style="height: 30px; background-color: rgb(41, 41, 41); flex-grow: 0; flex-shrink: 0;">
+                    <engine:Label text="Main Material" name="Text" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 10px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; flex-grow: 1; -unity-text-align: middle-left; white-space: normal; -unity-font-definition: url(&quot;project://database/Assets/Fonts/NotoSans-SemiBold.ttf?fileID=12800000&amp;guid=0163890d2a8cd164382f20f60212ebb8&amp;type=3#NotoSans-SemiBold&quot;); font-size: 17px; letter-spacing: -3px; color: rgb(255, 255, 255); flex-shrink: 1; width: auto;" />
+                </engine:VisualElement>
+                <engine:ScrollView name="MaterialList" style="height: auto; width: 157px; background-color: rgb(176, 176, 176); padding-top: 5px; padding-bottom: 5px; flex-grow: 1;">
+                    <engine:VisualElement name="Material0" style="flex-grow: 1; flex-direction: row; align-items: center; padding-left: 8px;">
+                        <engine:VisualElement name="Icon" style="width: 30px; height: 30px; background-image: url(&quot;project://database/Assets/Plugins/UI%20Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=4584671053970592468&amp;guid=39113e3dcc684d844aadb7e4dcf773d7&amp;type=3#console.warnicon&quot;); margin-right: 0; margin-left: 0;" />
+                        <engine:Label text="Material" name="Text" style="color: rgb(0, 0, 0); -unity-font-definition: url(&quot;project://database/Assets/Fonts/NotoSans-Medium.ttf?fileID=12800000&amp;guid=0335f2a18ffa5494eb9a39ef15854604&amp;type=3#NotoSans-Medium&quot;);" />
+                    </engine:VisualElement>
+                </engine:ScrollView>
+            </engine:VisualElement>
+            <engine:VisualElement name="Information" style="width: 360px; height: 286px; padding-left: 5px;">
+                <engine:VisualElement name="NameBar" style="height: 43px; background-color: rgb(41, 41, 41);">
+                    <engine:Label text="Firebalt Magic Scroll Maker" name="Text" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 10px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; flex-grow: 1; -unity-text-align: middle-left; white-space: normal; -unity-font-definition: url(&quot;project://database/Assets/Fonts/NotoSans-Bold.ttf?fileID=12800000&amp;guid=2a5ecee134a707c4cb2b7675d5363479&amp;type=3#NotoSans-Bold&quot;); font-size: 20px; letter-spacing: -3px; color: rgb(255, 255, 255);" />
+                </engine:VisualElement>
+                <engine:VisualElement name="TextArea" style="height: auto; background-color: rgb(156, 156, 156); flex-grow: 1;">
+                    <engine:ScrollView vertical-scroller-visibility="Auto" name="ScrollView" style="padding-top: 2px; padding-bottom: 2px; flex-grow: 1;">
+                        <engine:Label text="💎 50 🧱 50 🪵 50" name="ResourceText" style="-unity-font-definition: url(&quot;project://database/Assets/Fonts/NotoSans-SemiBold.ttf?fileID=12800000&amp;guid=0163890d2a8cd164382f20f60212ebb8&amp;type=3#NotoSans-SemiBold&quot;); margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 4px; padding-right: 5px; padding-bottom: 4px; padding-left: 8px; align-self: flex-start;" />
+                        <engine:Label text=" Maybe I just wanna fly Wanna live, I don&apos;t wanna die Maybe I just wanna breathe Maybe I just don&apos;t believe Maybe you&apos;re the same as me We see things they&apos;ll never see" name="DescText" style="-unity-font-definition: url(&quot;project://database/Assets/Fonts/NotoSans-Medium.ttf?fileID=12800000&amp;guid=0335f2a18ffa5494eb9a39ef15854604&amp;type=3#NotoSans-Medium&quot;); margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 4px; padding-right: 10px; padding-bottom: 4px; padding-left: 10px; white-space: normal; letter-spacing: -3px;" />
+                        <engine:Label text="Material Effect" name="MiddleTitle-Material-Effect" style="-unity-font-definition: url(&quot;project://database/Assets/Fonts/NotoSans-SemiBold.ttf?fileID=12800000&amp;guid=0163890d2a8cd164382f20f60212ebb8&amp;type=3#NotoSans-SemiBold&quot;); margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 4px; padding-right: 15px; padding-bottom: 4px; padding-left: 15px; white-space: normal; letter-spacing: -3px; font-size: 15px;" />
+                        <engine:Label text="- Non-flammable&#10;- Durable good" name="EffectListText" style="-unity-font-definition: url(&quot;project://database/Assets/Fonts/NotoSans-Medium.ttf?fileID=12800000&amp;guid=0335f2a18ffa5494eb9a39ef15854604&amp;type=3#NotoSans-Medium&quot;); margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 4px; padding-right: 10px; padding-bottom: 4px; padding-left: 10px; white-space: normal; letter-spacing: -3px;" />
+                    </engine:ScrollView>
+                </engine:VisualElement>
+            </engine:VisualElement>
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

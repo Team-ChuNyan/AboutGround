@@ -53,6 +53,7 @@ public class SceneTrigger : MonoBehaviour
         InstantiateManagers();
         InstantiateController();
         InstantiateGameObject();
+        InitUI_TempMethod();
         GetClassData();
         
         InitPropsContainer();
@@ -102,6 +103,12 @@ public class SceneTrigger : MonoBehaviour
     private void GetClassData()
     {
         _interactionViewModel = _inGameUIController.InteractionMenuUI.ViewModel;
+    }
+
+    private void InitUI_TempMethod()
+    {
+        _inGameUIController.Init(_quickCanceling);
+        // TODO : quickCanceling이 이벤트 등록하도록 변경
     }
 
     private void InitPropsContainer()

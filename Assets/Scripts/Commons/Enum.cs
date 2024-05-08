@@ -98,3 +98,8 @@ public enum BuildingType
     Rock,
     Wall
 }
+
+public enum BuildingCategory
+{
+    Foundation
+}
