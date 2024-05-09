@@ -49,6 +49,12 @@ public class BuildingGenerator : MonoBehaviourSingleton<BuildingGenerator>
         return this;
     }
 
+    public BuildingGenerator ChangeBlueprintMode()
+    {
+        _newBuilding.ConvertBluePrint();
+        return this;
+    }
+
     public Building GenerateBuilding()
     {
         var building = _newBuilding;

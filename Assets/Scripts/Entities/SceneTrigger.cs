@@ -24,6 +24,7 @@ public class SceneTrigger : MonoBehaviour
     private GroundPathfinding _groundPathfinder;
     private QuickCanceling _quickCanceling;
     private PropsContainer _propsContainer;
+    private BlueprintConstructing _blueprintConstructing;
 
     private InteractionViewModel _interactionViewModel;
 
@@ -55,13 +56,14 @@ public class SceneTrigger : MonoBehaviour
         InstantiateGameObject();
         InitUI_TempMethod();
         GetClassData();
-        
+
         InitPropsContainer();
         CreateMap();
         InitClass();
         InitDebuger();
 
         RegisterInteractionViewModel();
+        RegisterEvent();
     }
 
     private void InstantiateManagers()
@@ -86,6 +88,7 @@ public class SceneTrigger : MonoBehaviour
         _groundPathfinder = new GroundPathfinding();
         _quickCanceling = new QuickCanceling();
         _propsContainer = new PropsContainer();
+        _blueprintConstructing = new();
     }
 
     private void InstantiateGameObject()
@@ -132,6 +135,7 @@ public class SceneTrigger : MonoBehaviour
         _selectController.InitObjectSelecting(_interactionViewModel, _inGameUIController.DragSelectionUI, _propsContainer);
 
         _quickCanceling.Init(_inputController);
+        _blueprintConstructing.Init(_inputController);
     }
 
     private void CreateMap()
@@ -142,6 +146,11 @@ public class SceneTrigger : MonoBehaviour
             .GenerateDisplayMap()
             .GeneratePathNodeMap()
             .PaintTileMap();
+    }
+
+    private void RegisterEvent()
+    {
+        _inGameUIController.BuildUI.RegisterItemClicked(_blueprintConstructing.StartConstruction);
     }
 
     private void InitDebuger()
@@ -165,7 +174,7 @@ public class SceneTrigger : MonoBehaviour
                 var item = ItemGenerator.Instance.SetNewItem(ItemType.Apple)
                                                  .GetNewItem();
                 PackGenerator.Instance.CreateNewItemPack(item)
-                                      .SetPosition(new Vector3(x + 50,0, z + 50));
+                                      .SetPosition(new Vector3(x + 50, 0, z + 50));
             }
         }
 
