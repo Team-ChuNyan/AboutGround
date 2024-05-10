@@ -63,9 +63,8 @@ public class BuildingGenerator : MonoBehaviourSingleton<BuildingGenerator>
         return building;
     }
 
-    public void DestroyBuilding(Building building)
+    public void AfterDestoryCleanup(Building building)
     {
-        building.Destroy();
         _inactiveBuildings.Enqueue(building);
         Destroyed?.Invoke(building);
     }

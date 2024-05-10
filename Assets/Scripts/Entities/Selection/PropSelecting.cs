@@ -46,18 +46,22 @@ public class PropSelecting : ICancelable
         PackGenerator.Instance.RegisterDestroyed(RemoveCurrentObject);
     }
 
-    public void Init(PlayerInputController con, SelectionBoxUIHandler ui, QuickCanceling quickCanceling, PropsContainer props)
+    public void Init(SelectionBoxUIHandler ui, QuickCanceling quickCanceling, PropsContainer props)
     {
-        _input = con;
         _selectionBoxUI = ui;
         _quickCanceling = quickCanceling;
         _playerHumans = props.PlayerUnits[RaceType.Human];
         _packs = props.Packs;
+    }
 
-        con.RegisterClickStarted(StartSelection);
-        con.RegisterClickCanceled(CancelSelection);
+    public void InitInput(PlayerInputController con, MouseInputHandler mouseInputHandler)
+    {
+        _input = con;
+        _input.RegisterShiftPressed(ToggleAddMode);
 
-        con.RegisterShiftPressed(ToggleAddMode);
+        mouseInputHandler.RegisterClickStarted(MouseInputHandler.LeftClick.Selecting, StartSelection);
+        mouseInputHandler.RegisterClickCanceled(MouseInputHandler.LeftClick.Selecting, CancelSelection);
+
     }
 
     public HashSet<ISelectable> GetSelection()

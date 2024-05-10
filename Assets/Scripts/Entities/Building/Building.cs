@@ -47,6 +47,6 @@ public class Building : MonoBehaviour
     public void Destroy()
     {
         gameObject.SetActive(false);
-        BuildingGenerator.Instance.DestroyBuilding(this);
+        BuildingGenerator.Instance.AfterDestoryCleanup(this);
     }
 }

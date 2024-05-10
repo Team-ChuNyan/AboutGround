@@ -14,6 +14,7 @@ public class SceneTrigger : MonoBehaviour
     private CameraController _cameraController;
     private VirtualCameraController _virualCameraController;
     private PlayerInputController _inputController;
+    private MouseInputHandler _mouseInputHandler;
     private UnitController _unitController;
     private ItemController _itemController;
     private SelectPropController _selectController;
@@ -64,6 +65,8 @@ public class SceneTrigger : MonoBehaviour
 
         RegisterInteractionViewModel();
         RegisterEvent();
+
+        ChangeMouseModeDefault();
     }
 
     private void InstantiateManagers()
@@ -80,6 +83,7 @@ public class SceneTrigger : MonoBehaviour
     {
         _virualCameraController = _virtualCamera.AddComponent<VirtualCameraController>();
         _inputController = gameObject.AddComponent<PlayerInputController>();
+        _mouseInputHandler = new();
         _unitController = gameObject.AddComponent<UnitController>();
         _itemController = gameObject.AddComponent<ItemController>();
         _selectController = new SelectPropController();
@@ -132,10 +136,16 @@ public class SceneTrigger : MonoBehaviour
         _unitController.Init(_workplan);
         _groundPathfinder.SetNodeMap(_mapGenerator.PathNodeMap);
         _selectController.Init(_inputController, _quickCanceling);
-        _selectController.InitObjectSelecting(_interactionViewModel, _inGameUIController.DragSelectionUI, _propsContainer);
+        _selectController.InitObjectSelecting(_interactionViewModel, _inGameUIController.DragSelectionUI, _propsContainer, _mouseInputHandler);
 
         _quickCanceling.Init(_inputController);
-        _blueprintConstructing.Init(_inputController);
+        _mouseInputHandler.Init(_inputController);
+        _blueprintConstructing.Init(_mouseInputHandler, _quickCanceling);
+    }
+
+    private void ChangeMouseModeDefault()
+    {
+        _mouseInputHandler.ChangeLeftClickMode(MouseInputHandler.LeftClick.Selecting);
     }
 
     private void CreateMap()
@@ -150,7 +160,9 @@ public class SceneTrigger : MonoBehaviour
 
     private void RegisterEvent()
     {
-        _inGameUIController.BuildUI.RegisterItemClicked(_blueprintConstructing.StartConstruction);
+        _inGameUIController.BuildUI.RegisterItemClicked(_blueprintConstructing.Start);
+        _inGameUIController.BuildUI.RegisterCanceled(_blueprintConstructing.Cancel);
+
     }
 
     private void InitDebuger()

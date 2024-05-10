@@ -20,6 +20,7 @@ public class BuildUIHandler : UIBase, ICancelable
     private VisualElement _effectListText;
 
     private event Action<BuildingType> ItemClicked;
+    private event Action Canceled;
 
     #region Const
     private const string CancelButtonObjName = "CancelButton";
@@ -52,6 +53,7 @@ public class BuildUIHandler : UIBase, ICancelable
     public override void Hide()
     {
         base.Hide();
+        Canceled?.Invoke();
         _quickCanceling.Remove(this);
     }
 
@@ -100,5 +102,10 @@ public class BuildUIHandler : UIBase, ICancelable
     public void RegisterItemClicked(Action<BuildingType> action)
     {
         ItemClicked += action;
+    }
+
+    public void RegisterCanceled(Action action)
+    {
+        Canceled += action;
     }
 }
