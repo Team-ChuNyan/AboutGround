@@ -3,5 +3,5 @@ using UnityEngine;
 
 public interface IMoveSystem
 {
-    public void UpdateMovementPath(List<PathNode> path, Vector2Int start, Vector2Int goal);
+    public void UpdateMovementPath(List<Ground> path, Vector2Int start, Vector2Int goal);
 }

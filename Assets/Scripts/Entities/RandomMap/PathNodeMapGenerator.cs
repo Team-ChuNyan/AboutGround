@@ -6,9 +6,9 @@ public class PathNodeMapGenerator
     private float _blockMinValue;
     private float _blockMaxValue;
 
-    public PathNode[,] GenerateNodePaths(SeedMapData seedMap, List<float> noiseMap, GeneratorGroundData[] type)
+    public Ground[,] GenerateNodePaths(SeedMapData seedMap, List<float> noiseMap, GeneratorGroundData[] type)
     {
-        PathNode[,] _pathNodes = InitializePathNodes(seedMap.Width, seedMap.Height);
+        Ground[,] _pathNodes = InitializePathNodes(seedMap.Width, seedMap.Height);
         FindRockField(type);
 
         var mapSize = seedMap.GetMapSize() - 1;
@@ -22,21 +22,21 @@ public class PathNodeMapGenerator
                 if (currentHeight <= _blockMinValue || _blockMaxValue < currentHeight)
                     continue;
 
-                _pathNodes[width, height].IsBlocked = true;
+                _pathNodes[width, height].LocalStatus.IsBlocked = true;
             }
         }
 
         return _pathNodes;
     }
 
-    private PathNode[,] InitializePathNodes(int width, int height)
+    private Ground[,] InitializePathNodes(int width, int height)
     {
-        PathNode[,] pathNodes = new PathNode[width, height];
+        Ground[,] pathNodes = new Ground[width, height];
         for (int i = 0; i < pathNodes.GetLength(0); i++)
         {
             for (int k = 0; k < pathNodes.GetLength(1); k++)
             {
-                pathNodes[i, k] = new PathNode(new Vector2Int(i, k));
+                pathNodes[i, k] = new Ground(new Vector2Int(i, k));
             }
         }
 

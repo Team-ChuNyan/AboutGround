@@ -134,7 +134,7 @@ public class SceneTrigger : MonoBehaviour
 
         _cameraController.Initialize(_inputController, _virualCameraController);
         _unitController.Init(_workplan);
-        _groundPathfinder.SetNodeMap(_mapGenerator.PathNodeMap);
+        _groundPathfinder.SetNodeMap(_mapGenerator.Grounds);
         _selectController.Init(_inputController, _quickCanceling);
         _selectController.InitObjectSelecting(_interactionViewModel, _inGameUIController.DragSelectionUI, _propsContainer, _mouseInputHandler);
 

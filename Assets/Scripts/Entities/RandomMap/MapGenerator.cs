@@ -10,7 +10,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private MapTextureDisplay _mapDisplay;
     private TilePainter _tilePainter;
     private List<float> _noiseMap;
-    private PathNode[,] _pathNodeMap;
+    private Ground[,] _grounds;
 
     [Header("생성 방식")]
     [SerializeField] private SeedMapData _seedMap;
@@ -19,7 +19,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private bool _isColorMap;
 
     public SeedMapData SeedMapInfo { get { return _seedMap; } set { _seedMap = value; } }
-    public PathNode[,] PathNodeMap { get { return _pathNodeMap; } }
+    public Ground[,] Grounds { get { return _grounds; } }
 
     public void Awake()
     {
@@ -50,7 +50,7 @@ public class MapGenerator : MonoBehaviour
 
     public MapGenerator GeneratePathNodeMap()
     {
-        _pathNodeMap = _nodeMapGenerator.GenerateNodePaths(_seedMap, _noiseMap, _groundType);
+        _grounds = _nodeMapGenerator.GenerateNodePaths(_seedMap, _noiseMap, _groundType);
         return this;
     }
 
