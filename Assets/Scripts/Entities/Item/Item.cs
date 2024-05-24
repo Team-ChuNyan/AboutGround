@@ -2,67 +2,68 @@ using UnityEngine;
 
 public abstract class Item : IPackable
 {
-    private ItemData _itemData;
-    private int _amount;
-    private float _durability;
-    private bool _isActivity;
+    public ItemUniversalStatus UniversalStatus;
+    public ItemLocalStatus LocalStatus;
 
-    public ItemData ItemData { get { return _itemData; } set { _itemData = value; } }
-    public bool IsStack => ItemData.IsStacked;
-    public int MaxAmount => _itemData.MaxAmount;
-    public int Amount { get { return _amount; } set { _amount = value; } }
-    public float Durability { get { return _durability; } set { _durability = value; } }
-    public bool IsFull { get { return _amount >= ItemData.MaxAmount; } }
-    public bool IsActivity { get { return _isActivity; } set { _isActivity = value; } }
+    public bool IsStack => UniversalStatus.IsStacked;
+    public int MaxAmount => UniversalStatus.MaxAmount;
+    public int Amount { get { return LocalStatus.Amount; } set { LocalStatus.Amount = value; } }
+    public bool IsFull { get { return LocalStatus.Amount >= UniversalStatus.MaxAmount; } }
 
-    public Item SetNewItemData(ItemData data)
+    public Item()
     {
-        _itemData = data;
-        _durability = data.MaxDurability;
+        LocalStatus = new();
+    }
+
+    public Item SetNewItemData(ItemUniversalStatus data)
+    {
+        UniversalStatus = data;
+        LocalStatus.Durability = data.MaxDurability;
         return this;
     }
 
     public Item SetAmount(int amount)
     {
-        _amount = amount;
+        LocalStatus.Amount = amount;
         return this;
     }
 
     public Item SetDurability(int value)
     {
-        _durability = value < _itemData.MaxDurability ? value : _itemData.MaxDurability;
+        LocalStatus.Durability = value < UniversalStatus.MaxDurability ? value : UniversalStatus.MaxDurability;
         return this;
     }
 
     public float GetDurabilityPercent()
     {
-        return _durability / _itemData.MaxDurability * 100;
+        return LocalStatus.Durability / UniversalStatus.MaxDurability * 100;
     }
 
     public void StackItem(IPackable packable)
     {
         if (packable is not Item item
-         || _itemData.Type != item.ItemData.Type
-         || _amount >= item.ItemData.MaxAmount)
+         || UniversalStatus.Type != item.UniversalStatus.Type
+         || LocalStatus.Amount >= item.UniversalStatus.MaxAmount)
             return;
 
-        int allAmount = _amount + item.Amount;
-        if (allAmount <= ItemData.MaxAmount)
+        int allAmount = LocalStatus.Amount + item.Amount;
+        if (allAmount <= UniversalStatus.MaxAmount)
         {
-            _amount = allAmount;
+            LocalStatus.Amount = allAmount;
             item.Amount = 0;
             return;
         }
         else
         {
-            _amount = _itemData.MaxAmount;
-            item.Amount = allAmount - _amount;
+            LocalStatus.Amount = UniversalStatus.MaxAmount;
+            item.Amount = allAmount - LocalStatus.Amount;
             return;
         }
     }
 
     public void Pack(Vector2Int respawn)
     {
+
         PackGenerator.Instance.CreateNewItemPack(this)
                               .SetPosition(respawn);
     }
@@ -72,9 +73,9 @@ public abstract class Item : IPackable
         return ItemGenerator.Instance.CopyItem(this);
     }
 
-    public void Deactivate()
+    public void Destroy()
     {
-        _isActivity = false;
-        ItemGenerator.Instance.DeactivateItem(this);
+        LocalStatus.Init();
+        ItemGenerator.Instance.Remove(this);
     }
 }

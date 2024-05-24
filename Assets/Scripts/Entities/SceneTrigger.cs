@@ -184,7 +184,7 @@ public class SceneTrigger : MonoBehaviour
                 }
 
                 var item = ItemGenerator.Instance.SetNewItem(ItemType.Apple)
-                                                 .GetNewItem();
+                                                 .Generate();
                 PackGenerator.Instance.CreateNewItemPack(item)
                                       .SetPosition(new Vector3(x + 50, 0, z + 50));
             }

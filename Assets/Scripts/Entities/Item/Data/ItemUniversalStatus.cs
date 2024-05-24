@@ -1,4 +1,4 @@
-public class ItemData
+public class ItemUniversalStatus
 {
     private ItemType _type;
     private GradeType _gradeType;

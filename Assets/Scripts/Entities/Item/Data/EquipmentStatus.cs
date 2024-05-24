@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public struct EquipmentData
+public struct EquipmentStatus
 {
     private EquipType _equipType;
     private List<StatusData> _statusData;

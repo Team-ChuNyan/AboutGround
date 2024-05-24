@@ -61,8 +61,8 @@ public class MainSceneDebugger : MonoBehaviour
     public void CreateItemPack()
     {
         var newItem = ItemGenerator.Instance.SetNewItem(ItemType)
-                                            .SetPersonalData(Amount,Durability)
-                                            .GetNewItem();
+                                            .SetLocalData(Amount,Durability)
+                                            .Generate();
         PackGenerator.Instance.CreateNewItemPack(newItem)
                               .SetPosition(CreatePackPosition);
     }

@@ -1,10 +1,10 @@
 public class Equipment : Item, IEquipable
 {
-    private EquipmentData _equipmentData;
+    private EquipmentStatus _equipmentData;
 
-    public EquipmentData EquipmentData { get { return _equipmentData; } private set { _equipmentData = value; } }
+    public EquipmentStatus EquipmentData { get { return _equipmentData; } private set { _equipmentData = value; } }
 
-    public void SetEquipmentData(EquipmentData data)
+    public void SetEquipmentData(EquipmentStatus data)
     {
         EquipmentData = data;
     }

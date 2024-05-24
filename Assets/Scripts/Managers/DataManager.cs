@@ -5,8 +5,8 @@ public class DataManager : Singleton<DataManager>
 {
     private Dictionary<RaceType, UnitData> _unitData;
 
-    private Dictionary<ItemType, ItemData> _itemData;
-    private Dictionary<ItemType, EquipmentData> _equipmentData;
+    private Dictionary<ItemType, ItemUniversalStatus> _itemData;
+    private Dictionary<ItemType, EquipmentStatus> _equipmentData;
 
     private Dictionary<BuildingType, BuildingUniversalStatus> _buildingGlobalStatus;
     public Material BluePrintMaterial { get; private set; }
@@ -27,7 +27,7 @@ public class DataManager : Singleton<DataManager>
         LoadBuildingData();
     }
 
-    public ItemData GetItemData(ItemType type)
+    public ItemUniversalStatus GetItemData(ItemType type)
     {
         return _itemData[type];
     }
@@ -37,9 +37,9 @@ public class DataManager : Singleton<DataManager>
         return _unitData[type];
     }
 
-    public EquipmentData GetEquipmentData(ItemType type)
+    public EquipmentStatus GetEquipmentData(ItemType type)
     {
-        if (!_equipmentData.TryGetValue(type, out EquipmentData data))
+        if (!_equipmentData.TryGetValue(type, out EquipmentStatus data))
         {
             Debug.LogError("Empty DataType");
         }
@@ -61,7 +61,7 @@ public class DataManager : Singleton<DataManager>
             { ItemType.Wood, new()}
         };
 
-        ItemData apple = new();
+        ItemUniversalStatus apple = new();
         apple.Type = ItemType.Apple;
         apple.MaxAmount = 99;
         apple.IsStacked = true;

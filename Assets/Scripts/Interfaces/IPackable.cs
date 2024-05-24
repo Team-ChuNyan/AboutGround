@@ -8,7 +8,7 @@ public interface IPackable
     public int MaxAmount { get; }
 
     public void StackItem(IPackable item);
-    public void Deactivate();
+    public void Destroy();
     public IPackable CopyPack();
     public void Pack(Vector2Int respawn);
 }
