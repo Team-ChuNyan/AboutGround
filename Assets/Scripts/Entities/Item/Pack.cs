@@ -64,7 +64,7 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
         WorkProcessHandler.Carry(this, amount);
     }
 
-    public void DestroyPack()
+    public void Destroy()
     {
         _item = null;
         PackGenerator.Instance.DestoryPack(this);
