@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class LinkedList<T> : IEnumerable<LinkedListNode<T>>, IEnumerator<LinkedListNode<T>> where T : class
+public class LinkedList<T> : IEnumerable<LinkedListNode<T>>, IEnumerator<LinkedListNode<T>>
 {
     private readonly Queue<LinkedListNode<T>> _inactiveNodes;
     private readonly LinkedListNode<T> _head;
@@ -60,7 +60,6 @@ public class LinkedList<T> : IEnumerable<LinkedListNode<T>>, IEnumerator<LinkedL
     {
         node.Remove();
         count--;
-        UnityEngine.Debug.Log(Count);
         _inactiveNodes.Enqueue(node);
     }
 

@@ -1,4 +1,4 @@
-public class LinkedListNode<T> where T : class
+public class LinkedListNode<T>
 {
     public T Item;
     public LinkedListNode<T> Before;
@@ -6,9 +6,15 @@ public class LinkedListNode<T> where T : class
 
     public void Clear()
     {
-        Item = null;
+        Item = default;
         After = null;
         Before = null;
+    }
+
+    public LinkedListNode() { }
+    public LinkedListNode(T item) 
+    {
+        Item = item;
     }
 
     public void Remove()
@@ -21,6 +27,6 @@ public class LinkedListNode<T> where T : class
         {
             After.Before = Before;
         }
-        Item = null;
+        Item = default;
     }
 }
