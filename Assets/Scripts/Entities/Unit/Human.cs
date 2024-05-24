@@ -1,7 +1,7 @@
 public class Human : Unit, IWorkable, IAttackable
 {
     public WorkerHandler _workProcess;
-    private IItemStorage _inven;
+    private IInventory _inven;
     private bool _isWorking;
 
     public WorkerHandler WorkerHandler { get { return _workProcess; } }
@@ -29,7 +29,7 @@ public class Human : Unit, IWorkable, IAttackable
         return true;
     }
 
-    public IItemStorage GetInventory()
+    public IInventory GetInventory()
     {
         return _inven;
     }

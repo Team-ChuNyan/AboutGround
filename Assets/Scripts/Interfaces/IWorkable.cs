@@ -12,5 +12,5 @@ public interface IWorkable : IMovable
     public void PutDownItem(IPackable pack, int amount);
     public bool IsPossibleToWork(WorkType type);
 
-    public IItemStorage GetInventory();
+    public IInventory GetInventory();
 }

@@ -1,7 +1,6 @@
 using UnityEngine;
 
-public interface IItemStorage
+public interface IItemStorage : IInventory
 {
-    public void KeepItem(IPackable item);
-    public void PutDownItem(IPackable item, Vector3 pos, int amount);
+    public Vector3 Position { get; }
 }
