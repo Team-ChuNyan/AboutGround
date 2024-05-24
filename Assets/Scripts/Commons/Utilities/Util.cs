@@ -20,6 +20,11 @@ public static class Util
         return new Vector2Int((int)vector3.x, (int)vector3.z);
     }
 
+    public static Vector2 Vector3XZToVector2(Vector3 vector3)
+    {
+        return new Vector2(vector3.x, vector3.z);
+    }
+
     public static Vector3 Vector2IntToVector3(Vector2Int vector2Int)
     {
         return new Vector3(vector2Int.x,0, vector2Int.y);
