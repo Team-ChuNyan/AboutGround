@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 
 public abstract class Item : IPackable
 {
     public ItemUniversalStatus UniversalStatus;
     public ItemLocalStatus LocalStatus;
+
+    private Func<Vector3> _getPosition;
 
     public bool IsStack => UniversalStatus.IsStacked;
     public int MaxAmount => UniversalStatus.MaxAmount;
@@ -13,6 +16,11 @@ public abstract class Item : IPackable
     public Item()
     {
         LocalStatus = new();
+    }
+    
+    public Vector3 Position()
+    {
+        return (_getPosition?.Invoke()).Value;
     }
 
     public Item SetNewItemData(ItemUniversalStatus data)
@@ -37,6 +45,18 @@ public abstract class Item : IPackable
     public float GetDurabilityPercent()
     {
         return LocalStatus.Durability / UniversalStatus.MaxDurability * 100;
+    }
+
+    public void OnPublicAccess(Func<Vector3> getPosFunc)
+    {
+        _getPosition = getPosFunc;
+        LocalStatus.IsPublicAccess = true;
+    }
+
+    public void OffPublicAccess()
+    {
+        _getPosition = default;
+        LocalStatus.IsPublicAccess = false;
     }
 
     public void StackItem(IPackable packable)
@@ -76,6 +96,7 @@ public abstract class Item : IPackable
     public void Destroy()
     {
         LocalStatus.Init();
+        OffPublicAccess();
         ItemGenerator.Instance.Remove(this);
     }
 }

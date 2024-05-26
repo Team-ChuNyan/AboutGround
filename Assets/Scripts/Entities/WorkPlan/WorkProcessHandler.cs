@@ -6,7 +6,7 @@ public class WorkProcessHandler
     {
         pickupable.IsGenerateCarry = true;
         var item = pickupable.Item;
-        var position = pickupable.Position;
+        var position = pickupable.Position();
         var workPos = Util.Vector3XZToVector2Int(position);
 
         Work workPickup = new(amount, workPos);

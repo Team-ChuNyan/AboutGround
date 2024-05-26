@@ -73,6 +73,7 @@ public class SceneTrigger : MonoBehaviour
     {
         new DataManager();
         new WorkProcessGenerator();
+        new ItemGenerator();
 
         gameObject.AddComponent<PackGenerator>();
         gameObject.AddComponent<UnitGenerator>();
@@ -85,7 +86,7 @@ public class SceneTrigger : MonoBehaviour
         _inputController = gameObject.AddComponent<PlayerInputController>();
         _mouseInputHandler = new();
         _unitController = gameObject.AddComponent<UnitController>();
-        _itemController = gameObject.AddComponent<ItemController>();
+        _itemController = new();
         _selectController = new SelectPropController();
 
         _workplan = new WorkPlan();
@@ -137,6 +138,7 @@ public class SceneTrigger : MonoBehaviour
         _groundPathfinder.SetNodeMap(_mapGenerator.Grounds);
         _selectController.Init(_inputController, _quickCanceling);
         _selectController.InitObjectSelecting(_interactionViewModel, _inGameUIController.DragSelectionUI, _propsContainer, _mouseInputHandler);
+        _itemController.Init();
 
         _quickCanceling.Init(_inputController);
         _mouseInputHandler.Init(_inputController);
@@ -162,7 +164,6 @@ public class SceneTrigger : MonoBehaviour
     {
         _inGameUIController.BuildUI.RegisterItemClicked(_blueprintConstructing.Start);
         _inGameUIController.BuildUI.RegisterCanceled(_blueprintConstructing.Cancel);
-
     }
 
     private void InitDebuger()

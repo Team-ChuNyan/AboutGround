@@ -35,6 +35,13 @@ public static class Util
         return new Vector3((int)vector3.x, (int)vector3.y, (int)vector3.z);
     }
 
+    public static float DistanceNonSqrt(Vector2 a, Vector2 b)
+    {
+        float num = a.x - b.x;
+        float num2 = a.y - b.y;
+        return num * num + num2 * num2;
+    }
+
     public static Dictionary<K, V> NewEnumKeyDictionary<K,V>() where K : Enum where V : class, new()
     {
         Dictionary<K, V> dictionary = new();

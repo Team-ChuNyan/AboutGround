@@ -1,22 +1,33 @@
 using System.Collections.Generic;
-using UnityEngine;
 
-public class ItemController : MonoBehaviour
+public class ItemController
 {
-    private List<Item> _items;
+    private ItemFinding _itemFinding;
+    private Dictionary<ItemType, List<Item>> _items;
 
-    private void Awake()
+    public ItemFinding ItemFinding { get { return _itemFinding; } }
+
+    public ItemController()
     {
-        _items = new List<Item>();
+        _items = Util.NewEnumKeyDictionary<ItemType, List<Item>>();
+        _itemFinding = new(_items);
     }
 
-    public Item CreateNewItem(ItemType type, int stack = 1, int durability = int.MaxValue)
+    public void Init()
     {
-        var newItem = ItemGenerator.Instance.SetNewItem(type)
-                                            .SetLocalData(stack, durability)
-                                            .Generate();
+        ItemGenerator.Instance.RegisterGenerated(AddItem);
+        ItemGenerator.Instance.RegisterDestroyed(RemoveItem);
+    }
 
-        _items.Add(newItem);
-        return newItem;
+    private void AddItem(Item item)
+    {
+        ItemType type = item.UniversalStatus.Type;
+        _items[type].Add(item);
+    }
+
+    private void RemoveItem(Item item)
+    {
+        ItemType type = item.UniversalStatus.Type;
+        _items[type].Remove(item);
     }
 }
