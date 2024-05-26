@@ -2,7 +2,7 @@
 public class ItemLocalStatus
 {
     public bool IsPack;
-    public bool CanAccess;
+    public bool IsPublicAccess;
     public int Amount;
     public float Durability;
     public bool IsActivity;
@@ -10,7 +10,7 @@ public class ItemLocalStatus
     public void Init()
     {
         IsPack = false;
-        CanAccess = false;
+        IsPublicAccess = false;
         IsActivity = false;
     }
 }
