@@ -2,49 +2,52 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class LinkedHashSet<T> : IEnumerable<LinkedListNode<T>> where T : class
+namespace AboutGround.Commons.DataStructure
 {
-    private readonly Dictionary<T, LinkedListNode<T>> _dic;
-    private readonly LinkedList<T> _linked;
-
-    public int Count { get { return _linked.Count; } }
-
-    public LinkedHashSet(int capacity = 8)
+    public class LinkedHashSet<T> : IEnumerable<LinkedListNode<T>> where T : class
     {
-        _dic = new(capacity);
-        _linked = new();
-    }
+        private readonly Dictionary<T, LinkedListNode<T>> _dic;
+        private readonly LinkedList<T> _linked;
 
-    public void Add(T item)
-    {
-        if (Contains(item))
-            throw new ArgumentException();
+        public int Count { get { return _linked.Count; } }
 
-        var node = _linked.AddLast(item);
-        _dic.Add(item, node);
-    }
-
-    public void Remove(T item)
-    {
-        if (_dic.TryGetValue(item, out var node))
+        public LinkedHashSet(int capacity = 8)
         {
-            _linked.Remove(node);
-            _dic.Remove(item);
+            _dic = new(capacity);
+            _linked = new();
         }
-    }
 
-    public bool Contains(T item)
-    {
-        return _dic.ContainsKey(item);
-    }
+        public void Add(T item)
+        {
+            if (Contains(item))
+                throw new ArgumentException();
 
-    public IEnumerator<LinkedListNode<T>> GetEnumerator()
-    {
-        return _linked.GetEnumerator();
-    }
+            var node = _linked.AddLast(item);
+            _dic.Add(item, node);
+        }
 
-    IEnumerator IEnumerable.GetEnumerator() 
-    {        
-        throw new NotImplementedException();    
+        public void Remove(T item)
+        {
+            if (_dic.TryGetValue(item, out var node))
+            {
+                _linked.Remove(node);
+                _dic.Remove(item);
+            }
+        }
+
+        public bool Contains(T item)
+        {
+            return _dic.ContainsKey(item);
+        }
+
+        public IEnumerator<LinkedListNode<T>> GetEnumerator()
+        {
+            return _linked.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

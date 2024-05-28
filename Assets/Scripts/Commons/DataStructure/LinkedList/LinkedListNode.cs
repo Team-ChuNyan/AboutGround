@@ -1,32 +1,35 @@
-public class LinkedListNode<T>
+namespace AboutGround.Commons.DataStructure
 {
-    public T Item;
-    public LinkedListNode<T> Before;
-    public LinkedListNode<T> After;
-
-    public void Clear()
+    public class LinkedListNode<T>
     {
-        Item = default;
-        After = null;
-        Before = null;
-    }
+        public T Item;
+        public LinkedListNode<T> Before;
+        public LinkedListNode<T> After;
 
-    public LinkedListNode() { }
-    public LinkedListNode(T item) 
-    {
-        Item = item;
-    }
-
-    public void Remove()
-    {
-        if (Before is not null)
+        public void Clear()
         {
-            Before.After = After;
+            Item = default;
+            After = null;
+            Before = null;
         }
-        if (After is not null)
+
+        public LinkedListNode() { }
+        public LinkedListNode(T item)
         {
-            After.Before = Before;
+            Item = item;
         }
-        Item = default;
+
+        public void Remove()
+        {
+            if (Before is not null)
+            {
+                Before.After = After;
+            }
+            if (After is not null)
+            {
+                After.Before = Before;
+            }
+            Item = default;
+        }
     }
 }
