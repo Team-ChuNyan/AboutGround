@@ -7,7 +7,7 @@ public class BuildingGenerator : MonoBehaviourSingleton<BuildingGenerator>
     private Building _prefab;
 
     private Queue<Building> _inactiveBuildings;
-    private Transform _parentObject;
+    private Transform _root;
     private Building _newBuilding;
 
     private event Action<Building> Generated;
@@ -16,7 +16,7 @@ public class BuildingGenerator : MonoBehaviourSingleton<BuildingGenerator>
     private void Awake()
     {
         _prefab = Resources.Load<Building>("Prefabs/Building");
-        _parentObject = new GameObject("Buildings").transform;
+        _root = new GameObject("Buildings").transform;
         _inactiveBuildings = new();
 
         var bluePrintMaterial = DataManager.Instance.BluePrintMaterial;
@@ -25,7 +25,7 @@ public class BuildingGenerator : MonoBehaviourSingleton<BuildingGenerator>
 
     public BuildingGenerator SetNewBuilding(BuildingType type)
     {
-        _newBuilding = Instantiate(_prefab,_parentObject);
+        _newBuilding = Instantiate(_prefab, _root);
         _newBuilding.name = "Building";
         InitBuildingStatus(type);
         return this;

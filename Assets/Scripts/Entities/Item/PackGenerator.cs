@@ -5,9 +5,9 @@ using UnityEngine;
 public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
 {
     private Pack _prefab;
-
     private List<Pack> _activePack;
     private Queue<Pack> _inactivePacks;
+    private Transform _root;
     private Pack _newPack;
 
     public List<Pack> ActivePack { get { return _activePack; } }
@@ -18,6 +18,7 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
     private void Awake()
     {
         _prefab = Resources.Load<Pack>("Prefabs/Pack");
+        _root = new GameObject("Units").transform;
         _activePack = new List<Pack>();
         _inactivePacks = new Queue<Pack>();
     }
@@ -66,7 +67,7 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>
     {
         if (!_inactivePacks.TryDequeue(out _newPack))
         {
-            _newPack = Instantiate(_prefab);
+            _newPack = Instantiate(_prefab, _root);
         }
         else
         {

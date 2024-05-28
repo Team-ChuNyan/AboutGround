@@ -6,6 +6,7 @@ public class UnitGenerator : MonoBehaviourSingleton<UnitGenerator>
 {
     private Dictionary<RaceType, Queue<Unit>> _inactiveUnits;
     private UnitComponentHandler _unitPrefab;
+    private Transform _root;
     private Unit _newUnit;
 
     private IMoveSystem _workSys;
@@ -15,6 +16,7 @@ public class UnitGenerator : MonoBehaviourSingleton<UnitGenerator>
     private void Awake()
     {
         _unitPrefab = Resources.Load<UnitComponentHandler>("Prefabs/Unit");
+        _root = new GameObject("Units").transform;
         _inactiveUnits = Util.NewEnumKeyDictionary<RaceType, Queue<Unit>>();
     }
 
@@ -25,7 +27,7 @@ public class UnitGenerator : MonoBehaviourSingleton<UnitGenerator>
 
     private void CreateNewUnit(PropOwner owner, RaceType race)
     {
-        var newobj = Instantiate(_unitPrefab);
+        var newobj = Instantiate(_unitPrefab, _root);
         switch (race)
         {
             case RaceType.Human:
