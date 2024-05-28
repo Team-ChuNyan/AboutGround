@@ -7,3 +7,4 @@ public struct GeneratorGroundData
     public float height;
     public Color color;
 }
+
