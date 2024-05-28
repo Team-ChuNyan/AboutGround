@@ -1,11 +1,13 @@
 public class Human : Unit, IWorkable, IAttackable
 {
+    public HumanLocalStatus HumanLocalStatus;
     public WorkerHandler _workProcess;
     private IInventory _inven;
-    private bool _isWorking;
 
     public WorkerHandler WorkerHandler { get { return _workProcess; } }
-    public bool IsWorking { get { return _isWorking; } set { _isWorking = value; } }
+    public bool IsWorking { get { return HumanLocalStatus.IsWorking; } set { HumanLocalStatus.IsWorking = value; } }
+
+    public WorkType WorkTypeFlag { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
     private const int DEFAULT_HUMAN_INVENTORY_SLOT = 4;
 
@@ -13,13 +15,14 @@ public class Human : Unit, IWorkable, IAttackable
     {
         base.Awake();
         UnitData.SetRace(RaceType.Human);
+        HumanLocalStatus = new HumanLocalStatus();
         _inven = new SlotInventory(DEFAULT_HUMAN_INVENTORY_SLOT);
         _workProcess = gameObject.AddComponent<WorkerHandler>();
     }
 
     public void StartWork()
     {
-        _isWorking = true;
+        HumanLocalStatus.IsWorking = true;
         _workProcess.StartProcess(this);
     }
 
@@ -36,7 +39,7 @@ public class Human : Unit, IWorkable, IAttackable
 
     public void CompleteWork()
     {
-        _isWorking = false;
+        HumanLocalStatus.IsWorking = false;
     }
 
     public void PutDownItem(IPackable pack, int amount)
