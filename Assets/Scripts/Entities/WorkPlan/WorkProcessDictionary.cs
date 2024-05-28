@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 public class WorkProcessDictionary
 {
-    private MultiKeyDictionary<WorkType, int, List<WorkProcess>> _storage;
+    private MultiKeyDictionary<WorkType, int, LinkedHashSet<WorkProcess>> _storage;
     private Dictionary<WorkType, int> _storageCount;
 
     private const int PRIORITY_COUNT = 5 + 1;
 
-    public List<WorkProcess> this[WorkType type, int priority]
+    public LinkedHashSet<WorkProcess> this[WorkType type, int priority]
     {
         get { return _storage[type, priority]; }
         set { _storage[type, priority] = value; }
@@ -71,12 +71,12 @@ public class WorkProcessDictionary
                     continue;
 
                 var workList = _storage[type, i];
-                for (int j = 0; j < workList.Count; j++)
+                foreach (var node in workList)
                 {
-                    if (workList[j].IsStarting == true)
+                    if (node.Item.IsStarting == true)
                         continue;
 
-                    work = workList[j];
+                    work = node.Item;
                     return true;
                 }
             }

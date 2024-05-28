@@ -1,0 +1,11 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Plugins/UI%20Toolkit/StyleSheets/Slider.uss?fileID=7433441132597879392&amp;guid=7deaba7b7e279794f9e7af4af46f1e87&amp;type=3#Slider" />
+    <Style src="project://database/Assets/Plugins/UI%20Toolkit/StyleSheets/Button.uss?fileID=7433441132597879392&amp;guid=7832bfd4a6188ee49aa31a781e034e3e&amp;type=3#Button" />
+    <engine:VisualElement name="ManagementMenu" style="flex-direction: row; justify-content: center;">
+        <engine:Button name="Button0" class="ManagementMenu" />
+        <engine:Button name="Button1" class="ManagementMenu" />
+        <engine:Button name="Button2" class="ManagementMenu" />
+        <engine:Button name="Button3" class="ManagementMenu" />
+        <engine:Button name="Button4" class="ManagementMenu" />
+    </engine:VisualElement>
+</engine:UXML>

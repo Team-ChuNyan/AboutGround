@@ -7,30 +7,30 @@ public class GroundPathfinding : IMoveSystem
     private const int Move_DIAGONAL_COST = 14;
     private const int _weight = 1;
 
-    private PathNode[,] _nodes;
-    private readonly NodePriorityQueue _openList;
-    private readonly HashSet<PathNode> _closeList;
-    private PathNode _current;
+    private Ground[,] _nodes;
+    private readonly PriorityQueue<Ground> _openList;
+    private readonly HashSet<Ground> _closeList;
+    private Ground _current;
 
     private Vector2Int _nodeMapSize;
     private Vector2Int _goal;
 
     public GroundPathfinding()
     {
-        _openList = new NodePriorityQueue(1024);
-        _closeList = new HashSet<PathNode>(16384);
+        _openList = new PriorityQueue<Ground>(1024);
+        _closeList = new HashSet<Ground>(16384);
     }
 
-    public void SetNodeMap(PathNode[,] nodes)
+    public void SetNodeMap(Ground[,] nodes)
     {
         _nodes = nodes;
         _nodeMapSize = new(_nodes.GetLength(0), _nodes.GetLength(1));
     }
 
-    public void UpdateMovementPath(List<PathNode> path, Vector2Int start, Vector2Int goal)
+    public void UpdateMovementPath(List<Ground> path, Vector2Int start, Vector2Int goal)
     {
-        if (_nodes[goal.x, goal.y].IsBlocked
-         || _nodes[start.x, start.y].IsBlocked)
+        if (_nodes[goal.x, goal.y].LocalStatus.IsBlocked
+         || _nodes[start.x, start.y].LocalStatus.IsBlocked)
             return;
 
         FindPath(start, goal);
@@ -47,7 +47,7 @@ public class GroundPathfinding : IMoveSystem
         {
             _current = _openList.Dequeue();
             _closeList.Add(_current);
-            if (_current.Pos != goal)
+            if (_current.LocalStatus.Pos != goal)
             {
                 AddAroundPathNode(_current);
             }
@@ -62,16 +62,16 @@ public class GroundPathfinding : IMoveSystem
     {
         foreach (var node in _closeList)
         {
-            node.ResetPathfindingData();
+            node.ResetPriorityData();
         }
         _closeList.Clear();
         _openList.Clear();
     }
 
-    private void AddAroundPathNode(PathNode target)
+    private void AddAroundPathNode(Ground target)
     {
-        int centerX = target.Pos.x;
-        int centerY = target.Pos.y;
+        int centerX = target.LocalStatus.Pos.x;
+        int centerY = target.LocalStatus.Pos.y;
 
         int leftX = centerX - 1;
         int rightX = centerX + 1;
@@ -94,14 +94,14 @@ public class GroundPathfinding : IMoveSystem
         if ((x < 0 || y < 0 || x >= _nodeMapSize.x || y >= _nodeMapSize.y)) return;
 
         var node = _nodes[x, y];
-        if (_closeList.Contains(node) || node.IsBlocked) return;
+        if (_closeList.Contains(node) || node.LocalStatus.IsBlocked) return;
         if (moveCost == Move_DIAGONAL_COST)
         {
-            var currentPos = _current.Pos;
-            var conorPos = node.Pos - currentPos;
+            var currentPos = _current.LocalStatus.Pos;
+            var conorPos = node.LocalStatus.Pos - currentPos;
 
-            if (_nodes[currentPos.x + conorPos.x, currentPos.y].IsBlocked
-             || _nodes[currentPos.x, currentPos.y + conorPos.y].IsBlocked)
+            if (_nodes[currentPos.x + conorPos.x, currentPos.y].LocalStatus.IsBlocked
+             || _nodes[currentPos.x, currentPos.y + conorPos.y].LocalStatus.IsBlocked)
             {
                 return;
             }
@@ -111,24 +111,29 @@ public class GroundPathfinding : IMoveSystem
         {
             AddNewNodeToOpenList(node, moveCost);
         }
-        else if (moveCost + _current.G + node.H < node.F)
+        else if (moveCost + _current.PathFindingData.G + node.PathFindingData.H < node.PathFindingData.F)
         {
             RefreshNode(node, moveCost);
         }
     }
 
-    private void AddNewNodeToOpenList(PathNode node, int moveCost)
+    private void AddNewNodeToOpenList(Ground node, int moveCost)
     {
-        node.H = CalculateHeuristic(node.Pos, _goal);
+        node.PathFindingData.H = CalculateHeuristic(node.LocalStatus.Pos, _goal);
         RefreshNode(node, moveCost);
         _openList.Enqueue(node);
     }
 
-    private void RefreshNode(PathNode node, int moveCost)
+    private void RefreshNode(Ground node, int moveCost)
     {
-        node.BeforeNode = _current;
-        node.G = moveCost + _current.G;
-        node.F = node.G + node.H;
+        node.PathFindingData.BeforeNode = _current;
+        var data = node.PathFindingData;
+        int g = moveCost + _current.PathFindingData.G;
+        int h = data.H;
+        int f = data.G + h;
+        AStarPathFindingData newData = new(_current, data.QueueIndex, g, h, f);
+
+        node.PathFindingData = newData;
     }
 
     private int CalculateHeuristic(Vector2Int start, Vector2Int end)
@@ -138,13 +143,13 @@ public class GroundPathfinding : IMoveSystem
         return (disX + disY) << _weight;
     }
 
-    private void ConnectMovementPath(PathNode node, List<PathNode> path)
+    private void ConnectMovementPath(Ground node, List<Ground> path)
     {
         path.Clear();
         path.Add(node);
-        while (node.BeforeNode != null)
+        while (node.PathFindingData.BeforeNode != null)
         {
-            node = node.BeforeNode;
+            node = node.PathFindingData.BeforeNode;
             path.Add(node);
         }
         path.RemoveAt(path.Count - 1);

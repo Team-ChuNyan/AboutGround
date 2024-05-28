@@ -69,6 +69,7 @@ public class WorkerHandler : MonoBehaviour
         if (_step == _CompleteStep)
         {
             CompleteWork(worker);
+            WorkProcessGenerator.Instance.Remove(_workProcess);
         }
     }
 

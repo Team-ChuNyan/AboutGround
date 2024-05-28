@@ -4,9 +4,9 @@ public class GroundTile : MonoBehaviour
 {
     [SerializeField] private MeshFilter _filter;
     [SerializeField] private MeshRenderer _renderer;
-    private PathNode _node;
+    private Ground _gorund;
 
-    public PathNode Node { get { return _node; } set { _node = value; } }
+    public Ground Ground { get { return _gorund; } set { _gorund = value; } }
 
     public void SetMesh(Mesh mesh)
     {

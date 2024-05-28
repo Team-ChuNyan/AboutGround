@@ -22,10 +22,11 @@ public class SelectPropController : ICancelable
         _quickCanceling = quickCanceling;
     }
 
-    public void InitObjectSelecting(InteractionViewModel model,SelectionBoxUIHandler selectionBoxUI, PropsContainer props)
+    public void InitObjectSelecting(InteractionViewModel model,SelectionBoxUIHandler selectionBoxUI, PropsContainer props, MouseInputHandler inputHandler)
     {
         _interactionViewModel = model;
-        _selecting.Init(_inputController, selectionBoxUI, _quickCanceling, props);
+        _selecting.Init(selectionBoxUI, _quickCanceling, props);
+        _selecting.InitInput(_inputController, inputHandler);
         model.Init(_selecting.CurrentSelection, _currentTypes);
     }
 

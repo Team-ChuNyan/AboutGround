@@ -16,9 +16,22 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
         = new() { InteractionType.Cancel, InteractionType.Carry };
 
     public IPackable Item { get { return _item; } }
-    public Vector3 Position { get { return transform.position; } }
     public bool IsSelection { get { return _isSelection; } }
     public bool IsGenerateCarry { get { return _isGenerateCarry; } set { _isGenerateCarry = value; } }
+
+    public void OnDisable()
+    {
+        _isGenerateCarry = false;
+        if (_isSelection == true)
+        {
+            CancelSelection();
+        }
+    }
+
+    public Vector3 Position()
+    {
+        return transform.position;
+    }
 
     public void SetMesh(Mesh mesh, Material material)
     {
@@ -29,9 +42,10 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
     public void SetItem(IPackable newItem)
     {
         _item = newItem;
+        _item.OnPublicAccess(Position);
     }
 
-    public void KeepItem(IPackable item)
+    public void KeepItem(IPackable item, int amount)
     {
         _item.StackItem(item);
     }
@@ -40,7 +54,7 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
     {
         var inven = worker.GetInventory();
 
-        inven.KeepItem(_item);
+        inven.KeepItem(_item, amount);
         if (_item.Amount <= 0)
         {
             PackGenerator.Instance.DestoryPack(this);
@@ -55,8 +69,10 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
         WorkProcessHandler.Carry(this, amount);
     }
 
-    public void DestroyPack()
+    public void Destroy()
     {
+        // TODO : 아이템이 옮겨 가는지 완전히 파괴되는지 체크는 어떻게 할 것 인가?
+        _item.OffPublicAccess();
         _item = null;
         PackGenerator.Instance.DestoryPack(this);
     }
@@ -102,11 +118,8 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
         throw new System.NotImplementedException();
     }
 
-    public void OnDisable()
+    public void FinishWork(WorkType type)
     {
-        if (_isSelection == true)
-        {
-            CancelSelection();
-        }
+        _isGenerateCarry = false;
     }
 }

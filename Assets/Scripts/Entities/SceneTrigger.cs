@@ -9,15 +9,12 @@ public class SceneTrigger : MonoBehaviour
     [SerializeField] private Vector3 _startCameraPosition;
     [SerializeField] private Vector3 _startCameraRotation;
 
-    private ItemGenerator _itemGenerator;
-    private PackGenerator _packGenerator;
-    private UnitGenerator _unitGenerator;
-    private WorkProcessGenerator _workGenerator;
     private MapGenerator _mapGenerator;
 
     private CameraController _cameraController;
     private VirtualCameraController _virualCameraController;
     private PlayerInputController _inputController;
+    private MouseInputHandler _mouseInputHandler;
     private UnitController _unitController;
     private ItemController _itemController;
     private SelectPropController _selectController;
@@ -28,6 +25,7 @@ public class SceneTrigger : MonoBehaviour
     private GroundPathfinding _groundPathfinder;
     private QuickCanceling _quickCanceling;
     private PropsContainer _propsContainer;
+    private BlueprintConstructing _blueprintConstructing;
 
     private InteractionViewModel _interactionViewModel;
 
@@ -57,37 +55,45 @@ public class SceneTrigger : MonoBehaviour
         InstantiateManagers();
         InstantiateController();
         InstantiateGameObject();
+        InitUI_TempMethod();
         GetClassData();
-        
+
         InitPropsContainer();
         CreateMap();
         InitClass();
         InitDebuger();
 
         RegisterInteractionViewModel();
+        RegisterEvent();
+
+        ChangeMouseModeDefault();
     }
 
     private void InstantiateManagers()
     {
-        new DataManager().InitializeItemData();
-        _itemGenerator = new ItemGenerator();
-        _packGenerator = gameObject.AddComponent<PackGenerator>();
-        _unitGenerator = gameObject.AddComponent<UnitGenerator>();
-        _workGenerator = new WorkProcessGenerator();
+        new DataManager();
+        new WorkProcessGenerator();
+        new ItemGenerator();
+
+        gameObject.AddComponent<PackGenerator>();
+        gameObject.AddComponent<UnitGenerator>();
+        gameObject.AddComponent<BuildingGenerator>();
     }
 
     private void InstantiateController()
     {
         _virualCameraController = _virtualCamera.AddComponent<VirtualCameraController>();
         _inputController = gameObject.AddComponent<PlayerInputController>();
+        _mouseInputHandler = new();
         _unitController = gameObject.AddComponent<UnitController>();
-        _itemController = gameObject.AddComponent<ItemController>();
+        _itemController = new();
         _selectController = new SelectPropController();
 
         _workplan = new WorkPlan();
         _groundPathfinder = new GroundPathfinding();
         _quickCanceling = new QuickCanceling();
         _propsContainer = new PropsContainer();
+        _blueprintConstructing = new();
     }
 
     private void InstantiateGameObject()
@@ -107,6 +113,12 @@ public class SceneTrigger : MonoBehaviour
         _interactionViewModel = _inGameUIController.InteractionMenuUI.ViewModel;
     }
 
+    private void InitUI_TempMethod()
+    {
+        _inGameUIController.Init(_quickCanceling);
+        // TODO : quickCanceling이 이벤트 등록하도록 변경
+    }
+
     private void InitPropsContainer()
     {
         _propsContainer.SetPacks(PackGenerator.Instance.ActivePack)
@@ -119,15 +131,23 @@ public class SceneTrigger : MonoBehaviour
         _cameraController.SetCameraPosition(_startCameraPosition);
         _cameraController.SetCameraRotation(_startCameraRotation);
 
-        _unitGenerator.Init(_groundPathfinder);
+        UnitGenerator.Instance.Init(_groundPathfinder);
 
         _cameraController.Initialize(_inputController, _virualCameraController);
         _unitController.Init(_workplan);
-        _groundPathfinder.SetNodeMap(_mapGenerator.PathNodeMap);
+        _groundPathfinder.SetNodeMap(_mapGenerator.Grounds);
         _selectController.Init(_inputController, _quickCanceling);
-        _selectController.InitObjectSelecting(_interactionViewModel, _inGameUIController.DragSelectionUI, _propsContainer);
+        _selectController.InitObjectSelecting(_interactionViewModel, _inGameUIController.DragSelectionUI, _propsContainer, _mouseInputHandler);
+        _itemController.Init();
 
         _quickCanceling.Init(_inputController);
+        _mouseInputHandler.Init(_inputController);
+        _blueprintConstructing.Init(_mouseInputHandler, _quickCanceling);
+    }
+
+    private void ChangeMouseModeDefault()
+    {
+        _mouseInputHandler.ChangeLeftClickMode(MouseInputHandler.LeftClick.Selecting);
     }
 
     private void CreateMap()
@@ -138,6 +158,12 @@ public class SceneTrigger : MonoBehaviour
             .GenerateDisplayMap()
             .GeneratePathNodeMap()
             .PaintTileMap();
+    }
+
+    private void RegisterEvent()
+    {
+        _inGameUIController.BuildUI.RegisterItemClicked(_blueprintConstructing.Start);
+        _inGameUIController.BuildUI.RegisterCanceled(_blueprintConstructing.Cancel);
     }
 
     private void InitDebuger()
@@ -159,11 +185,15 @@ public class SceneTrigger : MonoBehaviour
                 }
 
                 var item = ItemGenerator.Instance.SetNewItem(ItemType.Apple)
-                                                 .GetNewItem();
+                                                 .Generate();
                 PackGenerator.Instance.CreateNewItemPack(item)
-                                      .SetPosition(new Vector3(x + 50,0, z + 50));
+                                      .SetPosition(new Vector3(x + 50, 0, z + 50));
             }
         }
+
+        BuildingGenerator.Instance.SetNewBuilding(BuildingType.Wall)
+                                  .SetPosition(new Vector2Int(10, 50))
+                                  .GenerateBuilding();
     }
 
     private void RegisterInteractionViewModel()

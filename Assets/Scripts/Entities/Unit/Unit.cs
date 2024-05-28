@@ -11,7 +11,7 @@ public abstract class Unit : MonoBehaviour, IMovable, ISelectable
     protected UnitData _unitData;
     protected Dictionary<BodyPartType, BodyPart> _bodyParts;
 
-    protected List<PathNode> _movementPath;
+    protected List<Ground> _movementPath;
     protected Coroutine _moveCoroutine;
     private Vector2Int _targetPosition;
 
@@ -31,7 +31,7 @@ public abstract class Unit : MonoBehaviour, IMovable, ISelectable
 
     public virtual void Awake()
     {
-        _movementPath = new List<PathNode>(64);
+        _movementPath = new List<Ground>(64);
     }
 
     public void Move(Vector2Int goal)
@@ -56,7 +56,7 @@ public abstract class Unit : MonoBehaviour, IMovable, ISelectable
         IsArrive = false;
         for (int i = 0; i < _movementPath.Count; i++)
         {
-            Vector3 targetPos = Util.Vector2IntToVector3(_movementPath[i].Pos);
+            Vector3 targetPos = Util.Vector2IntToVector3(_movementPath[i].LocalStatus.Pos);
             while (transform.position != targetPos)
             {
                 var movePos = Time.deltaTime * UnitData.MoveSpeed * 10;

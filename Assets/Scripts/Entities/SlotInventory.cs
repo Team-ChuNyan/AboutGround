@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SlotInventory : IItemStorage
+public class SlotInventory : IInventory
 {
     private List<IPackable> _list;
     private int _maxSlot;
@@ -18,7 +18,7 @@ public class SlotInventory : IItemStorage
         _maxSlot = maxItemSlot;
     }
 
-    public void KeepItem(IPackable item)
+    public void KeepItem(IPackable item, int amount)
     {
         OverlapInventoryItem(item);
         AddItemInSpareSpace(item);

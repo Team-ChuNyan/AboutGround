@@ -5,10 +5,29 @@ public class DataManager : Singleton<DataManager>
 {
     private Dictionary<RaceType, UnitData> _unitData;
 
-    private Dictionary<ItemType, ItemData> _itemData;
-    private Dictionary<ItemType, EquipmentData> _equipmentData;
+    private Dictionary<ItemType, ItemUniversalStatus> _itemData;
+    private Dictionary<ItemType, EquipmentStatus> _equipmentData;
 
-    public ItemData GetItemData(ItemType type)
+    private Dictionary<BuildingType, BuildingUniversalStatus> _buildingGlobalStatus;
+    public Material BluePrintMaterial { get; private set; }
+
+    public DataManager() : base()
+    {
+        InitializeGameData();
+    }
+
+    private void InitializeGameData()
+    {
+        // TODO : DB에서 불러올 수 있도록
+        LoadItemData();
+        LoadEquipmentData();
+
+        LoadUnitData();
+
+        LoadBuildingData();
+    }
+
+    public ItemUniversalStatus GetItemData(ItemType type)
     {
         return _itemData[type];
     }
@@ -18,9 +37,9 @@ public class DataManager : Singleton<DataManager>
         return _unitData[type];
     }
 
-    public EquipmentData GetEquipmentData(ItemType type)
+    public EquipmentStatus GetEquipmentData(ItemType type)
     {
-        if (!_equipmentData.TryGetValue(type, out EquipmentData data))
+        if (!_equipmentData.TryGetValue(type, out EquipmentStatus data))
         {
             Debug.LogError("Empty DataType");
         }
@@ -28,15 +47,10 @@ public class DataManager : Singleton<DataManager>
         return data;
     }
 
-    public DataManager InitializeItemData()
+    public BuildingUniversalStatus GetBuildingData(BuildingType type)
     {
-        // TODO : DB에서 불러올 수 있도록
-        LoadItemData();
-        LoadEquipmentData();
-
-        LoadUnitData();
-
-        return this;
+        _buildingGlobalStatus.TryGetValue(type, out var data);
+        return data;
     }
 
     private void LoadItemData()
@@ -47,7 +61,7 @@ public class DataManager : Singleton<DataManager>
             { ItemType.Wood, new()}
         };
 
-        ItemData apple = new();
+        ItemUniversalStatus apple = new();
         apple.Type = ItemType.Apple;
         apple.MaxAmount = 99;
         apple.IsStacked = true;
@@ -82,4 +96,33 @@ public class DataManager : Singleton<DataManager>
 
         _unitData.Add(RaceType.Human, unitData);
     }
+
+    private void LoadBuildingData()
+    {
+        _buildingGlobalStatus = new();
+
+        var rockGlobal = new BuildingUniversalStatus
+        {
+            BuildingType = BuildingType.Rock
+
+        };
+
+        var wallGlobal = new BuildingUniversalStatus
+        {
+            BuildingType = BuildingType.Wall
+        };
+
+        _buildingGlobalStatus.Add(BuildingType.Rock, rockGlobal);
+        _buildingGlobalStatus.Add(BuildingType.Wall, wallGlobal);
+        BluePrintMaterial = Resources.Load<Material>("Models/Building/Materials/BluePrint");
+        // 
+        foreach (var item in _buildingGlobalStatus ) 
+        {
+            var status = item.Value;
+            status.Mesh = Resources.Load<Mesh>("Models/Building/Meshes/Test");
+            status.Material = Resources.Load<Material>("Models/Building/Materials/Test");
+        }
+
+    }
+
 }
