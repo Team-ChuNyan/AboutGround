@@ -35,6 +35,17 @@ public struct Work
         _completed = null;
     }
 
+    public Work(int maxWorkload, Vector3 pos)
+    {
+        _maxWorkload = maxWorkload;
+        _workload = 0;
+        _workPos = Util.Vector3XZToVector2Int(pos);
+
+        _started = null;
+        _processed = null;
+        _completed = null;
+    }
+
     public readonly void OnStarted(IWorkable worker)
     {
         _started?.Invoke(worker);

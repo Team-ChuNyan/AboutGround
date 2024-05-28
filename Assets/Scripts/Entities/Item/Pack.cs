@@ -28,9 +28,9 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
         }
     }
 
-    public Vector3 Position() 
-    { 
-        return transform.position; 
+    public Vector3 Position()
+    {
+        return transform.position;
     }
 
     public void SetMesh(Mesh mesh, Material material)
@@ -45,7 +45,7 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
         _item.OnPublicAccess(Position);
     }
 
-    public void KeepItem(IPackable item)
+    public void KeepItem(IPackable item, int amount)
     {
         _item.StackItem(item);
     }
@@ -54,7 +54,7 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
     {
         var inven = worker.GetInventory();
 
-        inven.KeepItem(_item);
+        inven.KeepItem(_item, amount);
         if (_item.Amount <= 0)
         {
             PackGenerator.Instance.DestoryPack(this);

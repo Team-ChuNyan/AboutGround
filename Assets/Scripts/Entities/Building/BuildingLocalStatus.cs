@@ -1,9 +1,15 @@
-﻿public struct BuildingLocalStatus
+public class BuildingLocalStatus
 {
+    public SlotInventory Inventory;
     public BuildingType BuildingType;
     public bool IsBluePrint;
 
-    public BuildingLocalStatus(BuildingUniversalStatus buildingGlobal)
+    public BuildingLocalStatus()
+    {
+        Inventory = new(4);
+    }
+
+    public void Init(BuildingUniversalStatus buildingGlobal)
     {
         BuildingType = buildingGlobal.BuildingType;
         IsBluePrint = false;

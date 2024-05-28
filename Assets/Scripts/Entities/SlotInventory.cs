@@ -18,7 +18,7 @@ public class SlotInventory : IInventory
         _maxSlot = maxItemSlot;
     }
 
-    public void KeepItem(IPackable item)
+    public void KeepItem(IPackable item, int amount)
     {
         OverlapInventoryItem(item);
         AddItemInSpareSpace(item);
