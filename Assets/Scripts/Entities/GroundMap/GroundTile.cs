@@ -1,21 +1,23 @@
 using UnityEngine;
 
-public class GroundTile : MonoBehaviour
+namespace AboutGround.GroundMap
 {
-    [SerializeField] private MeshFilter _filter;
-    [SerializeField] private MeshRenderer _renderer;
-    private Ground _gorund;
-
-    public Ground Ground { get { return _gorund; } set { _gorund = value; } }
-
-    public void SetMesh(Mesh mesh)
+    public class GroundTile : MonoBehaviour
     {
-        _filter.mesh = mesh;
-    }
+        [SerializeField] private MeshFilter _filter;
+        [SerializeField] private MeshRenderer _renderer;
+        private Ground _gorund;
 
-    public void SetMaterial(Material material)
-    {
-        _renderer.material = material;
-    }
+        public Ground Ground { get { return _gorund; } set { _gorund = value; } }
 
+        public void SetMesh(Mesh mesh)
+        {
+            _filter.mesh = mesh;
+        }
+
+        public void SetMaterial(Material material)
+        {
+            _renderer.material = material;
+        }
+    }
 }

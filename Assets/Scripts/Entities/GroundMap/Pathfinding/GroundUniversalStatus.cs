@@ -1,5 +1,8 @@
-public class GroundUniversalStatus
+namespace AboutGround.GroundMap
 {
-    public GroundType Type;
-    public float WalkSpeed;
+    public class GroundUniversalStatus
+    {
+        public GroundType Type;
+        public float WalkSpeed;
+    }
 }

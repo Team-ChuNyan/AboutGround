@@ -1,10 +1,12 @@
 using UnityEngine;
 
-[System.Serializable]
-public struct GeneratorGroundData
+namespace AboutGround.GroundMap.Generator
 {
-    public GroundType Type;
-    public float height;
-    public Color color;
+    [System.Serializable]
+    public struct GeneratorGroundData
+    {
+        public GroundType Type;
+        public float height;
+        public Color color;
+    }
 }
-

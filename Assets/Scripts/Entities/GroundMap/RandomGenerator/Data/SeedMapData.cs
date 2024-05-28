@@ -1,24 +1,27 @@
-[System.Serializable]
-public struct SeedMapData
+namespace AboutGround.GroundMap.Generator
 {
-    public int Width;
-    public int Height;
-    public int Seed;
-
-    public SeedMapData(int Width, int Height, int Seed)
+    [System.Serializable]
+    public struct SeedMapData
     {
-        if (Width <= 0)
-            Width = 1;
-        if (Height <= 0)
-            Height = 1;
+        public int Width;
+        public int Height;
+        public int Seed;
 
-        this.Width = Width;
-        this.Height = Height;
-        this.Seed = Seed;
-    }
+        public SeedMapData(int Width, int Height, int Seed)
+        {
+            if (Width <= 0)
+                Width = 1;
+            if (Height <= 0)
+                Height = 1;
 
-    public readonly int GetMapSize()
-    {
-        return Width * Height;
+            this.Width = Width;
+            this.Height = Height;
+            this.Seed = Seed;
+        }
+
+        public readonly int GetMapSize()
+        {
+            return Width * Height;
+        }
     }
 }

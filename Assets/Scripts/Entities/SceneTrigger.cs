@@ -1,3 +1,5 @@
+using AboutGround.GroundMap;
+using AboutGround.GroundMap.Generator;
 using UnityEngine;
 
 public class SceneTrigger : MonoBehaviour

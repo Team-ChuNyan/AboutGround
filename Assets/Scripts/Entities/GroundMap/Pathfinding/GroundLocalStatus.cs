@@ -1,7 +1,10 @@
 using UnityEngine;
 
-public struct GroundLocalStatus
+namespace AboutGround.GroundMap
 {
-    public Vector2Int Pos;
-    public bool IsBlocked;
+    public struct GroundLocalStatus
+    {
+        public Vector2Int Pos;
+        public bool IsBlocked;
+    }
 }

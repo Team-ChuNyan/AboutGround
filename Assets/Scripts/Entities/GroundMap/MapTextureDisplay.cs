@@ -1,12 +1,15 @@
 using UnityEngine;
 
-public class MapTextureDisplay : MonoBehaviour
+namespace AboutGround.GroundMap.Generator
 {
-    public Renderer textureRender;
-
-    public void DrawTexture(Texture2D texture)
+    public class MapTextureDisplay : MonoBehaviour
     {
-        textureRender.sharedMaterial.mainTexture = texture;
-        textureRender.transform.localScale = new Vector3(texture.width,1, texture.height);
+        public Renderer textureRender;
+
+        public void DrawTexture(Texture2D texture)
+        {
+            textureRender.sharedMaterial.mainTexture = texture;
+            textureRender.transform.localScale = new Vector3(texture.width, 1, texture.height);
+        }
     }
 }
