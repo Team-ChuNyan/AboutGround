@@ -111,6 +111,6 @@ public class ItemGenerator : Singleton<ItemGenerator>
 
     private void OnDestroyed(Item item)
     {
-        Generated?.Invoke(item);
+        Destroyed?.Invoke(item);
     }
 }
