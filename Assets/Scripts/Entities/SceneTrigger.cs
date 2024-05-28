@@ -6,7 +6,6 @@ public class SceneTrigger : MonoBehaviour
 {
     [SerializeField] private SceneType _currentScene;
     [SerializeField] private GameObject _virtualCamera;
-    [SerializeField] private GameObject _debugger;
 
     [SerializeField] private Vector3 _startCameraPosition;
     [SerializeField] private Vector3 _startCameraRotation;
@@ -170,12 +169,6 @@ public class SceneTrigger : MonoBehaviour
 
     private void InitDebuger()
     {
-        if (_debugger.TryGetComponent(out MainSceneDebugger debugger))
-        {
-            debugger.MapGenerator = _mapGenerator;
-            debugger.UnitController = _unitController;
-        }
-
         for (int x = 0; x < 4; x++)
         {
             for (int z = 0; z < 4; z++)
