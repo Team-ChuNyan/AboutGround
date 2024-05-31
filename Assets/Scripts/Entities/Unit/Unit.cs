@@ -6,11 +6,14 @@ using UnityEngine;
 
 public abstract class Unit : MonoBehaviour, IMovable, ISelectable
 {
-    public UnitComponentHandler ComponentHandler;
-    private IMoveSystem _moveSystem;
+    public static readonly List<InteractionType> PlayerUnitInteraction
+    = new() { InteractionType.Cancel };
 
-    protected UnitData _unitData;
-    protected Dictionary<BodyPartType, BodyPart> _bodyParts;
+    public UnitComponentHandler ComponentHandler;
+
+    public UnitUniversalStatus UniversalStatus;
+    public UnitLocalStatus LocalStatus;
+    private IMoveSystem _moveSystem;
 
     protected List<Ground> _movementPath;
     protected Coroutine _moveCoroutine;
@@ -21,13 +24,8 @@ public abstract class Unit : MonoBehaviour, IMovable, ISelectable
     public event Action OnArrived;
     public bool IsArrive { get; set; }
 
-    public static readonly List<InteractionType> PlayerUnitInteraction
-    = new() { InteractionType.Cancel };
 
-    public UnitData UnitData { get { return _unitData; } set { _unitData = value; } }
-    public Dictionary<BodyPartType, BodyPart> BodyParts { get { return _bodyParts; } set { _bodyParts = value; } }
     public Vector3 Position { get { return transform.position; } }
-
     public bool IsSelection { get { return _isSelection; } }
 
     public virtual void Awake()
@@ -60,7 +58,7 @@ public abstract class Unit : MonoBehaviour, IMovable, ISelectable
             Vector3 targetPos = Util.Vector2IntToVector3(_movementPath[i].LocalStatus.Pos);
             while (transform.position != targetPos)
             {
-                var movePos = Time.deltaTime * UnitData.MoveSpeed * 10;
+                var movePos = Time.deltaTime * UniversalStatus.MoveSpeed * 10;
                 var nextPos = Vector3.MoveTowards(transform.position, targetPos, movePos);
                 transform.position = nextPos;
                 yield return null;
@@ -124,6 +122,6 @@ public abstract class Unit : MonoBehaviour, IMovable, ISelectable
 
     public SelectPropType GetSelectPropType()
     {
-        return UnitData.SelectPropType;
+        return LocalStatus.SelectPropType;
     }
 }

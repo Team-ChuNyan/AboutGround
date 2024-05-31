@@ -40,9 +40,8 @@ public class UnitGenerator : MonoBehaviourSingleton<UnitGenerator>
         }
 
         _newUnit.ComponentHandler = newobj;
-        _newUnit.UnitData.SetRace(race);
-        _newUnit.UnitData.SetOwner(owner);
-        SetDefaultUnitData();
+        _newUnit.LocalStatus.Owner = owner;
+        _newUnit.UniversalStatus = DataManager.Instance.GetUnitData(race);
         _newUnit.gameObject.name = "Unit";
     }
 
@@ -56,7 +55,7 @@ public class UnitGenerator : MonoBehaviourSingleton<UnitGenerator>
     public UnitGenerator SetName(string name)
     {
         name ??= GetRandomName();
-        _newUnit.UnitData.SetName(name);
+        _newUnit.LocalStatus.Name = name;
         return this;
     }
 
@@ -81,7 +80,7 @@ public class UnitGenerator : MonoBehaviourSingleton<UnitGenerator>
 
     private void SetDefaultUnitData()
     {
-        _newUnit.UnitData = DataManager.Instance.GetUnitData(_newUnit.UnitData.Race);
+        _newUnit.UniversalStatus = DataManager.Instance.GetUnitData(_newUnit.UniversalStatus.Race);
         _newUnit.SetMoveSystem(_workSys);
     }
 
