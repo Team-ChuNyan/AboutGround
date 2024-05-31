@@ -30,14 +30,14 @@ public class PackGenerator : MonoBehaviourSingleton<PackGenerator>, IObjectGener
 
     private Pack GetNewPack()
     {
-        if (!_inactives.TryDequeue(out var pack))
+        if (_inactives.TryDequeue(out var pack))
         {
-            _newPack.gameObject.SetActive(true);
+            pack.gameObject.SetActive(true);
         }
         else
         {
-            _newPack = Instantiate(_prefab, _root);
-            _newPack.name = "Pack";
+            pack = Instantiate(_prefab, _root);
+            pack.name = "Pack";
         }
         return pack;
     }

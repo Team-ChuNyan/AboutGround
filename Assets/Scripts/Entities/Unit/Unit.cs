@@ -30,6 +30,7 @@ public abstract class Unit : MonoBehaviour, IMovable, ISelectable
 
     public virtual void Awake()
     {
+        LocalStatus = new UnitLocalStatus();
         _movementPath = new List<Ground>(64);
     }
 

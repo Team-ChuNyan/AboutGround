@@ -47,7 +47,7 @@ public class UnitGenerator : MonoBehaviourSingleton<UnitGenerator>, IObjectGener
             var unitHandler = Instantiate(_unitPrefab, _root);
             unit = AddUnitComponent(unitHandler, race);
             unit.ComponentHandler = unitHandler;
-            _newUnit.gameObject.name = race.ToString();
+            unit.gameObject.name = race.ToString();
         }
 
         return unit;
