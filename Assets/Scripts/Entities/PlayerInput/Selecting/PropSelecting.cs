@@ -19,7 +19,7 @@ public class PropSelecting : ICancelable
     private HashSet<ISelectable> _currentSelection;
     private HashSet<ISelectable> _waitSelection;
     private HashSet<ISelectable> _beforeSelection;
-    private PlayerInputController _input;
+    private PlayerInputManager _input;
     private Vector2 _startPosition;
     private Vector2 _endPosition;
 
@@ -54,7 +54,7 @@ public class PropSelecting : ICancelable
         _packs = props.Packs;
     }
 
-    public void InitInput(PlayerInputController con, MouseInputHandler mouseInputHandler)
+    public void InitInput(PlayerInputManager con, MouseInputHandler mouseInputHandler)
     {
         _input = con;
         _input.RegisterShiftPressed(ToggleAddMode);

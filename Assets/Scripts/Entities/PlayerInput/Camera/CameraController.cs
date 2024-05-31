@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    private PlayerInputController _inputController;
+    private PlayerInputManager _inputManager;
     private VirtualCameraController _virtualCamera;
     [SerializeField] private Transform _cameraArm;
 
@@ -51,9 +51,9 @@ public class CameraController : MonoBehaviour
         CameraUpdated?.Invoke();
     }
 
-    public void Initialize(PlayerInputController inputController, VirtualCameraController cameraController)
+    public void Initialize(VirtualCameraController cameraController)
     {
-        _inputController = inputController;
+        _inputManager = PlayerInputManager.Instance;
         _virtualCamera = cameraController;
 
         _currentFollowOffsetZ = -_virtualCamera.GetBodyFollowOffset().z;
@@ -89,24 +89,24 @@ public class CameraController : MonoBehaviour
 
     private void RegisterCameraMove()
     {
-        _inputController.RegisterMovePerformed(ChangeMovementDirection);
-        _inputController.RegisterMoveCancled(ChangeMovementDirection);
+        _inputManager.RegisterMovePerformed(ChangeMovementDirection);
+        _inputManager.RegisterMoveCancled(ChangeMovementDirection);
 
-        _inputController.RegisterPushRotationStarted(StartPushRotation);
-        _inputController.RegisterPushRotationCanceled(CancelPushRotation);
+        _inputManager.RegisterPushRotationStarted(StartPushRotation);
+        _inputManager.RegisterPushRotationCanceled(CancelPushRotation);
 
-        _inputController.RegisterPressRotationPerformed(ChangeRotateDirection);
-        _inputController.RegisterPressRotationCanceled(ChangeRotateDirection);
+        _inputManager.RegisterPressRotationPerformed(ChangeRotateDirection);
+        _inputManager.RegisterPressRotationCanceled(ChangeRotateDirection);
 
-        _inputController.RegisterScrollZoomPerformed(ChangeScrollZoomOffset);
+        _inputManager.RegisterScrollZoomPerformed(ChangeScrollZoomOffset);
 
-        _inputController.RegisterPressZoomPerformed(ChangePressZoomDirection);
-        _inputController.RegisterPressZoomCanceled(ChangePressZoomDirection);
+        _inputManager.RegisterPressZoomPerformed(ChangePressZoomDirection);
+        _inputManager.RegisterPressZoomCanceled(ChangePressZoomDirection);
     }
 
     private void RegisterCameraEdgeScroll()
     {
-        _inputController.RegisterMoveMousePerformed(ChangeEdgeMoveDirection);
+        _inputManager.RegisterMoveMousePerformed(ChangeEdgeMoveDirection);
     }
 
     private void ChangeMovementDirection(Vector2 dir)
@@ -198,14 +198,14 @@ public class CameraController : MonoBehaviour
 
     private void StartPushRotation()
     {
-        _inputController.RegisterMoveMousePerformed(SetBeforeMousePosition);
-        _inputController.RegisterMoveMousePerformed(ChangePushRotateDirection);
+        _inputManager.RegisterMoveMousePerformed(SetBeforeMousePosition);
+        _inputManager.RegisterMoveMousePerformed(ChangePushRotateDirection);
     }
 
     private void SetBeforeMousePosition(Vector2 pos)
     {
         _beforeMousePosition = pos;
-        _inputController.UnregisterMoveMousePerformed(SetBeforeMousePosition);
+        _inputManager.UnregisterMoveMousePerformed(SetBeforeMousePosition);
     }
 
     private void ChangePushRotateDirection(Vector2 pos)
@@ -223,7 +223,7 @@ public class CameraController : MonoBehaviour
 
     private void CancelPushRotation()
     {
-        _inputController.UnregisterMoveMousePerformed(ChangePushRotateDirection);
+        _inputManager.UnregisterMoveMousePerformed(ChangePushRotateDirection);
     }
 
     private void ChangeScrollZoomOffset(float value)

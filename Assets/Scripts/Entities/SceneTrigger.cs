@@ -14,7 +14,6 @@ public class SceneTrigger : MonoBehaviour
 
     private CameraController _cameraController;
     private VirtualCameraController _virualCameraController;
-    private PlayerInputController _inputController;
     private MouseInputHandler _mouseInputHandler;
     private UnitController _unitController;
     private ItemController _itemController;
@@ -77,6 +76,7 @@ public class SceneTrigger : MonoBehaviour
         new WorkProcessGenerator();
         new ItemGenerator();
 
+        gameObject.AddComponent<PlayerInputManager>();
         gameObject.AddComponent<PackGenerator>();
         gameObject.AddComponent<UnitGenerator>();
         gameObject.AddComponent<BuildingGenerator>();
@@ -85,7 +85,6 @@ public class SceneTrigger : MonoBehaviour
     private void InstantiateController()
     {
         _virualCameraController = _virtualCamera.AddComponent<VirtualCameraController>();
-        _inputController = gameObject.AddComponent<PlayerInputController>();
         _mouseInputHandler = new();
         _unitController = gameObject.AddComponent<UnitController>();
         _itemController = new();
@@ -136,15 +135,15 @@ public class SceneTrigger : MonoBehaviour
 
         UnitGenerator.Instance.Init(_groundPathfinder);
 
-        _cameraController.Initialize(_inputController, _virualCameraController);
+        _cameraController.Initialize(_virualCameraController);
         _unitController.Init(_workplan);
         _groundPathfinder.SetNodeMap(_mapGenerator.Grounds);
-        _selectController.Init(_inputController, _quickCanceling);
+        _selectController.Init(_quickCanceling);
         _selectController.InitObjectSelecting(_interactionViewModel, _inGameUIController.DragSelectionUI, _propsContainer, _mouseInputHandler);
         _itemController.Init();
 
-        _quickCanceling.Init(_inputController);
-        _mouseInputHandler.Init(_inputController);
+        _quickCanceling.Init();
+        _mouseInputHandler.Init();
         _blueprintConstructing.Init(_mouseInputHandler, _quickCanceling);
     }
 

@@ -77,7 +77,7 @@ public class BlueprintConstructing : ICancelable
 
     private void MosePointConstruct()
     {
-        if (PlayerInputController.IsPointerOverUI == true)
+        if (PlayerInputManager.IsPointerOverUI == true)
             return;
 
         BuildingGenerator.Instance.Prepare(_blueprint.GlobalStatus.BuildingType)

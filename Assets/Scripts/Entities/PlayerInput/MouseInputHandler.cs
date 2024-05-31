@@ -6,7 +6,7 @@ public class MouseInputHandler
 {
     public enum LeftClick { Selecting, Constructing }
 
-    private PlayerInputController _inputController;
+    private PlayerInputManager _inputManager;
 
     private LeftClick _default;
     private LeftClick _mode;
@@ -22,20 +22,20 @@ public class MouseInputHandler
         _mouseMovePerformedActions = new();
     }
 
-    public void Init(PlayerInputController con)
+    public void Init()
     {
-        _inputController = con;
+        _inputManager = PlayerInputManager.Instance;
     }
 
     public void ChangeLeftClickMode(LeftClick mode)
     {
-        _inputController.UnregisterClickStarted(TryGetAction(_clickStartedActions, _mode));
-        _inputController.UnregisterClickCanceled(TryGetAction(_clickCanceledActions, _mode));
-        _inputController.UnregisterMoveMousePerformed(TryGetAction(_mouseMovePerformedActions, _mode));
+        _inputManager.UnregisterClickStarted(TryGetAction(_clickStartedActions, _mode));
+        _inputManager.UnregisterClickCanceled(TryGetAction(_clickCanceledActions, _mode));
+        _inputManager.UnregisterMoveMousePerformed(TryGetAction(_mouseMovePerformedActions, _mode));
 
-        _inputController.RegisterClickStarted(TryGetAction(_clickStartedActions, mode));
-        _inputController.RegisterClickCanceled(TryGetAction(_clickCanceledActions, mode));
-        _inputController.RegisterMoveMousePerformed(TryGetAction(_mouseMovePerformedActions, mode));
+        _inputManager.RegisterClickStarted(TryGetAction(_clickStartedActions, mode));
+        _inputManager.RegisterClickCanceled(TryGetAction(_clickCanceledActions, mode));
+        _inputManager.RegisterMoveMousePerformed(TryGetAction(_mouseMovePerformedActions, mode));
 
         _mode = mode;
     }

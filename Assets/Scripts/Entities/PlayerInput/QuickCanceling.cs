@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 public class QuickCanceling
 {
-    private PlayerInputController _playerInputController;
+    private PlayerInputManager _inputManager;
     private List<ICancelable> _stack;
 
     public QuickCanceling()
@@ -10,10 +10,10 @@ public class QuickCanceling
         _stack = new();
     }
 
-    public void Init(PlayerInputController controller)
+    public void Init( )
     {
-        _playerInputController = controller;
-        _playerInputController.RegisterEsc(CancelLastAction);
+        _inputManager = PlayerInputManager.Instance;
+        _inputManager.RegisterEsc(CancelLastAction);
     }
 
     public void Push(ICancelable cancelable)

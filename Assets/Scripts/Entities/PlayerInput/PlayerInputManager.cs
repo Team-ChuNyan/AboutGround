@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class PlayerInputController : MonoBehaviour
+public class PlayerInputManager : MonoBehaviourSingleton<PlayerInputManager>
 {
     private PlayerInputAction _inputAction;
     private PlayerInputAction.PlayerActions _input;
