@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class DataManager : Singleton<DataManager>
 {
-    private Dictionary<RaceType, UnitData> _unitData;
+    private Dictionary<RaceType, UnitUniversalStatus> _unitData;
 
     private Dictionary<ItemType, ItemUniversalStatus> _itemData;
     private Dictionary<ItemType, EquipmentStatus> _equipmentData;
@@ -32,7 +32,7 @@ public class DataManager : Singleton<DataManager>
         return _itemData[type];
     }
 
-    public UnitData GetUnitData(RaceType type)
+    public UnitUniversalStatus GetUnitData(RaceType type)
     {
         return _unitData[type];
     }
@@ -85,14 +85,11 @@ public class DataManager : Singleton<DataManager>
     {
         _unitData = new();
 
-        var unitData = new UnitData()
-            .SetRace(RaceType.Human)
-            .SetName("Dubug")
-            .SetMoveSpeed(1)
-            .SetDesc("Debug Test Unit");
-
+        var unitData = new UnitUniversalStatus();
+        unitData.Race = RaceType.Human;
+        unitData.MoveSpeed = 1;
+        unitData.RaceDesc = "Debug Test Unit";
         unitData.MaxWeight = 40;
-        unitData.Weight = 0;
 
         _unitData.Add(RaceType.Human, unitData);
     }
@@ -116,7 +113,7 @@ public class DataManager : Singleton<DataManager>
         _buildingGlobalStatus.Add(BuildingType.Wall, wallGlobal);
         BluePrintMaterial = Resources.Load<Material>("Models/Building/Materials/BluePrint");
         // 
-        foreach (var item in _buildingGlobalStatus ) 
+        foreach (var item in _buildingGlobalStatus)
         {
             var status = item.Value;
             status.Mesh = Resources.Load<Mesh>("Models/Building/Meshes/Test");

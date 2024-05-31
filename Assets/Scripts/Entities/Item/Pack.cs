@@ -57,7 +57,7 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
         inven.KeepItem(_item, amount);
         if (_item.Amount <= 0)
         {
-            PackGenerator.Instance.DestoryPack(this);
+            PackGenerator.Instance.OnDestroyed(this);
         }
     }
 
@@ -74,7 +74,7 @@ public class Pack : MonoBehaviour, IPickupable, IAttackable, IItemStorage, ISele
         // TODO : 아이템이 옮겨 가는지 완전히 파괴되는지 체크는 어떻게 할 것 인가?
         _item.OffPublicAccess();
         _item = null;
-        PackGenerator.Instance.DestoryPack(this);
+        PackGenerator.Instance.OnDestroyed(this);
     }
 
     public void AddSelection()

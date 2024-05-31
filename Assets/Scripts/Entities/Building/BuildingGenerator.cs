@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildingGenerator : MonoBehaviourSingleton<BuildingGenerator>
+public class BuildingGenerator : MonoBehaviourSingleton<BuildingGenerator>, IObjectGenerator<Building>
 {
     private Building _prefab;
 
-    private Queue<Building> _inactiveBuildings;
+    private Queue<Building> _inactives;
     private Transform _root;
     private Building _newBuilding;
 
@@ -17,21 +17,34 @@ public class BuildingGenerator : MonoBehaviourSingleton<BuildingGenerator>
     {
         _prefab = Resources.Load<Building>("Prefabs/Building");
         _root = new GameObject("Buildings").transform;
-        _inactiveBuildings = new();
+        _inactives = new();
 
         var bluePrintMaterial = DataManager.Instance.BluePrintMaterial;
         Building.SetBluePrintMaterial(bluePrintMaterial);
     }
 
-    public BuildingGenerator SetNewBuilding(BuildingType type)
+    public BuildingGenerator Prepare(BuildingType type)
     {
-        _newBuilding = Instantiate(_prefab, _root);
-        _newBuilding.name = "Building";
-        InitBuildingStatus(type);
+        _newBuilding = GetNewObject();
+        SetBuildingStatus(type);
         return this;
     }
 
-    private void InitBuildingStatus(BuildingType type)
+    private Building GetNewObject()
+    {
+        if (_inactives.TryDequeue(out var building))
+        {
+            building.gameObject.SetActive(true);
+        }
+        else
+        {
+            building = Instantiate(_prefab, _root);
+            building.name = "Building";
+        }
+        return building;
+    }
+
+    private void SetBuildingStatus(BuildingType type)
     {
         var data = DataManager.Instance.GetBuildingData(type);
         _newBuilding.InitStatus(data);
@@ -49,13 +62,19 @@ public class BuildingGenerator : MonoBehaviourSingleton<BuildingGenerator>
         return this;
     }
 
-    public BuildingGenerator ChangeBlueprintMode()
+    public BuildingGenerator ConvertBlueprint()
     {
         _newBuilding.ConvertBluePrint();
         return this;
     }
 
-    public Building GenerateBuilding()
+    public BuildingGenerator ConvertCompletion()
+    {
+        _newBuilding.ConvertCompletion();
+        return this;
+    }
+
+    public Building Generate()
     {
         var building = _newBuilding;
         Generated?.Invoke(building);
@@ -63,9 +82,60 @@ public class BuildingGenerator : MonoBehaviourSingleton<BuildingGenerator>
         return building;
     }
 
-    public void AfterDestoryCleanup(Building building)
+    public void OnDestroyed(Building building)
     {
-        _inactiveBuildings.Enqueue(building);
+        _inactives.Enqueue(building);
         Destroyed?.Invoke(building);
     }
+
+    #region Register
+    public void RegisterGenerated(Action<Building> action)
+    {
+        Generated += action;
+    }
+
+    public void RegisterDestroyed(Action<Building> action)
+    {
+        Destroyed += action;
+    }
+    #endregion
 }
+
+public interface IObjectGenerator<T>
+{
+    public T Generate();
+    public void OnDestroyed(T obj);
+    public void RegisterGenerated(Action<T> action);
+    public void RegisterDestroyed(Action<T> action);
+}
+
+public class ObjectPooling<T> where T : class
+{
+    private Queue<T> _inactives;
+
+    public ObjectPooling(int count = 8)
+    {
+        _inactives = new(count);
+    }
+}
+
+//public class ObjectPooling<T,Y> where T : Enum where Y : class
+//{
+//    private Dictionary<T,Queue<Y>> _inactives;
+
+//    public ObjectPooling()
+//    {
+//        _inactives = Util.NewEnumKeyDictionary<T, Queue<Y>>();
+//    }
+
+//    public void Enqueue(T key, Y obj)
+//    {
+//        _inactives[key].Enqueue(obj);
+//    }
+
+//    public Y TryDequeue()
+//    {
+
+
+//    }
+//}

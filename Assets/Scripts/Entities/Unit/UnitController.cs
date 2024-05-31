@@ -19,7 +19,7 @@ public class UnitController : MonoBehaviour
         _npcUnits = Util.NewEnumKeyDictionary<RaceType, List<Unit>>();
         _playerWorkableUnits = new(8);
 
-        UnitGenerator.Instance.RegisterGeneratedUnit(AddUnitArray);
+        UnitGenerator.Instance.RegisterGenerated(AddUnitArray);
     }
 
     public void Init(WorkPlan workPlan)

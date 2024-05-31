@@ -20,6 +20,7 @@ public class SceneTrigger : MonoBehaviour
     private ItemController _itemController;
     private SelectPropController _selectController;
     private InGameUIController _inGameUIController;
+    private PackController _packController;
 
     private TilePainter _tilepainter;
     private WorkPlan _workplan;
@@ -89,6 +90,7 @@ public class SceneTrigger : MonoBehaviour
         _unitController = gameObject.AddComponent<UnitController>();
         _itemController = new();
         _selectController = new SelectPropController();
+        _packController = new();
 
         _workplan = new WorkPlan();
         _groundPathfinder = new GroundPathfinding();
@@ -122,7 +124,7 @@ public class SceneTrigger : MonoBehaviour
 
     private void InitPropsContainer()
     {
-        _propsContainer.SetPacks(PackGenerator.Instance.ActivePack)
+        _propsContainer.SetPacks(_packController.Packs)
             .SetPlayerUnits(_unitController.PlayerUnits)
             .SetNpcUnits(_unitController.NPCUnits);
     }
@@ -175,20 +177,20 @@ public class SceneTrigger : MonoBehaviour
             {
                 if (x == 0)
                 {
-                    UnitGenerator.Instance.SetNewUnit(PropOwner.Player, RaceType.Human)
+                    UnitGenerator.Instance.Prepare(PropOwner.Player, RaceType.Human)
                                           .SetPosition(new Vector3(x, 0, z));
                 }
 
-                var item = ItemGenerator.Instance.SetNewItem(ItemType.Apple)
+                var item = ItemGenerator.Instance.Prepare(ItemType.Apple)
                                                  .Generate();
-                PackGenerator.Instance.CreateNewItemPack(item)
+                PackGenerator.Instance.Prepare(item)
                                       .SetPosition(new Vector3(x + 50, 0, z + 50));
             }
         }
 
-        BuildingGenerator.Instance.SetNewBuilding(BuildingType.Wall)
+        BuildingGenerator.Instance.Prepare(BuildingType.Wall)
                                   .SetPosition(new Vector2Int(10, 50))
-                                  .GenerateBuilding();
+                                  .Generate();
     }
 
     private void RegisterInteractionViewModel()

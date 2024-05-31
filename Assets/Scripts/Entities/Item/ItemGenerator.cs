@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 
-public class ItemGenerator : Singleton<ItemGenerator>
+public class ItemGenerator : Singleton<ItemGenerator>, IObjectGenerator<Item>
 {
-    private Dictionary<ItemCategory, Queue<Item>> _inactiveItem;
+    private readonly Dictionary<ItemCategory, Queue<Item>> _inactives;
     private Item _newItem;
 
     private event Action<Item> Generated;
@@ -11,89 +11,98 @@ public class ItemGenerator : Singleton<ItemGenerator>
 
     public ItemGenerator()
     {
-        _inactiveItem = Util.NewEnumKeyDictionary<ItemCategory, Queue<Item>>();
+        _inactives = Util.NewEnumKeyDictionary<ItemCategory, Queue<Item>>();
     }
 
-    public ItemGenerator SetNewItem(ItemType type)
+    public ItemGenerator Prepare(ItemType type)
     {
-        ItemCategory category = Util.SwitchItemTypeToItemCategory(type);
-
-        switch (category)
-        {
-            case ItemCategory.Equipment:
-                CreateEquipment(type);
-                break;
-            case ItemCategory.Consumable:
-                CreateConsumable(type);
-                break;
-            case ItemCategory.Resource:
-                CreateResource(type);
-                break;
-        }
-
-        SetItemData(type);
+        _newItem = GetNewItem(type);
+        SetUniversalStatus(type);
         return this;
     }
 
     public Item CopyItem(Item item)
     {
-        SetNewItem(item.UniversalStatus.Type);
-        SetLocalData(item.Amount, item.LocalStatus.Durability);
+        Prepare(item.UniversalStatus.Type);
+        SetStack(item.Amount);
+        SetDurability(item.LocalStatus.Durability);
         return Generate();
     }
 
-    private void CreateConsumable(ItemType type)
+    public Item GetNewItem(ItemType type)
     {
-        var newConsumable = new Consumable();
-        _newItem = newConsumable;
-    }
-
-    private void CreateEquipment(ItemType type)
-    {
-        if (_inactiveItem[ItemCategory.Equipment].TryDequeue(out var equipment) == false)
+        ItemCategory category = Util.SwitchItemTypeToItemCategory(type);
+        if (_inactives[category].TryDequeue(out var item) == false)
         {
-            equipment = new Equipment();
+            if (category == ItemCategory.Equipment)
+            {
+                item = CreateEquipment(type);
+            }
+            else if (category == ItemCategory.Consumable)
+            {
+                item = CreateConsumable(type);
+            }
+            else if (category == ItemCategory.Resource)
+            {
+                item = CreateResource(type);
+            }
         }
 
-        var data = DataManager.Instance.GetEquipmentData(type);
-        ((Equipment)equipment).SetEquipmentData(data);
-
-        _newItem = equipment;
+        return item;
     }
 
-    private void CreateResource(ItemType type)
+    private Item CreateConsumable(ItemType type)
+    {
+        var newConsumable = new Consumable();
+        return newConsumable;
+    }
+
+    private Item CreateEquipment(ItemType type)
+    {
+        var newEquipment = new Equipment();
+        return newEquipment;
+    }
+
+    private Item CreateResource(ItemType type)
     {
         var newResource = new Resource();
-        _newItem = newResource;
+        return newResource;
     }
 
-    private void SetItemData(ItemType type)
+    private void SetUniversalStatus(ItemType type)
     {
         _newItem.UniversalStatus = DataManager.Instance.GetItemData(type);
     }
 
-    public ItemGenerator SetLocalData(int stack, float currentDurability = float.MaxValue)
+    public ItemGenerator SetStack(int value = int.MaxValue)
     {
-        _newItem.Amount = stack;
-        _newItem.LocalStatus.Durability = currentDurability == int.MaxValue ? _newItem.UniversalStatus.MaxAmount : currentDurability;
+        int amount = value < _newItem.UniversalStatus.MaxAmount ? value : _newItem.UniversalStatus.MaxAmount;
+        _newItem.LocalStatus.Amount = amount;
+        return this;
+    }
 
+    public ItemGenerator SetDurability(float value = int.MaxValue)
+    {
+        float amount = value < _newItem.UniversalStatus.MaxDurability ? value : _newItem.UniversalStatus.MaxDurability;
+        _newItem.LocalStatus.Durability = amount;
         return this;
     }
 
     public Item Generate()
     {
         _newItem.LocalStatus.IsActivity = true;
-        OnGenerated(_newItem);
+        Generated?.Invoke(_newItem);
         return _newItem;
     }
 
-    public void Remove(Item item)
+    public void OnDestroyed(Item item)
     {
         ItemCategory category = Util.SwitchItemTypeToItemCategory(item.UniversalStatus.Type);
-        _inactiveItem[category].Enqueue(item);
-        OnDestroyed(item);
+        _inactives[category].Enqueue(item);
+        Destroyed?.Invoke(item);
     }
 
+    #region Register
     public void RegisterGenerated(Action<Item> action)
     {
         Generated += action;
@@ -103,14 +112,5 @@ public class ItemGenerator : Singleton<ItemGenerator>
     {
         Destroyed += action;
     }
-
-    private void OnGenerated(Item item)
-    {
-        Generated?.Invoke(item);
-    }
-
-    private void OnDestroyed(Item item)
-    {
-        Destroyed?.Invoke(item);
-    }
+    #endregion
 }

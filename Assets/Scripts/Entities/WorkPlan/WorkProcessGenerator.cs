@@ -1,38 +1,33 @@
 using System;
 using System.Collections.Generic;
 
-public class WorkProcessGenerator : Singleton<WorkProcessGenerator>
+public class WorkProcessGenerator : Singleton<WorkProcessGenerator>, IObjectGenerator<WorkProcess>
 {
-    private Queue<WorkProcess> _inactiveWork;
+    private readonly Queue<WorkProcess> _inactiveWork;
     private WorkProcess _newWorkProcess;
 
-    private event Action<WorkProcess> GeneratedWork;
-    private event Action<WorkProcess> RemovedWork;
+    private event Action<WorkProcess> Generated;
+    private event Action<WorkProcess> Destroyed;
 
-    public WorkProcessGenerator() 
+    public WorkProcessGenerator()
     {
         _inactiveWork = new();
     }
 
-    public void RegisterGenerated(Action<WorkProcess> action)
-    {
-        GeneratedWork += action;
-    }
-
-    public void RegisterRemoved(Action<WorkProcess> action)
-    {
-        RemovedWork += action;
-    }
-
     public WorkProcessGenerator SetNewWork(WorkType type)
     {
-        if (_inactiveWork.TryDequeue(out _newWorkProcess) == false)
-        {
-            _newWorkProcess = new();
-        }
-
+        _newWorkProcess = GetNewWorkProcess();
         _newWorkProcess.SetNewWorks(type);
         return this;
+    }
+
+    private WorkProcess GetNewWorkProcess()
+    {
+        if (_inactiveWork.TryDequeue(out var workProcess) == false)
+        {
+            workProcess = new();
+        }
+        return workProcess;
     }
 
     public WorkProcessGenerator AddWork(Work work)
@@ -49,13 +44,25 @@ public class WorkProcessGenerator : Singleton<WorkProcessGenerator>
 
     public WorkProcess Generate()
     {
-        GeneratedWork?.Invoke(_newWorkProcess);
+        Generated?.Invoke(_newWorkProcess);
         return _newWorkProcess;
     }
 
-    public void Remove(WorkProcess work)
+    public void OnDestroyed(WorkProcess work)
     {
-        RemovedWork?.Invoke(work);
+        Destroyed?.Invoke(work);
         _inactiveWork.Enqueue(work);
     }
+
+    #region Register
+    public void RegisterGenerated(Action<WorkProcess> action)
+    {
+        Generated += action;
+    }
+
+    public void RegisterDestroyed(Action<WorkProcess> action)
+    {
+        Destroyed += action;
+    }
+    #endregion
 }
