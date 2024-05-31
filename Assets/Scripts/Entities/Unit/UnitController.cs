@@ -38,8 +38,8 @@ public class UnitController : MonoBehaviour
 
     private void AddUnitArray(Unit unit)
     {
-        var race = unit.UnitData.Race;
-        var owner = unit.UnitData.Owner;
+        var race = unit.UniversalStatus.Race;
+        var owner = unit.LocalStatus.Owner;
 
         if (owner == PropOwner.Player)
         {

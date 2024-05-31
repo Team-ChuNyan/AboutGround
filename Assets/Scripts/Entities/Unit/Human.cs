@@ -14,7 +14,7 @@ public class Human : Unit, IWorkable, IAttackable
     public override void Awake()
     {
         base.Awake();
-        UnitData.SetRace(RaceType.Human);
+        UniversalStatus.Race = RaceType.Human;
         HumanLocalStatus = new HumanLocalStatus();
         _inven = new SlotInventory(DEFAULT_HUMAN_INVENTORY_SLOT);
         _workProcess = gameObject.AddComponent<WorkerHandler>();
