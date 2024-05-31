@@ -53,6 +53,9 @@ public class BlueprintConstructing : ICancelable
 
     public void Cancel()
     {
+        if (_isStarting == false)
+            return;
+
         _isStarting = false;
         _quickCanceling.Remove(this);
         _blueprint.Destroy();
