@@ -41,10 +41,10 @@ public class BlueprintConstructing : ICancelable
             worldPos.y++;
         }
 
-        _blueprint = BuildingGenerator.Instance.SetNewBuilding(type)
-                                               .ChangeBlueprintMode()
+        _blueprint = BuildingGenerator.Instance.Prepare(type)
+                                               .ConvertBlueprint()
                                                .SetPosition(worldPos)
-                                               .GenerateBuilding();
+                                               .Generate();
 
         _inputHandler.ChangeLeftClickMode(MouseInputHandler.LeftClick.Constructing);
         _quickCanceling.Push(this);
@@ -53,6 +53,9 @@ public class BlueprintConstructing : ICancelable
 
     public void Cancel()
     {
+        if (_isStarting == false)
+            return;
+
         _isStarting = false;
         _quickCanceling.Remove(this);
         _blueprint.Destroy();
@@ -77,13 +80,13 @@ public class BlueprintConstructing : ICancelable
 
     private void MosePointConstruct()
     {
-        if (PlayerInputController.IsPointerOverUI == true)
+        if (PlayerInputManager.IsPointerOverUI == true)
             return;
 
-        BuildingGenerator.Instance.SetNewBuilding(_blueprint.GlobalStatus.BuildingType)
-                                  .ChangeBlueprintMode()
+        BuildingGenerator.Instance.Prepare(_blueprint.GlobalStatus.BuildingType)
+                                  .ConvertBlueprint()
                                   .SetPosition(_blueprint.transform.position)
-                                  .GenerateBuilding();
+                                  .Generate();
 
         // TODO : 꾹 클릭시 연속적으로 배치하는 법
         // clickStarted 할 때 MoveMouse에 계속 건설하도록 등록

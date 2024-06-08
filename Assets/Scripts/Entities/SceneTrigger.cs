@@ -1,10 +1,11 @@
+using AboutGround.GroundMap;
+using AboutGround.GroundMap.Generator;
 using UnityEngine;
 
 public class SceneTrigger : MonoBehaviour
 {
     [SerializeField] private SceneType _currentScene;
     [SerializeField] private GameObject _virtualCamera;
-    [SerializeField] private GameObject _debugger;
 
     [SerializeField] private Vector3 _startCameraPosition;
     [SerializeField] private Vector3 _startCameraRotation;
@@ -13,12 +14,12 @@ public class SceneTrigger : MonoBehaviour
 
     private CameraController _cameraController;
     private VirtualCameraController _virualCameraController;
-    private PlayerInputController _inputController;
     private MouseInputHandler _mouseInputHandler;
     private UnitController _unitController;
     private ItemController _itemController;
     private SelectPropController _selectController;
     private InGameUIController _inGameUIController;
+    private PackController _packController;
 
     private TilePainter _tilepainter;
     private WorkPlan _workplan;
@@ -75,6 +76,7 @@ public class SceneTrigger : MonoBehaviour
         new WorkProcessGenerator();
         new ItemGenerator();
 
+        gameObject.AddComponent<PlayerInputManager>();
         gameObject.AddComponent<PackGenerator>();
         gameObject.AddComponent<UnitGenerator>();
         gameObject.AddComponent<BuildingGenerator>();
@@ -83,11 +85,11 @@ public class SceneTrigger : MonoBehaviour
     private void InstantiateController()
     {
         _virualCameraController = _virtualCamera.AddComponent<VirtualCameraController>();
-        _inputController = gameObject.AddComponent<PlayerInputController>();
         _mouseInputHandler = new();
         _unitController = gameObject.AddComponent<UnitController>();
         _itemController = new();
         _selectController = new SelectPropController();
+        _packController = new();
 
         _workplan = new WorkPlan();
         _groundPathfinder = new GroundPathfinding();
@@ -121,7 +123,7 @@ public class SceneTrigger : MonoBehaviour
 
     private void InitPropsContainer()
     {
-        _propsContainer.SetPacks(PackGenerator.Instance.ActivePack)
+        _propsContainer.SetPacks(_packController.Packs)
             .SetPlayerUnits(_unitController.PlayerUnits)
             .SetNpcUnits(_unitController.NPCUnits);
     }
@@ -133,15 +135,15 @@ public class SceneTrigger : MonoBehaviour
 
         UnitGenerator.Instance.Init(_groundPathfinder);
 
-        _cameraController.Initialize(_inputController, _virualCameraController);
+        _cameraController.Initialize(_virualCameraController);
         _unitController.Init(_workplan);
         _groundPathfinder.SetNodeMap(_mapGenerator.Grounds);
-        _selectController.Init(_inputController, _quickCanceling);
+        _selectController.Init(_quickCanceling);
         _selectController.InitObjectSelecting(_interactionViewModel, _inGameUIController.DragSelectionUI, _propsContainer, _mouseInputHandler);
         _itemController.Init();
 
-        _quickCanceling.Init(_inputController);
-        _mouseInputHandler.Init(_inputController);
+        _quickCanceling.Init();
+        _mouseInputHandler.Init();
         _blueprintConstructing.Init(_mouseInputHandler, _quickCanceling);
     }
 
@@ -168,32 +170,26 @@ public class SceneTrigger : MonoBehaviour
 
     private void InitDebuger()
     {
-        if (_debugger.TryGetComponent(out MainSceneDebugger debugger))
-        {
-            debugger.MapGenerator = _mapGenerator;
-            debugger.UnitController = _unitController;
-        }
-
         for (int x = 0; x < 4; x++)
         {
             for (int z = 0; z < 4; z++)
             {
                 if (x == 0)
                 {
-                    UnitGenerator.Instance.SetNewUnit(PropOwner.Player, RaceType.Human)
+                    UnitGenerator.Instance.Prepare(PropOwner.Player, RaceType.Human)
                                           .SetPosition(new Vector3(x, 0, z));
                 }
 
-                var item = ItemGenerator.Instance.SetNewItem(ItemType.Apple)
+                var item = ItemGenerator.Instance.Prepare(ItemType.Apple)
                                                  .Generate();
-                PackGenerator.Instance.CreateNewItemPack(item)
+                PackGenerator.Instance.Prepare(item)
                                       .SetPosition(new Vector3(x + 50, 0, z + 50));
             }
         }
 
-        BuildingGenerator.Instance.SetNewBuilding(BuildingType.Wall)
+        BuildingGenerator.Instance.Prepare(BuildingType.Wall)
                                   .SetPosition(new Vector2Int(10, 50))
-                                  .GenerateBuilding();
+                                  .Generate();
     }
 
     private void RegisterInteractionViewModel()

@@ -2,20 +2,24 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitGenerator : MonoBehaviourSingleton<UnitGenerator>
+public class UnitGenerator : MonoBehaviourSingleton<UnitGenerator>, IObjectGenerator<Unit>
 {
-    private Dictionary<RaceType, Queue<Unit>> _inactiveUnits;
     private UnitComponentHandler _unitPrefab;
+
+    private Dictionary<RaceType, Queue<Unit>> _inactives;
+    private Transform _root;
     private Unit _newUnit;
 
-    private IMoveSystem _workSys;
+    private static IMoveSystem _workSys;
 
-    private event Action<Unit> GeneratedUnit;
+    private event Action<Unit> Generated;
+    private event Action<Unit> Destroyed;
 
     private void Awake()
     {
         _unitPrefab = Resources.Load<UnitComponentHandler>("Prefabs/Unit");
-        _inactiveUnits = Util.NewEnumKeyDictionary<RaceType, Queue<Unit>>();
+        _root = new GameObject("Units").transform;
+        _inactives = Util.NewEnumKeyDictionary<RaceType, Queue<Unit>>();
     }
 
     public void Init(IMoveSystem moveSystem)
@@ -23,39 +27,52 @@ public class UnitGenerator : MonoBehaviourSingleton<UnitGenerator>
         _workSys = moveSystem;
     }
 
-    private void CreateNewUnit(PropOwner owner, RaceType race)
+    public UnitGenerator Prepare(PropOwner owner, RaceType race)
     {
-        var newobj = Instantiate(_unitPrefab);
-        switch (race)
-        {
-            case RaceType.Human:
-                _newUnit = newobj.gameObject.AddComponent<Human>();
-                break;
-            case RaceType.Animal:
-                break;
-            default:
-                break;
-        }
-
-        _newUnit.ComponentHandler = newobj;
-        _newUnit.UnitData.SetRace(race);
-        _newUnit.UnitData.SetOwner(owner);
-        SetDefaultUnitData();
-        _newUnit.gameObject.name = "Unit";
+        _newUnit = GetNewUnit(race);
+        _newUnit.LocalStatus.Owner = owner;
+        _newUnit.UniversalStatus = DataManager.Instance.GetUnitData(race);
+        _newUnit.SetMoveSystem(_workSys);
+        return this;
     }
 
-    public UnitGenerator SetNewUnit(PropOwner owner, RaceType race)
+    private Unit GetNewUnit(RaceType race)
     {
-        CreateNewUnit(owner, race);
-        OnGeneratedUnit();
-        return this;
+        if (_inactives[race].TryDequeue(out var unit))
+        {
+            unit.gameObject.SetActive(true);
+        }
+        else
+        {
+            var unitHandler = Instantiate(_unitPrefab, _root);
+            unit = AddUnitComponent(unitHandler, race);
+            unit.ComponentHandler = unitHandler;
+            unit.gameObject.name = race.ToString();
+        }
+
+        return unit;
+    }
+
+    private Unit AddUnitComponent(UnitComponentHandler handler, RaceType race)
+    {
+        return race switch
+        {
+            RaceType.Human => handler.gameObject.AddComponent<Human>(),
+            RaceType.Animal => handler.gameObject.AddComponent<Human>(),
+            _ => throw new NotImplementedException()
+        };
     }
 
     public UnitGenerator SetName(string name)
     {
         name ??= GetRandomName();
-        _newUnit.UnitData.SetName(name);
+        _newUnit.LocalStatus.Name = name;
         return this;
+    }
+
+    private string GetRandomName()
+    {
+        return "랜덤";
     }
 
     public UnitGenerator SetPosition(Vector2Int pos)
@@ -70,31 +87,28 @@ public class UnitGenerator : MonoBehaviourSingleton<UnitGenerator>
         return this;
     }
 
-    public Unit GetNewUnit()
+    public Unit Generate()
     {
         var temp = _newUnit;
-        _newUnit = null;
+        Generated?.Invoke(_newUnit);
         return temp;
     }
 
-    private void SetDefaultUnitData()
+    public void OnDestroyed(Unit obj)
     {
-        _newUnit.UnitData = DataManager.Instance.GetUnitData(_newUnit.UnitData.Race);
-        _newUnit.SetMoveSystem(_workSys);
+        Destroyed?.Invoke(_newUnit);
+        _inactives[obj.UniversalStatus.Race].Enqueue(obj);
     }
 
-    private string GetRandomName()
+    #region Register
+    public void RegisterGenerated(Action<Unit> action)
     {
-        return "랜덤";
+        Generated += action;
     }
 
-    private void OnGeneratedUnit()
+    public void RegisterDestroyed(Action<Unit> action)
     {
-        GeneratedUnit?.Invoke(_newUnit);
+        Destroyed += action;
     }
-
-    public void RegisterGeneratedUnit(Action<Unit> action)
-    {
-        GeneratedUnit += action;
-    }
+    #endregion
 }

@@ -119,65 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &111713401
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 111713403}
-  - component: {fileID: 111713402}
-  m_Layer: 0
-  m_Name: Debugger
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &111713402
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 111713401}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0d3b485bd89d33489c57ecd26f991bb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SeedData:
-    Width: 0
-    Height: 0
-    Seed: 0
-  StartPos: {x: 0, y: 0}
-  EndPos: {x: 0, y: 0}
-  MapGenerator: {fileID: 0}
-  UnitController: {fileID: 0}
-  Name: 
-  Race: 0
-  Goal: {x: 0, y: 0}
-  ItemType: 0
-  Amount: 0
-  Durability: 0
-  CreatePackPosition: {x: 0, y: 0}
---- !u!4 &111713403
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 111713401}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &353131003
 GameObject:
   m_ObjectHideFlags: 0
@@ -209,7 +150,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _currentScene: 1
   _virtualCamera: {fileID: 555180109}
-  _debugger: {fileID: 111713401}
   _startCameraPosition: {x: 50, y: 1, z: 50}
   _startCameraRotation: {x: 45, y: 0, z: 0}
 --- !u!4 &353131005
@@ -780,5 +720,4 @@ SceneRoots:
   - {fileID: 555180111}
   - {fileID: 2023029190}
   - {fileID: 353131005}
-  - {fileID: 111713403}
   - {fileID: 1222747353}

@@ -12,7 +12,7 @@ public class WorkPlan
         _waitWorker = new();
         _workWorker = new();
         WorkProcessGenerator.Instance.RegisterGenerated(AddWork);
-        WorkProcessGenerator.Instance.RegisterRemoved(Remove);
+        WorkProcessGenerator.Instance.RegisterDestroyed(Remove);
     }
 
     public void AddWork(WorkProcess work)

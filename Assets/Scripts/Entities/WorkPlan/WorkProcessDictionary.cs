@@ -1,3 +1,4 @@
+using AboutGround.Commons.DataStructure;
 using System;
 using System.Collections.Generic;
 
@@ -27,7 +28,7 @@ public class WorkProcessDictionary
             _storageCount.Add(type, 0);
             for (int j = 0; j < PRIORITY_COUNT; j++)
             {
-                _storage.Add((WorkType)i, j, new (8));
+                _storage.Add((WorkType)i, j, new(8));
             }
         }
     }

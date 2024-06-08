@@ -57,7 +57,7 @@ public class Building : MonoBehaviour, IItemStorage, IAttackable
     public void Destroy()
     {
         gameObject.SetActive(false);
-        BuildingGenerator.Instance.AfterDestoryCleanup(this);
+        BuildingGenerator.Instance.OnDestroyed(this);
     }
 
     public void KeepItem(IPackable item, int amount)

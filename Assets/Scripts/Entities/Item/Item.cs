@@ -84,7 +84,7 @@ public abstract class Item : IPackable
     public void Pack(Vector2Int respawn)
     {
 
-        PackGenerator.Instance.CreateNewItemPack(this)
+        PackGenerator.Instance.Prepare(this)
                               .SetPosition(respawn);
     }
 
@@ -97,6 +97,6 @@ public abstract class Item : IPackable
     {
         LocalStatus.Init();
         OffPublicAccess();
-        ItemGenerator.Instance.Remove(this);
+        ItemGenerator.Instance.OnDestroyed(this);
     }
 }

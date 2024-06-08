@@ -63,8 +63,8 @@ public class SlotInventory : IInventory
     {
         amount = amount == int.MaxValue ? item.MaxAmount : amount;
 
-        PackGenerator.Instance.CreateNewItemPack(item)
+        PackGenerator.Instance.Prepare(item)
                               .SetPosition(pos)
-                              .GetNewItemPack();
+                              .Generate();
     }
 }
