@@ -62,12 +62,12 @@ public class SceneTrigger : MonoBehaviour
         InitPropsContainer();
         CreateMap();
         InitClass();
-        InitDebuger();
 
         RegisterInteractionViewModel();
         RegisterEvent();
 
         ChangeMouseModeDefault();
+        SetTestObject();
     }
 
     private void InstantiateManagers()
@@ -168,7 +168,7 @@ public class SceneTrigger : MonoBehaviour
         _inGameUIController.BuildUI.RegisterCanceled(_blueprintConstructing.Cancel);
     }
 
-    private void InitDebuger()
+    private void SetTestObject()
     {
         for (int x = 0; x < 4; x++)
         {
