@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-public class InteractionViewModel
+public class InteractionActionHandler
 {
     private readonly Dictionary<InteractionType, Action> _events;
     private HashSet<ISelectable> _selections;
@@ -13,7 +13,7 @@ public class InteractionViewModel
 
     private event Action ChangedSelection;
 
-    public InteractionViewModel()
+    public InteractionActionHandler()
     {
         _events = new();
     }

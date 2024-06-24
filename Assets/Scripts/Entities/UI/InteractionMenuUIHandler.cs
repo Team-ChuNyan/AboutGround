@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 
 public class InteractionMenuUIHandler : UIBase
 {
-    public readonly InteractionViewModel ViewModel;
+    public readonly InteractionActionHandler ViewModel;
     private const string ButtonName = "Button";
     private const int _count = 4;
 
@@ -12,7 +12,7 @@ public class InteractionMenuUIHandler : UIBase
     public InteractionMenuUIHandler(VisualElement root) : base(root)
     {
         Hide();
-        ViewModel = new InteractionViewModel();
+        ViewModel = new InteractionActionHandler();
         ViewModel.RegisterChangedSelection(RefreshButtons);
     }
 

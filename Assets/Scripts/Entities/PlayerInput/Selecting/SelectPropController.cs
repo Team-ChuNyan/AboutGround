@@ -4,7 +4,7 @@ public class SelectPropController : ICancelable
 {
     private PropSelecting _selecting;
     private QuickCanceling _quickCanceling;
-    private InteractionViewModel _interactionViewModel;
+    private InteractionActionHandler _interactionActionHandler;
 
     private List<InteractionType> _currentTypes;
 
@@ -20,11 +20,11 @@ public class SelectPropController : ICancelable
         _quickCanceling = quickCanceling;
     }
 
-    public void InitObjectSelecting(InteractionViewModel model,SelectionBoxUIHandler selectionBoxUI, PropsContainer props)
+    public void InitObjectSelecting(InteractionActionHandler interactionHandler,SelectionBoxUIHandler selectionBoxUI, PropsContainer props)
     {
-        _interactionViewModel = model;
+        _interactionActionHandler = interactionHandler;
         _selecting.Init(selectionBoxUI, _quickCanceling, props);
-        model.Init(_selecting.CurrentSelection, _currentTypes);
+        interactionHandler.Init(_selecting.CurrentSelection, _currentTypes);
     }
 
     public bool IsCanceled()
@@ -49,7 +49,7 @@ public class SelectPropController : ICancelable
             _quickCanceling.Remove(this);
         }
 
-        _interactionViewModel.OnChangedSelection();
+        _interactionActionHandler.OnChangedSelection();
     }
 
     private void ChangeCurrentInteractionTypes()

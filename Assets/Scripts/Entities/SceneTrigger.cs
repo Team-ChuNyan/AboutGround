@@ -27,7 +27,7 @@ public class SceneTrigger : MonoBehaviour
     private PropsContainer _propsContainer;
     private BlueprintConstructing _blueprintConstructing;
 
-    private InteractionViewModel _interactionViewModel;
+    private InteractionActionHandler _interactionViewModel;
 
     private void Awake()
     {
