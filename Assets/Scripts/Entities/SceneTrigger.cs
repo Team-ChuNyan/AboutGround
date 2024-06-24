@@ -177,13 +177,15 @@ public class SceneTrigger : MonoBehaviour
                 if (x == 0)
                 {
                     UnitGenerator.Instance.Prepare(PropOwner.Player, RaceType.Human)
-                                          .SetPosition(new Vector3(x, 0, z));
+                                          .SetPosition(new Vector3(x, 0, z))
+                                          .Generate();
                 }
 
                 var item = ItemGenerator.Instance.Prepare(ItemType.Apple)
                                                  .Generate();
                 PackGenerator.Instance.Prepare(item)
-                                      .SetPosition(new Vector3(x + 50, 0, z + 50));
+                                      .SetPosition(new Vector3(x + 50, 0, z + 50))
+                                      .Generate();
             }
         }
 
