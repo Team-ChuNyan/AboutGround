@@ -9,12 +9,8 @@ public class PackController
     public PackController()
     {
         _packs = new();
-        PackGenerator.Instance.RegisterGenerated(AddPacks);
-    }
-
-    private void AddPacks(Pack pack)
-    {
-        _packs.Add(pack);
+        PackGenerator.Instance.RegisterGenerated((pack) => { _packs.Add(pack); });
+        PackGenerator.Instance.RegisterDestroyed((pack) => { _packs.Remove(pack); });
     }
 
     public static void CarryAll(IEnumerable<ISelectable> packs)

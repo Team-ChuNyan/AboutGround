@@ -20,6 +20,7 @@ public class UnitController : MonoBehaviour
         _playerWorkableUnits = new(8);
 
         UnitGenerator.Instance.RegisterGenerated(AddUnitArray);
+        UnitGenerator.Instance.RegisterDestroyed(RemoveUnitArray);
     }
 
     public void Init(WorkPlan workPlan)
@@ -49,6 +50,22 @@ public class UnitController : MonoBehaviour
         else if (owner == PropOwner.NPC)
         {
             _npcUnits[race].Add(unit);
+        }
+    }
+
+    private void RemoveUnitArray(Unit unit)
+    {
+        var race = unit.UniversalStatus.Race;
+        var owner = unit.LocalStatus.Owner;
+
+        if (owner == PropOwner.Player)
+        {
+            _playerUnits[race].Remove(unit);
+            _workPlan.Remove((IWorkable)unit);
+        }
+        else if (owner == PropOwner.NPC)
+        {
+            _npcUnits[race].Remove(unit);
         }
     }
 }
