@@ -19,9 +19,9 @@ public class BlueprintConstructing : ICancelable
         _buildRayer = 1 << 7;
     }
 
-    public void Init(MouseInputHandler inputHandler, QuickCanceling quickCanceling)
+    public void Init( QuickCanceling quickCanceling)
     {
-        _inputHandler = inputHandler;
+        _inputHandler = MouseInputHandler.Instance;
         _quickCanceling = quickCanceling;
 
         _inputHandler.RegisterMoveMousePerformed(MouseInputHandler.LeftClick.Constructing, RaycastMousePosition);

@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MouseInputHandler
+public class MouseInputHandler : Singleton<MouseInputHandler>
 {
     public enum LeftClick { Selecting, Constructing }
 
     private PlayerInputManager _inputManager;
 
-    private LeftClick _default;
+    private const LeftClick _default = LeftClick.Selecting;
     private LeftClick _mode;
 
     private readonly Dictionary<LeftClick, Action> _clickStartedActions;

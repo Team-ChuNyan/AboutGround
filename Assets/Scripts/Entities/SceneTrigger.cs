@@ -14,7 +14,6 @@ public class SceneTrigger : MonoBehaviour
 
     private CameraController _cameraController;
     private VirtualCameraController _virualCameraController;
-    private MouseInputHandler _mouseInputHandler;
     private UnitController _unitController;
     private ItemController _itemController;
     private SelectPropController _selectController;
@@ -59,6 +58,7 @@ public class SceneTrigger : MonoBehaviour
         InitUI_TempMethod();
         GetClassData();
 
+        InitManager();
         InitPropsContainer();
         CreateMap();
         InitClass();
@@ -66,7 +66,6 @@ public class SceneTrigger : MonoBehaviour
         RegisterInteractionViewModel();
         RegisterEvent();
 
-        ChangeMouseModeDefault();
         SetTestObject();
     }
 
@@ -75,6 +74,7 @@ public class SceneTrigger : MonoBehaviour
         new DataManager();
         new WorkProcessGenerator();
         new ItemGenerator();
+        new MouseInputHandler();
 
         gameObject.AddComponent<PlayerInputManager>();
         gameObject.AddComponent<PackGenerator>();
@@ -85,7 +85,6 @@ public class SceneTrigger : MonoBehaviour
     private void InstantiateController()
     {
         _virualCameraController = _virtualCamera.AddComponent<VirtualCameraController>();
-        _mouseInputHandler = new();
         _unitController = gameObject.AddComponent<UnitController>();
         _itemController = new();
         _selectController = new SelectPropController();
@@ -120,6 +119,11 @@ public class SceneTrigger : MonoBehaviour
         _inGameUIController.Init(_quickCanceling);
         // TODO : quickCanceling이 이벤트 등록하도록 변경
     }
+    private void InitManager()
+    {
+        MouseInputHandler.Instance.Init();
+        UnitGenerator.Instance.Init(_groundPathfinder);
+    }
 
     private void InitPropsContainer()
     {
@@ -133,23 +137,16 @@ public class SceneTrigger : MonoBehaviour
         _cameraController.SetCameraPosition(_startCameraPosition);
         _cameraController.SetCameraRotation(_startCameraRotation);
 
-        UnitGenerator.Instance.Init(_groundPathfinder);
 
         _cameraController.Initialize(_virualCameraController);
         _unitController.Init(_workplan);
         _groundPathfinder.SetNodeMap(_mapGenerator.Grounds);
         _selectController.Init(_quickCanceling);
-        _selectController.InitObjectSelecting(_interactionViewModel, _inGameUIController.DragSelectionUI, _propsContainer, _mouseInputHandler);
+        _selectController.InitObjectSelecting(_interactionViewModel, _inGameUIController.DragSelectionUI, _propsContainer);
         _itemController.Init();
 
         _quickCanceling.Init();
-        _mouseInputHandler.Init();
-        _blueprintConstructing.Init(_mouseInputHandler, _quickCanceling);
-    }
-
-    private void ChangeMouseModeDefault()
-    {
-        _mouseInputHandler.ChangeLeftClickMode(MouseInputHandler.LeftClick.Selecting);
+        _blueprintConstructing.Init(_quickCanceling);
     }
 
     private void CreateMap()

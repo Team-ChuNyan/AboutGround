@@ -2,7 +2,6 @@ using System.Collections.Generic;
 
 public class SelectPropController : ICancelable
 {
-    private PlayerInputManager _inputManager;
     private PropSelecting _selecting;
     private QuickCanceling _quickCanceling;
     private InteractionViewModel _interactionViewModel;
@@ -18,15 +17,13 @@ public class SelectPropController : ICancelable
 
     public void Init(QuickCanceling quickCanceling)
     {
-        _inputManager = PlayerInputManager.Instance;
         _quickCanceling = quickCanceling;
     }
 
-    public void InitObjectSelecting(InteractionViewModel model,SelectionBoxUIHandler selectionBoxUI, PropsContainer props, MouseInputHandler inputHandler)
+    public void InitObjectSelecting(InteractionViewModel model,SelectionBoxUIHandler selectionBoxUI, PropsContainer props)
     {
         _interactionViewModel = model;
         _selecting.Init(selectionBoxUI, _quickCanceling, props);
-        _selecting.InitInput(_inputManager, inputHandler);
         model.Init(_selecting.CurrentSelection, _currentTypes);
     }
 

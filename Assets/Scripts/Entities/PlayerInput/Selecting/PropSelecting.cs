@@ -54,14 +54,14 @@ public class PropSelecting : ICancelable
         _packs = props.Packs;
     }
 
-    public void InitInput(PlayerInputManager con, MouseInputHandler mouseInputHandler)
+    public void InitInput()
     {
-        _input = con;
+        _input = PlayerInputManager.Instance;
         _input.RegisterShiftPressed(ToggleAddMode);
 
-        mouseInputHandler.RegisterClickStarted(MouseInputHandler.LeftClick.Selecting, StartSelection);
-        mouseInputHandler.RegisterClickCanceled(MouseInputHandler.LeftClick.Selecting, CancelSelection);
-
+        MouseInputHandler.Instance.RegisterClickStarted(MouseInputHandler.LeftClick.Selecting, StartSelection);
+        MouseInputHandler.Instance.RegisterClickCanceled(MouseInputHandler.LeftClick.Selecting, CancelSelection);
+        MouseInputHandler.Instance.ChangeDefaultMode();
     }
 
     public HashSet<ISelectable> GetSelection()
