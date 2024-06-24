@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 public class PropsContainer
@@ -10,21 +11,21 @@ public class PropsContainer
     public Dictionary<RaceType, List<Unit>> NPCUnits { get { return _npcUnits; } }
     public List<Pack> Packs { get { return _packs; } }
 
-    public PropsContainer SetPlayerUnits(Dictionary<RaceType, List<Unit>> units)
+    public event Action<PropsContainer> ChangedUnitArray;
+    public event Action<PropsContainer> ChangedPackArray;
+
+    public PropsContainer SetUnits(Dictionary<RaceType, List<Unit>> units, Dictionary<RaceType, List<Unit>> npcs)
     {
         _playerUnits = units;
-        return this;
-    }
-
-    public PropsContainer SetNpcUnits(Dictionary<RaceType, List<Unit>> units)
-    {
-        _npcUnits = units;
+        _npcUnits = npcs;
+        ChangedUnitArray?.Invoke(this);
         return this;
     }
 
     public PropsContainer SetPacks(List<Pack> packs)
     {
         _packs = packs;
+        ChangedPackArray?.Invoke(this);
         return this;
     }
 }

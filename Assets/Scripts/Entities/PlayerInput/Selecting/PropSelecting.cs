@@ -37,24 +37,28 @@ public class PropSelecting : ICancelable
     {
         _mainCam = Camera.main;
         _mode = Mode.Default;
-        _playerHumans = new(16);
         _waitSelection = new(16);
         _currentSelection = new(16);
         _beforeSelection = new(16);
         _selectableLayer = Const.Layer_Selectable;
-
-        PackGenerator.Instance.RegisterDestroyed(RemoveCurrentObject);
     }
 
     public void Init(SelectionBoxUIHandler ui, QuickCanceling quickCanceling, PropsContainer props)
     {
+        InitInput();
+        PackGenerator.Instance.RegisterDestroyed(RemoveCurrentObject);
+        UnitGenerator.Instance.RegisterDestroyed(RemoveCurrentObject);
+
         _selectionBoxUI = ui;
         _quickCanceling = quickCanceling;
         _playerHumans = props.PlayerUnits[RaceType.Human];
         _packs = props.Packs;
+
+        props.ChangedUnitArray += (container) => _playerHumans = container.PlayerUnits[RaceType.Human];
+        props.ChangedPackArray += (container) => _packs = container.Packs;
     }
 
-    public void InitInput()
+    private void InitInput()
     {
         _input = PlayerInputManager.Instance;
         _input.RegisterShiftPressed(ToggleAddMode);

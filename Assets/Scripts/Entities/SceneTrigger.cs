@@ -128,8 +128,7 @@ public class SceneTrigger : MonoBehaviour
     private void InitPropsContainer()
     {
         _propsContainer.SetPacks(_packController.Packs)
-            .SetPlayerUnits(_unitController.PlayerUnits)
-            .SetNpcUnits(_unitController.NPCUnits);
+            .SetUnits(_unitController.PlayerUnits, _unitController.NPCUnits);
     }
 
     private void InitClass()
